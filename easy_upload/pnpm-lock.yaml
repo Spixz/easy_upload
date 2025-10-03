@@ -11,6 +11,9 @@ importers:
       '@types/arrive':
         specifier: ^2.4.4
         version: 2.4.4
+      '@types/dom-chromium-ai':
+        specifier: ^0.0.10
+        version: 0.0.10
       arrive:
         specifier: ^2.5.2
         version: 2.5.2
@@ -455,6 +458,9 @@ packages:
 
   '@types/chrome@0.1.12':
     resolution: {integrity: sha512-jEkxs9GPQHx7g49WjkA8QDNcqODbMGDuBbWQOtjiS/Wf9AiEcDmQMIAgJvC/Xi36WoCVNx584g0Dd9ThJQCAiw==}
+
+  '@types/dom-chromium-ai@0.0.10':
+    resolution: {integrity: sha512-9CSfOOIx6/pyOjsp6VTtai18Bjh0mS2XWwiXn7/rBJIxX1Y/1onJe+1MqPVo6bsEUE3rZlxQHEAg1yRKRFTkWg==}
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -1249,6 +1255,8 @@ snapshots:
     dependencies:
       '@types/filesystem': 0.0.36
       '@types/har-format': 1.2.16
+
+  '@types/dom-chromium-ai@0.0.10': {}
 
   '@types/estree@1.0.8': {}
 

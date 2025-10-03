@@ -19,7 +19,7 @@ export default defineManifest({
     'contentSettings',
   ],
   content_scripts: [{
-    js: ['src/content/main.tsx', 'src/content/replace_input_form.ts', 'src/cleaner.ts'],
+    js: ['src/content/main.tsx', 'src/content/replace_input_form.ts', 'src/requirements_extractor/cleaner.ts'],
     matches: ['<all_urls>'],
   }],
   side_panel: {

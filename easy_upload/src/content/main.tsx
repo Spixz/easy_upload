@@ -1,5 +1,6 @@
+
 const script = document.createElement('script');
-script.src = chrome.runtime.getURL('src/cleaner.ts.js');
+script.src = chrome.runtime.getURL('src/requirements_extractor/cleaner.ts.js');
 script.type = 'module';
 document.head.appendChild(script);
 
