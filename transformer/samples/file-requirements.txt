@@ -1,0 +1,100 @@
+Accepted file types: JPG, PNG, or WebP.
+Images must be at least 1024×768 px.
+Maximum image size: 2 MB.
+Aspect ratio must be 16:9.
+Preferred dimensions: 1280×720 px.
+Only PNG with transparent background is allowed.
+Use sRGB color profile.
+Image DPI must be ≥ 300.
+GIFs must not exceed 10 MB.
+No animated GIFs.
+Max dimensions: 5000×5000 px.
+Minimum dimensions: 400×400 px.
+Square images only (1:1).
+Landscape orientation required.
+Portrait orientation required.
+Background must be white (#FFFFFF).
+Alpha channel is required.
+8-bit color depth only.
+HEIC is not supported.
+SVGs must have width and height attributes.
+SVG files must be under 200 KB.
+Do not include EXIF metadata.
+Filenames must not exceed 60 characters.
+Filenames may contain letters, numbers, dashes, and underscores only.
+File extension must be lowercase.
+Thumbnails: 1280×720 px, under 2 MB.
+Icons: 512×512 px PNG with transparent background.
+Favicon: 32×32 px PNG.
+Accepted video formats: MP4 (H.264) or WebM (VP9).
+Video resolution: at least 720p (1280×720).
+Maximum resolution: 4K (3840×2160).
+Frame rate must be between 24 and 60 fps.
+Video bitrate must not exceed 20 Mbps.
+Maximum video length: 10 minutes.
+Audio codec must be AAC at 128 kbps or higher.
+Keyframe interval ≤ 2 seconds.
+Variable frame rate is not allowed.
+Progressive scan only (no interlaced).
+Stereo audio (2 channels) required.
+Audio sample rate must be 44.1 kHz or 48 kHz.
+Accepted audio formats: MP3, WAV, or FLAC.
+Maximum audio length: 5 minutes.
+Audio bitrate must be ≥ 192 kbps.
+16-bit PCM WAV only.
+Normalize audio to −14 LUFS.
+PDF only.
+PDF must be under 10 MB.
+Password-protected PDFs are not allowed.
+PDF/A-1b compliance required.
+All fonts must be embedded.
+Maximum 10 pages.
+Minimum page size: A4.
+Scanned PDFs must include searchable text (OCR).
+Accepted documents: DOCX or PDF only.
+Spreadsheets: XLSX or CSV only.
+CSV must be UTF-8 encoded.
+CSV delimiter must be comma (,).
+Maximum CSV size: 5 MB.
+Maximum rows per CSV: 100,000.
+Maximum columns per CSV: 200.
+Dates must be in ISO 8601 format (YYYY-MM-DD).
+No formulas or macros.
+Archives: ZIP only.
+Archive size must be under 100 MB.
+Do not include nested archives.
+Encrypted ZIPs are not allowed.
+Archive must contain a single root folder.
+3D models: GLB or GLTF.
+3D model size must be under 50 MB.
+Textures must be power-of-two dimensions.
+Maximum polygon count: 1,000,000.
+Accepted image formats: JPG, JPEG, PNG, GIF.
+We do not accept BMP or TIFF.
+Maximum file size: 25 MB.
+File must not exceed 100 MB.
+File must be at least 10 KB.
+Dimension range: 600×600 to 2000×2000 px.
+Aspect ratio between 4:3 and 16:9.
+Exact size required: 1080×1080 px.
+Recommended size: 2048×1152 px.
+Width must be ≥ 500 px.
+Height must be ≥ 500 px.
+Width must not exceed 10,000 px.
+Height must not exceed 10,000 px.
+Use RGB color space (no CMYK).
+No transparency.
+Transparent background required.
+Use .jpg or .png only.
+Upload up to 10 files at a time.
+One file per upload.
+Maximum total upload size: 200 MB.
+File names must not contain spaces.
+File names must not contain special characters.
+Hyphens (-) and underscores (_) are allowed.
+Do not include emojis in file names.
+No emojis or non-Latin characters in file names.
+Allowed extensions: .jpg, .png, .pdf, .mp4
+Disallowed extensions: .exe, .bat, .js
+Max image megapixels: 20 MP.
+Ratio must be 3:2 or 4:3.

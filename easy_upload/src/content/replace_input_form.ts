@@ -1,4 +1,5 @@
 console.log("Content script loaded.");
+import 'arrive';
 
 /**
  * Converts an image file to PNG format.
@@ -51,8 +52,22 @@ function convertToPng(file: File): Promise<File> {
  * @param event The change event.
  */
 async function handleFileChange(event: Event) {
+  console.log("événement sur l'input catch")
+
+
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0];
+
+  if (input.dataset.lock == "true") {
+    console.log("fihcier déjà modifié");
+    input.dataset.lock = 'false';
+    return;
+  }
+
+  // 1. Empêche les autres écouteurs sur cet élément de s'exécuter
+  event.stopImmediatePropagation();
+  // 2. Empêche l'événement de continuer sa propagation (capture ou bubbling)
+  event.stopPropagation();
 
   if (!file) {
     return;
@@ -67,6 +82,7 @@ async function handleFileChange(event: Event) {
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(pngFile);
       input.files = dataTransfer.files;
+      input.dataset.lock = "true";
 
       input.dispatchEvent(new Event('change', { bubbles: true }));
     } catch (error) {
@@ -74,6 +90,11 @@ async function handleFileChange(event: Event) {
     }
   }
 }
+/**
+ * upload 1, overitted = true
+ * upload 2
+ */
+
 
 /**
  * Attaches the change event listener to a given file input.
@@ -85,53 +106,47 @@ function attachListenerToInput(input: HTMLInputElement) {
   }
   // Widen the accept attribute to allow selection of any image file for conversion.
   input.accept = 'image/*';
-  input.addEventListener('change', handleFileChange);
+  input.addEventListener('change', handleFileChange, true);
   input.dataset.pngConverterAttached = 'true';
   console.log('PNG converter attached and accept attribute modified for:', input);
 }
 
-/**
- * Finds all file inputs on the page that accept PNGs and attaches the listener.
- */
-function findAndAttachToInputs() {
-  document.querySelectorAll('input[type="file"][accept*="png"]').forEach(input => {
-    attachListenerToInput(input as HTMLInputElement);
-  });
-}
-
 // --- Main execution ---
 
-findAndAttachToInputs();
 
-const observer = new MutationObserver((mutations) => {
-  for (const mutation of mutations) {
-    if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const element = node as Element;
-          if (element.matches('input[type="file"][accept*="png"]')) {
-            attachListenerToInput(element as HTMLInputElement);
-          }
-          element.querySelectorAll('input[type="file"][accept*="png"]').forEach(input => {
-            attachListenerToInput(input as HTMLInputElement);
-          });
-        }
-      });
-    } else if (mutation.type === 'attributes') {
-      const element = mutation.target;
-      if (
-        element instanceof HTMLInputElement &&
-        element.type === 'file' &&
-        element.accept.includes('png')
-      ) {
-        attachListenerToInput(element);
-      }
-    }
-  }
+document.arrive('input[type="file"]', function (newElem) {
+  attachListenerToInput(newElem as HTMLInputElement);
 });
 
-observer.observe(document.body, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-});
+
+// const observer = new MutationObserver((mutations) => {
+//   for (const mutation of mutations) {
+//     if (mutation.type === 'childList') {
+//       mutation.addedNodes.forEach(node => {
+//         if (node.nodeType === Node.ELEMENT_NODE) {
+//           const element = node as Element;
+//           if (element.matches('input[type="file"]')) { //input[type="file"][accept="*"]
+//             attachListenerToInput(element as HTMLInputElement);
+//           }
+//           element.querySelectorAll('input[type="file"]').forEach(input => {
+//             attachListenerToInput(input as HTMLInputElement);
+//           });
+//         }
+//       });
+//     } else if (mutation.type === 'attributes') {
+//       const element = mutation.target;
+//       if (
+//         element instanceof HTMLInputElement &&
+//         element.type === 'file'
+//       ) {
+//         attachListenerToInput(element);
+//       }
+//     }
+//   }
+// });
+
+// observer.observe(document.body, {
+//   childList: true,
+//   subtree: true,
+//   attributes: true,
+// });

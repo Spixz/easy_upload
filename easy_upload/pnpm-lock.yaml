@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@types/arrive':
+        specifier: ^2.4.4
+        version: 2.4.4
+      arrive:
+        specifier: ^2.5.2
+        version: 2.5.2
       react:
         specifier: ^19.1.0
         version: 19.1.1
@@ -432,6 +438,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@types/arrive@2.4.4':
+    resolution: {integrity: sha512-j5RpdCbOgKnEjqsDlmoB3FezwiUPDnVlCxwunqVpNgpmHjjwaUUE/GKyjfOI1sZbJcypsRVgREGIuEbB4pKHFA==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -487,6 +496,9 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  arrive@2.5.2:
+    resolution: {integrity: sha512-A9asXhuUR6pgHtwUciZw4FRZDR09ZwVsz1ckEGE6W9gXWrYM9cAkuKzHplpYN0bd/iobg0xqQ9fpRr/GHPsXUw==}
 
   baseline-browser-mapping@2.8.6:
     resolution: {integrity: sha512-wrH5NNqren/QMtKUEEJf7z86YjfqW/2uw3IL3/xpqZUC95SSVIFXYQeeGjL6FT/X68IROu6RMehZQS5foy2BXw==}
@@ -1210,6 +1222,8 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.52.0':
     optional: true
 
+  '@types/arrive@2.4.4': {}
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.4
@@ -1277,6 +1291,8 @@ snapshots:
       acorn: 8.15.0
 
   acorn@8.15.0: {}
+
+  arrive@2.5.2: {}
 
   baseline-browser-mapping@2.8.6: {}
 

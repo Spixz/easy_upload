@@ -1,3 +1,8 @@
+const script = document.createElement('script');
+script.src = chrome.runtime.getURL('src/cleaner.ts.js');
+script.type = 'module';
+document.head.appendChild(script);
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './views/App.tsx'
