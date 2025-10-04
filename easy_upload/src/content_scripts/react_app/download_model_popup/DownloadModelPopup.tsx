@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
-export default function LanguageModelDownloader() {
+/// TODO : Le refaire avec material ui pour l'ui pour la pop up
+export default function DownloadModelPopup() {
   const [availability, setAvailability] = useState<Availability | null>(null);
 
   useEffect(() => {
     try {
       LanguageModel.availability().then(setAvailability);
     } catch (err) {
-      console.error("Erreur en vérifiant la disponibilité :", err);
+      console.error("Erreur en vérifiant la disponibilité du model :", err);
     }
   }, []);
 
@@ -34,8 +35,6 @@ export default function LanguageModelDownloader() {
     textAlign: 'center',
   };
 
-  console.log(`Etat du modèle ${availability}`);
-
   if (availability == null || availability == 'available' || availability == 'downloading') return null;
 
   return (
@@ -57,7 +56,7 @@ function PopUpContent() {
     try {
       LanguageModel.availability().then(setAvailability);
     } catch (err) {
-      console.error("Erreur en vérifiant la disponibilité :", err);
+      console.error("Erreur en vérifiant la disponibilité du model :", err);
     }
   }, []);
 

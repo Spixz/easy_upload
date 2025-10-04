@@ -1,4 +1,3 @@
-console.log("Content script loaded.");
 import 'arrive';
 
 /**
@@ -100,7 +99,7 @@ async function handleFileChange(event: Event) {
  * Attaches the change event listener to a given file input.
  * @param input The HTMLInputElement to attach the listener to.
  */
-function attachListenerToInput(input: HTMLInputElement) {
+export default function inputOnChangeListener(input: HTMLInputElement) {
   if (input.dataset.pngConverterAttached) {
     return;
   }
@@ -114,9 +113,6 @@ function attachListenerToInput(input: HTMLInputElement) {
 // --- Main execution ---
 
 
-document.arrive('input[type="file"]', function (newElem) {
-  attachListenerToInput(newElem as HTMLInputElement);
-});
 
 
 // const observer = new MutationObserver((mutations) => {

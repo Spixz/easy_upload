@@ -1,11 +1,11 @@
 import './App.css'
-import LanguageModelDownloader from './LanguageModelDownloader'
+import DownloadModelPopup from '../download_model_popup/DownloadModelPopup'
 import Tchat from './Tchat'
 
 export default function App() {
   return (<>
     <Tchat />
-    <LanguageModelDownloader />
+    <DownloadModelPopup />
   </>)
 }
 
