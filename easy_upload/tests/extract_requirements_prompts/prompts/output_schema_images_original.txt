@@ -1,0 +1,10 @@
+{
+  "accepted_source": "string",
+  "file_size_limit": "string",
+  "min_width": "string",
+  "max_width": "string",
+  "min_height": "string",
+  "max_height": "string",
+  "aspect_ratio": "string",
+  "other_file_infos": "string"
+}

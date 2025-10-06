@@ -1,0 +1,31 @@
+Objectif :
+Analyser un texte brut (souvent bruité ou contenant des messages non liés) et extraire uniquement les informations SÛRES décrivant les paramètres du fichier à uploader (image, audio, vidéo, document, etc.).
+
+Si une information n’est pas clairement mentionnée, ou si elle provient d’un élément non fiable (comme un nom de fichier ou une conversation), mets "not found".
+
+Tâche :
+À partir du texte fourni, extrais uniquement les éléments suivants si et seulement si tu es CERTAIN de leur valeur :
+
+- accepted_source : type de fichier explicitement mentionné (ex : "JPG", "PNG", "MP4", "PDF", "image/*", "audio/*").
+⚠️ N’infère jamais à partir d’un nom de fichier.
+- other_file_infos : toute autre contrainte explicite sur le contenu ou la qualité du fichier (ex : "Must be landscape", "Transparent background required").
+
+Règles :
+
+- ❌ Ne remplis jamais un champ à partir d’un mot ou d’un exemple isolé sans lien explicite avec une règle.
+- ✅ Si plusieurs valeurs sont mentionnées, garde celle la plus précise.
+- ✅ Si aucune contrainte claire n’est trouvée, remplis tous les champs avec "not found".
+
+Exemple 1 :
+Texte : "Le fichier doit être une image JPG ou PNG de 2000x1000 max et 5 Mo maximum."
+Réponse :
+{
+"accepted_source": "image/jpeg, image/png",
+"file_size_limit": "5 Mo",
+"height_width": "min width 200px, max width 1200px, max height 1000px",
+"max_height": "1000 px",
+"aspect_ratio": "not found",
+"other_file_infos": "not found"
+}
+
+Le contenu de la page duquel tu dois extraire les infos:
