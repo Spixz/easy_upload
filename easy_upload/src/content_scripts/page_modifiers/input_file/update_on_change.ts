@@ -50,7 +50,7 @@ function convertToPng(file: File): Promise<File> {
  * and replaces the original file in the input.
  * @param event The change event.
  */
-async function handleFileChange(event: Event) {
+async function handleOnChangeListener(event: Event) {
   console.log("événement sur l'input catch")
 
 
@@ -100,14 +100,12 @@ async function handleFileChange(event: Event) {
  * @param input The HTMLInputElement to attach the listener to.
  */
 export default function inputOnChangeListener(input: HTMLInputElement) {
-  if (input.dataset.pngConverterAttached) {
-    return;
-  }
-  // Widen the accept attribute to allow selection of any image file for conversion.
+  if (input.dataset.onChangeListenerAttached != null) return;
+  
   input.accept = 'image/*';
-  input.addEventListener('change', handleFileChange, true);
-  input.dataset.pngConverterAttached = 'true';
-  console.log('PNG converter attached and accept attribute modified for:', input);
+  input.addEventListener('change', handleOnChangeListener, true);
+  input.dataset.onChangeListenerAttached = '';
+  console.log('on change listener attached for:', input);
 }
 
 // --- Main execution ---

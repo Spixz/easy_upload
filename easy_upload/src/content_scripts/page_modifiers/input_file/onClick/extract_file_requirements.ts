@@ -66,7 +66,7 @@ function extractPageFullText(): string[] {
  * et renvoie UNIQUEMENT les lignes pertinentes :
  * (chiffre OR extension OR unité [OR symboles si activés]).
  */
-function extractRequirementsText({
+export default function extractPotentialRequirementsFromPage({
   maxLength = 100,  // valeur par défaut modifiée
   visibleOnly = true,
   dedupe = true,
@@ -119,8 +119,3 @@ function extractRequirementsText({
 
   return candidates;
 }
-
-// -------------------- Exemple --------------------
-// const out = extractRequirementsText({ visibleOnly: false });
-console.log("cleaner loaded");
-(window as any).extractRequirementsText = extractRequirementsText;
