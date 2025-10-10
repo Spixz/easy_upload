@@ -1,13 +1,28 @@
+Task: À partir d'texte brut bruité, extrait uniquement les informations SÛRES décrivant les paramètres du fichier à uploader.
+
 Exemple 1 :
 Texte : "Le fichier doit être une image JPG ou PNG de 2000x1000 max et 5 Mo maximum."
 Réponse :
 {
-"accepted_source": "jpg, png",
-"file_size_limit": "5 Mo",
-"height_width": "min width 200px, max width 1200px, max height 1000px",
-"max_height": "1000 px",
-"aspect_ratio": "not found",
-"other_file_infos": "not found"
+    "accepted_source": "jpg, png",
+    "file_size_limit": "5 Mo",
+    "height_width": "max width 2000px, max height 1000px",
+    "aspect_ratio": "not found",
+    "other_file_infos": "not found"
+}
+
+Exemple 2 :
+Texte : "
+png to jpg
+500x500, 1920x1080
+min 100x30
+Réponse :
+{
+    "accepted_source": "not found",
+    "file_size_limit": "not found",
+    "height_width": "min width 100px, min height 30px",
+    "aspect_ratio": "not found",
+    "other_file_infos": "not found"
 }
 
 Le contenu de la page duquel tu dois extraire les infos:

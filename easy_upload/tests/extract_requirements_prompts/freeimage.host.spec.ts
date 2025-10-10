@@ -16,7 +16,7 @@ beforeAll(async () => {
 // ! Launch chrome with remote debugging before launching tests
 // /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome \ --remote-debugging-port=9222 --user-data-dir="chrome_profile_tests"
 
-test('imagebb.com - short prompt', async () => {
+test('freeimage.host - short prompt', async () => {
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
   })
@@ -24,7 +24,7 @@ test('imagebb.com - short prompt', async () => {
   await page.goto('https://example.com')
 
   const prompt = fs.readFileSync('tests/extract_requirements_prompts/prompts/short_prompt.txt', 'utf8');
-  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/imagebb.com.txt', 'utf8');
+  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/freeimage.host.txt', 'utf8');
   const outputSchema = JSON.parse(fs.readFileSync('tests/extract_requirements_prompts/prompts/output_schema_images.txt', 'utf8'));
 
   const { res, duration } = await page.evaluate(
@@ -54,13 +54,9 @@ test('imagebb.com - short prompt', async () => {
   expect(resObj["accepted_source"]).toMatch(/png/i)
   expect(resObj["accepted_source"]).toMatch(/bmp/i)
   expect(resObj["accepted_source"]).toMatch(/gif/i)
-  expect(resObj["accepted_source"]).toMatch(/tif/i)
   expect(resObj["accepted_source"]).toMatch(/webp/i)
-  expect(resObj["accepted_source"]).toMatch(/heic/i)
-  expect(resObj["accepted_source"]).toMatch(/avif/i)
-  expect(resObj["accepted_source"]).toMatch(/pdf/i)
 
-  expect(resObj["file_size_limit"]).toMatch(/32\s*mb/i)
+  expect(resObj["file_size_limit"]).toMatch(/64\s*mb/i)
 
   expect(resObj["height_width"]).toMatch(/not found/)
   expect(resObj["height_width"]).toMatch(/not found/)
@@ -69,7 +65,7 @@ test('imagebb.com - short prompt', async () => {
   page.close()
 })
 
-test('imagebb.com - medium prompt', async () => {
+test('freeimage.host - medium prompt', async () => {
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
   })
@@ -77,7 +73,7 @@ test('imagebb.com - medium prompt', async () => {
   await page.goto('https://example.com')
 
   const prompt = fs.readFileSync('tests/extract_requirements_prompts/prompts/medium_prompt.txt', 'utf8');
-  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/imagebb.com.txt', 'utf8');
+  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/freeimage.host.txt', 'utf8');
   const outputSchema = JSON.parse(fs.readFileSync('tests/extract_requirements_prompts/prompts/output_schema_images.txt', 'utf8'));
 
   const { res, duration } = await page.evaluate(
@@ -107,13 +103,9 @@ test('imagebb.com - medium prompt', async () => {
   expect(resObj["accepted_source"]).toMatch(/png/i)
   expect(resObj["accepted_source"]).toMatch(/bmp/i)
   expect(resObj["accepted_source"]).toMatch(/gif/i)
-  expect(resObj["accepted_source"]).toMatch(/tif/i)
   expect(resObj["accepted_source"]).toMatch(/webp/i)
-  expect(resObj["accepted_source"]).toMatch(/heic/i)
-  expect(resObj["accepted_source"]).toMatch(/avif/i)
-  expect(resObj["accepted_source"]).toMatch(/pdf/i)
 
-  expect(resObj["file_size_limit"]).toMatch(/32\s*mb/i)
+  expect(resObj["file_size_limit"]).toMatch(/64\s*mb/i)
 
   expect(resObj["height_width"]).toMatch(/not found/)
   expect(resObj["height_width"]).toMatch(/not found/)
@@ -124,7 +116,7 @@ test('imagebb.com - medium prompt', async () => {
 
 
 
-test('imagebb.com - large prompt', async () => {
+test('freeimage.host - large prompt', async () => {
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
   })
@@ -132,7 +124,7 @@ test('imagebb.com - large prompt', async () => {
   await page.goto('https://example.com')
 
   const prompt = fs.readFileSync('tests/extract_requirements_prompts/prompts/large_prompt.txt', 'utf8');
-  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/imagebb.com.txt', 'utf8');
+  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/freeimage.host.txt', 'utf8');
   const outputSchema = JSON.parse(fs.readFileSync('tests/extract_requirements_prompts/prompts/output_schema_images.txt', 'utf8'));
 
   const { res, duration } = await page.evaluate(
@@ -162,13 +154,10 @@ test('imagebb.com - large prompt', async () => {
   expect(resObj["accepted_source"]).toMatch(/png/i)
   expect(resObj["accepted_source"]).toMatch(/bmp/i)
   expect(resObj["accepted_source"]).toMatch(/gif/i)
-  expect(resObj["accepted_source"]).toMatch(/tif/i)
   expect(resObj["accepted_source"]).toMatch(/webp/i)
-  expect(resObj["accepted_source"]).toMatch(/heic/i)
-  expect(resObj["accepted_source"]).toMatch(/avif/i)
-  expect(resObj["accepted_source"]).toMatch(/pdf/i)
 
-  expect(resObj["file_size_limit"]).toMatch(/32\s*mb/i)
+  expect(resObj["file_size_limit"]).toMatch(/64\s*mb/i)
+
 
   expect(resObj["height_width"]).toMatch(/not found/)
   expect(resObj["height_width"]).toMatch(/not found/)
@@ -177,7 +166,7 @@ test('imagebb.com - large prompt', async () => {
   page.close()
 })
 
-test('imagebb.com - large prompt v2', async () => {
+test('freeimage.host - large prompt v2', async () => {
   const browser = await puppeteer.connect({
     browserURL: 'http://127.0.0.1:9222',
   })
@@ -185,7 +174,7 @@ test('imagebb.com - large prompt v2', async () => {
   await page.goto('https://example.com')
 
   const prompt = fs.readFileSync('tests/extract_requirements_prompts/prompts/large_prompt_v2.txt', 'utf8');
-  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/imagebb.com.txt', 'utf8');
+  const pageContent = fs.readFileSync('tests/extract_requirements_prompts/sources/freeimage.host.txt', 'utf8');
   const outputSchema = JSON.parse(fs.readFileSync('tests/extract_requirements_prompts/prompts/output_schema_images.txt', 'utf8'));
 
   const { res, duration } = await page.evaluate(
@@ -215,13 +204,10 @@ test('imagebb.com - large prompt v2', async () => {
   expect(resObj["accepted_source"]).toMatch(/png/i)
   expect(resObj["accepted_source"]).toMatch(/bmp/i)
   expect(resObj["accepted_source"]).toMatch(/gif/i)
-  expect(resObj["accepted_source"]).toMatch(/tif/i)
   expect(resObj["accepted_source"]).toMatch(/webp/i)
-  expect(resObj["accepted_source"]).toMatch(/heic/i)
-  expect(resObj["accepted_source"]).toMatch(/avif/i)
-  expect(resObj["accepted_source"]).toMatch(/pdf/i)
 
-  expect(resObj["file_size_limit"]).toMatch(/32\s*mb/i)
+  expect(resObj["file_size_limit"]).toMatch(/64\s*mb/i)
+
 
   expect(resObj["height_width"]).toMatch(/not found/)
   expect(resObj["height_width"]).toMatch(/not found/)
