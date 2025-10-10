@@ -102,7 +102,6 @@ async function handleOnChangeListener(event: Event) {
 export default function inputOnChangeListener(input: HTMLInputElement) {
   if (input.dataset.onChangeListenerAttached != null) return;
   
-  input.accept = 'image/*';
   input.addEventListener('change', handleOnChangeListener, true);
   input.dataset.onChangeListenerAttached = '';
   console.log('on change listener attached for:', input);
