@@ -3,6 +3,9 @@ import { $enum } from "ts-enum-util";
 import extractPotentialRequirementsFromPage from "./extract_file_requirements";
 import { FileCategory } from "@/commons/enums";
 import mime from 'mime';
+import { sendMessage } from "webext-bridge/content-script";
+import { InputRequirements } from "@/commons/interfaces";
+// import "webext-bridge/content-script";
 
 export default function inputOnClickListener(input: HTMLInputElement) {
     if (input.dataset.onClickListenerAttached != null) return;
@@ -10,9 +13,9 @@ export default function inputOnClickListener(input: HTMLInputElement) {
     input.addEventListener('click', () => handleClick(input), true);
     input.dataset.onClickListenerAttached = '';
     console.log(`On click custom attaché sur `, input);
-}
+};
 
-function handleClick(input: HTMLInputElement): void {
+async function handleClick(input: HTMLInputElement): Promise<void> {
     console.log("L'user à cliqué sur l'input");
     const potentialRequirements: string[] = extractPotentialRequirementsFromPage({ visibleOnly: false });
     console.log(potentialRequirements);
@@ -20,6 +23,17 @@ function handleClick(input: HTMLInputElement): void {
         .map(inferCategoryFromMimeString)
         .filter((value) => value != null);
     const mainAllowedCategory: FileCategory = findMajoritaryFileCategory(allowedCategories);
+
+    await sendMessage(
+        "open_sidepanel",
+        {
+            data: {
+                text_for_requirements: potentialRequirements,
+                file_category: mainAllowedCategory
+            } as InputRequirements
+        },
+        "background"
+    );
 
     // promptInstruction = promptForCategory[acceptedFileCategory];
     // prompt = `${potentialsRequirements}`\n\n ${promptInstruction};

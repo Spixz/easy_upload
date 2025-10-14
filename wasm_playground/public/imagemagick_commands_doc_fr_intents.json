@@ -1,0 +1,1710 @@
+[
+  {
+    "title": "flou adaptatif",
+    "command": "-adaptive-blur geometry",
+    "description": "Applique un flou adaptatif sur l'image, en réduisant l'effet près des bords pour préserver les contours.",
+    "example": "convert input -adaptive-blur 0x8 output",
+    "intent": "Je veux flouter l'image de façon adaptative en préservant les contours (moins de flou près des bords)."
+  },
+  {
+    "title": "redimensionnement adaptatif",
+    "command": "-adaptive-resize geometry",
+    "description": "Redimensionne l'image de manière adaptative avec une triangulation dépendant des données, conservant mieux les détails.",
+    "example": "convert input -adaptive-resize 800x600 output",
+    "intent": "Je veux redimensionner mon image en conservant le plus possible les détails / utiliser un redimensionnement adaptatif."
+  },
+  {
+    "title": "netteté adaptative",
+    "command": "-adaptive-sharpen geometry",
+    "description": "Rend l'image plus nette de manière adaptative, en accentuant davantage les contours qu'à l'intérieur des zones uniformes.",
+    "example": "convert input -adaptive-sharpen 0x2 output",
+    "intent": "Je veux rendre l'image plus nette en accentuant surtout les contours sans renforcer les zones lisses."
+  },
+  {
+    "title": "fusion d'images",
+    "command": "-adjoin",
+    "description": "Combine plusieurs images en un seul fichier multi-images (par exemple un GIF ou un TIFF multi-page).",
+    "example": "convert input1.png input2.png -adjoin output.tiff",
+    "intent": "Je veux fusionner plusieurs images en un seul fichier multi-image (par ex. GIF ou TIFF multi-page)."
+  },
+  {
+    "title": "transformation affine",
+    "command": "-affine matrix",
+    "description": "Applique une transformation affine définie par une matrice (rotation, translation, cisaillement, etc.).",
+    "example": "convert input -affine 1,0.2,0,1,0,0 -transform output",
+    "intent": "Je veux appliquer une transformation géométrique à l'image (rotation, déplacement, cisaillement) pour modifier sa forme ou sa position."
+  },
+  {
+    "title": "gestion du canal alpha",
+    "command": "-alpha option",
+    "description": "Contrôle le canal alpha : activer, désactiver, copier, rendre opaque, transparent, extraire, etc.",
+    "example": "convert input -alpha set -channel A -evaluate set 0 output",
+    "intent": "Je veux contrôler le canal alpha de l'image (activer/désactiver, rendre transparent/opaque, extraire ou copier la transparence)."
+  },
+  {
+    "title": "ajout de texte",
+    "command": "-annotate geometry text",
+    "description": "Ajoute du texte sur l'image à la position donnée. L'option -geometry contrôle l'emplacement et la taille.",
+    "example": "convert input -annotate +30+50 'Hello World' output",
+    "intent": "Je veux ajouter du texte sur l'image à l'endroit souhaité (inscrire/écrire du texte à une position précise)."
+  },
+  {
+    "title": "anti-crénelage",
+    "command": "-antialias",
+    "description": "Supprime ou réduit l'aliasing des pixels, utile pour améliorer les bords du texte ou des formes.",
+    "example": "convert input -antialias output",
+    "intent": "Je veux lisser les bords pour réduire l'effet d'escalier (aliasing) et améliorer le rendu du texte ou des formes."
+  },
+  {
+    "title": "concaténation d'images",
+    "command": "-append",
+    "description": "Concatène plusieurs images en une seule, verticalement par défaut (ou horizontalement avec +append).",
+    "example": "convert image1.png image2.png -append output.png",
+    "intent": "Je veux assembler plusieurs images en une seule image continue, verticalement (ou horizontalement si souhaité)."
+  },
+  {
+    "title": "déchiffrement d'image",
+    "command": "-authenticate value",
+    "description": "Déchiffre une image protégée par mot de passe en utilisant la clé fournie.",
+    "example": "convert encrypted.miff -authenticate 'password123' output.png",
+    "intent": "Je veux déchiffrer/déverrouiller une image protégée en fournissant le mot de passe ou la clé pour pouvoir l'ouvrir/enregistrer."
+  },
+  {
+    "title": "ajustement automatique du gamma",
+    "command": "-auto-gamma",
+    "description": "Ajuste automatiquement le gamma de l'image pour équilibrer les tons clairs et sombres.",
+    "example": "convert input -auto-gamma output",
+    "intent": "Je veux ajuster automatiquement le gamma de l’image pour équilibrer les tons clairs et sombres."
+  },
+  {
+    "title": "ajustement automatique des niveaux",
+    "command": "-auto-level",
+    "description": "Équilibre automatiquement les niveaux de couleur pour maximiser la plage dynamique.",
+    "example": "convert input -auto-level output",
+    "intent": "Je veux équilibrer automatiquement les niveaux de couleur pour maximiser la plage dynamique / améliorer le contraste."
+  },
+  {
+    "title": "orientation automatique",
+    "command": "-auto-orient",
+    "description": "Oriente automatiquement l'image selon les métadonnées EXIF (utile pour les photos de smartphones).",
+    "example": "convert input -auto-orient output",
+    "intent": "Je veux orienter automatiquement l’image selon ses métadonnées EXIF pour corriger la rotation (utile pour les photos de smartphone)."
+  },
+  {
+    "title": "couleur d'arrière-plan",
+    "command": "-background color",
+    "description": "Définit la couleur d’arrière-plan utilisée pour les opérations de composition ou de texte.",
+    "example": "convert input -background white -flatten output",
+    "intent": "Je veux définir la couleur d’arrière-plan / du fond utilisée pour la composition ou le texte."
+  },
+  {
+    "title": "test de performance",
+    "command": "-bench iterations",
+    "description": "Mesure les performances en exécutant la même commande plusieurs fois pour chronométrer la vitesse.",
+    "example": "convert input -bench 10 -resize 50% output",
+    "intent": "Je veux mesurer la performance du traitement en exécutant la même opération plusieurs fois pour chronométrer la vitesse."
+  },
+  {
+    "title": "biais de convolution",
+    "command": "-bias value",
+    "description": "Ajoute un biais lors de la convolution d'une image, influençant le contraste ou la luminosité du résultat.",
+    "example": "convert input -bias 10% -convolve '0,1,0,1,4,1,0,1,0' output",
+    "intent": "Je veux ajouter un biais lors d’une convolution pour influencer le contraste / la luminosité du rendu."
+  },
+  {
+    "title": "flou bilatéral",
+    "command": "-bilateral-blur geometry",
+    "description": "Applique un flou bilatéral : lisse les zones homogènes tout en préservant les bords nets.",
+    "example": "convert input -bilateral-blur 0x5 output",
+    "intent": "Je veux appliquer un flou bilatéral pour lisser les zones homogènes tout en préservant les bords / contours."
+  },
+  {
+    "title": "seuil noir",
+    "command": "-black-threshold value",
+    "description": "Force tous les pixels en dessous du seuil donné à devenir noirs, utile pour créer des masques.",
+    "example": "convert input -black-threshold 20% output",
+    "intent": "Je veux transformer en noir tous les pixels sous un certain seuil pour créer un masque."
+  },
+  {
+    "title": "point bleu primaire",
+    "command": "-blue-primary point",
+    "description": "Définit le point de chromaticité primaire du bleu dans l’espace de couleur.",
+    "example": "convert input -blue-primary 0.15,0.06 output",
+    "intent": "Je veux définir le point de chromaticité du bleu pour ajuster la référence du bleu dans l’espace colorimétrique."
+  },
+  {
+    "title": "décalage vers le bleu",
+    "command": "-blue-shift factor",
+    "description": "Simule une scène éclairée par la lumière lunaire en appliquant un effet de décalage vers le bleu.",
+    "example": "convert input -blue-shift 1.5 output",
+    "intent": "Je veux appliquer un décalage vers le bleu pour donner un rendu plus froid / simuler un éclairage lunaire."
+  },
+  {
+    "title": "flou gaussien",
+    "command": "-blur geometry",
+    "description": "Applique un flou gaussien pour réduire le bruit et adoucir les détails de l'image.",
+    "example": "convert input -blur 0x8 output",
+    "intent": "Je veux adoucir/lisser l'image et réduire le bruit en appliquant un flou gaussien."
+  },
+  {
+    "title": "ajout d'une bordure",
+    "command": "-border geometry",
+    "description": "Ajoute une bordure autour de l'image avec la couleur spécifiée par -bordercolor.",
+    "example": "convert input -border 10x10 -bordercolor black output",
+    "intent": "Je veux ajouter une bordure/encadrement autour de l'image en utilisant la couleur de mon choix."
+  },
+  {
+    "title": "couleur de bordure",
+    "command": "-bordercolor color",
+    "description": "Définit la couleur utilisée pour les bordures ajoutées par -border.",
+    "example": "convert input -bordercolor red -border 5x5 output",
+    "intent": "Je veux définir la couleur de la bordure/du cadre qui sera ajoutée autour de l'image."
+  },
+  {
+    "title": "luminosité et contraste",
+    "command": "-brightness-contrast geometry",
+    "description": "Améliore la luminosité et le contraste de l'image en ajustant les tons sombres et clairs.",
+    "example": "convert input -brightness-contrast 10x15 output",
+    "intent": "Je veux ajuster la luminosité (éclaircir/assombrir) et le contraste pour rendre les zones claires et sombres plus ou moins marquées."
+  },
+  {
+    "title": "détection de contours (Canny)",
+    "command": "-canny geometry",
+    "description": "Détecte les bords de l'image à l'aide de l'algorithme multi-étapes de Canny.",
+    "example": "convert input -canny 0x1+10%+30% output",
+    "intent": "Je veux détecter/faire ressortir les contours et les bords de l'image en utilisant l'algorithme de Canny."
+  },
+  {
+    "title": "ajout de légende",
+    "command": "-caption string",
+    "description": "Assigne une légende à l'image (affichée selon le contexte d'utilisation).",
+    "example": "convert input -caption 'Vue du Mont Fuji' output",
+    "intent": "Je veux ajouter une légende/un texte descriptif à l'image qui s'affichera avec l'image."
+  },
+  {
+    "title": "correction colorimétrique CDL",
+    "command": "-cdl filename",
+    "description": "Applique une correction colorimétrique à l'aide d'une Color Decision List (CDL).",
+    "example": "convert input -cdl correction.cdl output",
+    "intent": "Je veux appliquer une correction colorimétrique préconfigurée en utilisant un fichier CDL pour ajuster les couleurs de l'image."
+  },
+  {
+    "title": "sélection de canal",
+    "command": "-channel type",
+    "description": "Sélectionne les canaux de l'image (R, G, B, A, etc.) auxquels appliquer l'opération suivante.",
+    "example": "convert input -channel R -equalize output",
+    "intent": "Je veux sélectionner un ou plusieurs canaux (R, G, B, A) pour que l'opération suivante ne s'applique qu'à ces canaux."
+  },
+  {
+    "title": "effet dessin au fusain",
+    "command": "-charcoal radius",
+    "description": "Simule un dessin au fusain à partir de l'image d'origine.",
+    "example": "convert input -charcoal 2 output",
+    "intent": "Je veux transformer l'image pour lui donner un rendu type dessin au fusain/charbon."
+  },
+  {
+    "title": "découpage interne",
+    "command": "-chop geometry",
+    "description": "Supprime une bande de pixels à l'intérieur de l'image, selon la géométrie spécifiée.",
+    "example": "convert input -chop 50x10+0+0 output",
+    "intent": "Je veux supprimer/retirer une bande intérieure de l'image selon des dimensions et une position précises."
+  },
+  {
+    "title": "égalisation adaptative de contraste (CLAHE)",
+    "command": "-clahe geometry",
+    "description": "Améliore le contraste local en appliquant un histogramme adaptatif limité (CLAHE).",
+    "example": "convert input -clahe 10x10+128+3 output",
+    "intent": "Je veux améliorer/renforcer le contraste local de mon image en appliquant une égalisation adaptative limitée (CLAHE) pour faire mieux ressortir les détails."
+  },
+  {
+    "title": "restriction des valeurs (clamp)",
+    "command": "-clamp",
+    "description": "Force les pixels en dehors de la plage valide (en dessous de 0 ou au-dessus du quantum range) à revenir dans les limites.",
+    "example": "convert input -clamp output",
+    "intent": "Je veux ramener les pixels dont les valeurs sont hors plage (trop basses ou trop hautes) dans la plage valide pour éviter des couleurs/valeurs erronées."
+  },
+  {
+    "title": "découpage par tracé 8BIM",
+    "command": "-clip",
+    "description": "Découpe l'image selon le premier tracé stocké dans le profil 8BIM (Photoshop).",
+    "example": "convert input -clip output",
+    "intent": "Je veux découper/masquer mon image en utilisant le premier tracé enregistré dans les métadonnées 8BIM (comme un tracé Photoshop)."
+  },
+  {
+    "title": "masque de découpe",
+    "command": "-clip-mask filename",
+    "description": "Associe un masque de découpe externe à l'image, utilisé pour le détourage.",
+    "example": "convert input -clip-mask mask.png output",
+    "intent": "Je veux utiliser une image de masque externe pour découper/détourer mon image afin de garder seulement la zone souhaitée."
+  },
+  {
+    "title": "découpage par chemin nommé",
+    "command": "-clip-path id",
+    "description": "Découpe l'image selon un tracé nommé dans le profil 8BIM.",
+    "example": "convert input -clip-path 'path1' output",
+    "intent": "Je veux découper/masquer l'image selon un tracé nommé (identifié par id) présent dans les données 8BIM."
+  },
+  {
+    "title": "duplication d'image",
+    "command": "-clone index",
+    "description": "Clone une image spécifique d'une séquence d'images (index basé sur 0).",
+    "example": "convert input.png ( +clone -rotate 90 ) -append output.png",
+    "intent": "Je veux cloner/dupliquer une image précise d'une séquence (indexée à partir de 0) pour la réutiliser ou la transformer séparément."
+  },
+  {
+    "title": "table de correspondance de couleur (CLUT)",
+    "command": "-clut",
+    "description": "Applique une table de correspondance de couleur (Color LookUp Table) à l'image.",
+    "example": "convert input lut.png -clut output",
+    "intent": "Je veux modifier/recaler les couleurs de mon image en appliquant une table de correspondance des couleurs (CLUT)."
+  },
+  {
+    "title": "composants connectés",
+    "command": "-connected-components connectivity",
+    "description": "Attribue une étiquette unique à chaque composant connecté selon la connectivité 4 ou 8.",
+    "example": "convert input -connected-components 8 output",
+    "intent": "Je veux détecter et étiqueter chaque composant connecté dans l'image (connectivité 4 ou 8) pour isoler/compter les objets."
+  },
+  {
+    "title": "étirement du contraste",
+    "command": "-contrast-stretch geometry",
+    "description": "Améliore le contraste global en étirant la plage des valeurs d'intensité.",
+    "example": "convert input -contrast-stretch 5%x5% output",
+    "intent": "Je veux augmenter le contraste global de l'image en étirant la plage des intensités pour que les tons clairs et foncés soient plus distincts."
+  },
+  {
+    "title": "fusion d'une séquence d'images",
+    "command": "-coalesce",
+    "description": "Fusionne une séquence d'images (comme une animation GIF) en un seul flux continu d'images.",
+    "example": "convert animation.gif -coalesce frames_%03d.png",
+    "intent": "Je veux convertir une animation (par ex. un GIF) en une suite d'images complètes/cadres pour pouvoir les traiter ou exporter séparément."
+  },
+  {
+    "title": "colorisation de l'image",
+    "command": "-colorize value",
+    "description": "Colorise l'image en appliquant une teinte selon la couleur de remplissage définie.",
+    "example": "convert input -fill blue -colorize 50% output",
+    "intent": "Je veux appliquer une teinte à l'image en utilisant une couleur de remplissage (par ex. rendre l'image bleutée)."
+  },
+  {
+    "title": "matrice de couleur",
+    "command": "-color-matrix matrix",
+    "description": "Applique une correction de couleur basée sur une matrice personnalisée.",
+    "example": "convert input -color-matrix '1.2,0,0,0,1,0,0,0,1' output",
+    "intent": "Je veux ajuster/corriger les couleurs de l'image en appliquant une matrice de transformation personnalisée."
+  },
+  {
+    "title": "réduction du nombre de couleurs",
+    "command": "-colors value",
+    "description": "Spécifie le nombre de couleurs préférées dans l'image finale (quantification).",
+    "example": "convert input -colors 16 output",
+    "intent": "Je veux réduire/limiter le nombre de couleurs de l'image pour obtenir une version avec un nombre fixe de couleurs."
+  },
+  {
+    "title": "espace colorimétrique",
+    "command": "-colorspace type",
+    "description": "Change l'espace colorimétrique de l'image (RGB, CMYK, Gray, HSL, etc.).",
+    "example": "convert input -colorspace Gray output",
+    "intent": "Je veux changer l'espace colorimétrique de l'image (par ex. passer en niveaux de gris, RGB ou CMJN) pour modifier la façon dont les couleurs sont représentées."
+  },
+  {
+    "title": "combinaison d'images",
+    "command": "-combine",
+    "description": "Combine plusieurs images (ou canaux séparés) en une seule image composite.",
+    "example": "convert red.png green.png blue.png -combine output.png",
+    "intent": "Je veux fusionner/combiner plusieurs images ou canaux en une seule image composite."
+  },
+  {
+    "title": "ajout de commentaire",
+    "command": "-comment string",
+    "description": "Ajoute un commentaire texte aux métadonnées de l'image.",
+    "example": "convert input -comment 'Photo prise à Paris' output",
+    "intent": "Je veux ajouter un commentaire/annotation texte aux métadonnées de l'image."
+  },
+  {
+    "title": "comparaison d'images",
+    "command": "-compare",
+    "description": "Compare deux images et génère une image de différence mettant en évidence les variations.",
+    "example": "compare image1.png image2.png diff.png",
+    "intent": "Je veux comparer deux images et obtenir une image qui montre clairement les différences ou variations entre elles."
+  },
+  {
+    "title": "opération mathématique complexe",
+    "command": "-complex operator",
+    "description": "Réalise des opérations mathématiques complexes sur une séquence d'images (addition, multiplication, conjugaison, etc.).",
+    "example": "convert img1.png img2.png -complex multiply output.png",
+    "intent": "Je veux appliquer une opération mathématique complexe entre des images (addition, multiplication, conjugaison, etc.) pour obtenir un résultat combiné."
+  },
+  {
+    "title": "opérateur de composition",
+    "command": "-compose operator",
+    "description": "Définit l'opérateur utilisé pour composer plusieurs images (over, multiply, screen, etc.).",
+    "example": "convert img1.png img2.png -compose multiply -composite output.png",
+    "intent": "Je veux choisir l'opérateur de composition qui déterminera comment deux images seront mélangées (par ex. over, multiply, screen)."
+  },
+  {
+    "title": "composition d'images",
+    "command": "-composite",
+    "description": "Superpose une image sur une autre selon l'opérateur défini par -compose.",
+    "example": "convert background.png overlay.png -compose over -composite output.png",
+    "intent": "Je veux superposer une image sur une autre en utilisant l'opérateur de composition choisi pour obtenir une image finale combinée."
+  },
+  {
+    "title": "type de compression",
+    "command": "-compress type",
+    "description": "Définit le type de compression utilisé dans le fichier de sortie (None, JPEG, LZW, ZIP, etc.).",
+    "example": "convert input -compress JPEG output.tiff",
+    "intent": "Je veux définir le type de compression du fichier de sortie (par exemple None/JPEG/LZW/ZIP) pour contrôler la taille et/ou la qualité du fichier."
+  },
+  {
+    "title": "amélioration du contraste",
+    "command": "-contrast",
+    "description": "Améliore ou réduit le contraste de l'image de manière globale.",
+    "example": "convert input -contrast output",
+    "intent": "Je veux augmenter ou diminuer le contraste global de l'image pour qu'elle paraisse plus marquée ou plus douce."
+  },
+  {
+    "title": "convolution de l'image",
+    "command": "-convolve coefficients",
+    "description": "Applique un noyau de convolution personnalisé à l'image (flou, détection de bords, etc.).",
+    "example": "convert input -convolve '1,1,1,1,8,1,1,1,1' output",
+    "intent": "Je veux appliquer un noyau de convolution personnalisé à l'image (par ex. flou/détection de bords) pour modifier visuellement les contours ou la netteté."
+  },
+  {
+    "title": "copie de région",
+    "command": "-copy geometry offset",
+    "description": "Copie des pixels d'une zone de l'image vers une autre position.",
+    "example": "convert input -copy 100x100+10+10+200+200 output",
+    "intent": "Je veux copier/dupliquer une zone de l'image d'un emplacement à un autre pour repositionner ou cloner une partie de l'image."
+  },
+  {
+    "title": "recadrage de l'image",
+    "command": "-crop geometry",
+    "description": "Découpe une partie de l'image selon la géométrie spécifiée (largeur x hauteur + décalage).",
+    "example": "convert input -crop 400x300+50+50 output",
+    "intent": "Je veux découper l'image pour ne garder qu'une zone précise (taille et position) et supprimer le reste."
+  },
+  {
+    "title": "rotation du colormap",
+    "command": "-cycle amount",
+    "description": "Fait tourner la table des couleurs de l'image d'un certain nombre d'étapes.",
+    "example": "convert input -cycle 10 output",
+    "intent": "Je veux décaler/faire tourner la palette de couleurs de l'image d'un certain nombre de pas pour changer l'apparence des couleurs."
+  },
+  {
+    "title": "déchiffrement de l'image",
+    "command": "-decipher filename",
+    "description": "Convertit les pixels chiffrés d'une image en pixels normaux à l'aide de la clé fournie.",
+    "example": "convert input -decipher key.txt output",
+    "intent": "Je veux déchiffrer une image chiffrée en utilisant le fichier de clé fourni pour retrouver l'image lisible."
+  },
+  {
+    "title": "mode débogage",
+    "command": "-debug events",
+    "description": "Affiche des informations détaillées de débogage pour le diagnostic des commandes exécutées.",
+    "example": "convert input -debug All output",
+    "intent": "Je veux afficher des informations de débogage détaillées pour diagnostiquer ou comprendre ce que fait la commande."
+  },
+  {
+    "title": "définition d'options de format",
+    "command": "-define format:option",
+    "description": "Définit une ou plusieurs options spécifiques au format de fichier (par exemple compression ou métadonnées).",
+    "example": "convert input -define jpeg:extent=200kb output.jpg",
+    "intent": "Je veux définir une option spécifique au format de sortie (par ex. compression/limite de taille ou métadonnées) pour contrôler le rendu du fichier exporté."
+  },
+  {
+    "title": "déconstruction d'une séquence",
+    "command": "-deconstruct",
+    "description": "Décompose une séquence d'images en ses parties constitutives, utile pour les animations.",
+    "example": "convert animation.gif -deconstruct frames_%03d.png",
+    "intent": "Je veux décomposer une animation ou une séquence en images individuelles (frames) pour récupérer chaque image séparément."
+  },
+  {
+    "title": "délai entre images",
+    "command": "-delay centiseconds",
+    "description": "Spécifie le temps d’attente (en centièmes de seconde) avant d’afficher la prochaine image dans une animation.",
+    "example": "convert frames/*.png -delay 10 animation.gif",
+    "intent": "Je veux régler la durée d'affichage de chaque image dans une animation / définir l'intervalle entre les images."
+  },
+  {
+    "title": "suppression d'une image",
+    "command": "-delete index",
+    "description": "Supprime une image donnée (par son index) d'une séquence d'images.",
+    "example": "convert animation.gif -delete 0 output.gif",
+    "intent": "Je veux supprimer une image précise d'une séquence ou d'une animation en indiquant son index."
+  },
+  {
+    "title": "densité de l'image",
+    "command": "-density geometry",
+    "description": "Spécifie la densité horizontale et verticale (DPI) utilisée pour lire ou écrire une image.",
+    "example": "convert input -density 300 output.pdf",
+    "intent": "Je veux définir la densité (DPI) utilisée pour lire ou enregistrer une image / contrôler la résolution lors de l'export."
+  },
+  {
+    "title": "profondeur de couleur",
+    "command": "-depth value",
+    "description": "Définit la profondeur de bits par canal pour l'image (8, 16, 32 bits).",
+    "example": "convert input -depth 8 output",
+    "intent": "Je veux fixer la profondeur de couleur (nombre de bits par canal) de l'image."
+  },
+  {
+    "title": "réduction du bruit (despeckle)",
+    "command": "-despeckle",
+    "description": "Réduit les petits points et artefacts (taches) présents dans une image bruitée.",
+    "example": "convert input -despeckle output",
+    "intent": "Je veux réduire les petits points/artefacts et le bruit visible dans une image."
+  },
+  {
+    "title": "direction du texte",
+    "command": "-direction type",
+    "description": "Définit la direction du rendu du texte (LeftToRight ou RightToLeft).",
+    "example": "convert input -gravity Center -direction RightToLeft -annotate 0 'مرحبا' output",
+    "intent": "Je veux définir la direction d'affichage / de rendu du texte (gauche→droite / droite→gauche)."
+  },
+  {
+    "title": "affichage X server",
+    "command": "-display server",
+    "description": "Récupère une image ou une police à partir d'un serveur X spécifié (Unix/Linux).",
+    "example": "convert -display :0 input output",
+    "intent": "Je veux charger ou récupérer une image ou une police depuis un serveur X spécifié."
+  },
+  {
+    "title": "méthode de suppression de calque",
+    "command": "-dispose method",
+    "description": "Définit la méthode utilisée pour supprimer ou remplacer les calques d'une animation (None, Previous, Background, etc.).",
+    "example": "convert frames/*.png -dispose Previous output.gif",
+    "intent": "Je veux choisir comment chaque image remplace ou est retirée entre les calques d'une animation (aucune / précédent / fond, etc.)."
+  },
+  {
+    "title": "cache distribué",
+    "command": "-distribute-cache port",
+    "description": "Lance un serveur de cache de pixels distribué pour accélérer le traitement d'images volumineuses.",
+    "example": "convert input -distribute-cache 4000 output",
+    "intent": "Je veux lancer un serveur de cache de pixels distribué sur un port donné pour accélérer le traitement d'images volumineuses."
+  },
+  {
+    "title": "distorsion de l'image",
+    "command": "-distort type coefficients",
+    "description": "Applique une transformation géométrique (distorsion) à l'image selon le type choisi (Perspective, Barrel, etc.).",
+    "example": "convert input -distort Perspective '0,0 0,0  0,100 10,100  100,0 100,10  100,100 110,110' output",
+    "intent": "Je veux appliquer une transformation géométrique (par ex. perspective, barillet) pour déformer l'apparence de l'image."
+  },
+  {
+    "title": "tramage (dither)",
+    "command": "-dither method",
+    "description": "Applique une diffusion d’erreur ou un tramage ordonné pour réduire la profondeur de couleur de manière plus douce.",
+    "example": "convert input -dither FloydSteinberg -colors 16 output",
+    "intent": "Je veux réduire le nombre de couleurs de l'image en appliquant un tramage/diffusion d'erreur pour conserver un rendu plus doux."
+  },
+  {
+    "title": "dessin vectoriel",
+    "command": "-draw string",
+    "description": "Dessine une forme ou un texte sur l'image à l'aide de primitives graphiques (line, circle, rectangle, text...).",
+    "example": "convert input -draw 'circle 100,100 100,50' output",
+    "intent": "Je veux ajouter ou dessiner des formes et du texte directement sur l'image (lignes, cercles, rectangles, texte...)."
+  },
+  {
+    "title": "duplication d'image",
+    "command": "-duplicate count,indexes",
+    "description": "Duplique une ou plusieurs images d’une séquence un nombre de fois donné.",
+    "example": "convert animation.gif -duplicate 2,0 output.gif",
+    "intent": "Je veux dupliquer une ou plusieurs images d'une séquence un certain nombre de fois."
+  },
+  {
+    "title": "détection de contours",
+    "command": "-edge radius",
+    "description": "Applique un filtre de détection des bords basé sur le rayon spécifié.",
+    "example": "convert input -edge 1 output",
+    "intent": "Je veux faire ressortir les contours de l'image en appliquant un filtre de détection des bords."
+  },
+  {
+    "title": "effet embossage",
+    "command": "-emboss radius",
+    "description": "Simule un effet de relief sur l'image en créant un embossage 3D.",
+    "example": "convert input -emboss 2 output",
+    "intent": "Je veux donner un effet de relief/embossage à l'image pour qu'elle ait un aspect en 3D."
+  },
+  {
+    "title": "chiffrement d'image",
+    "command": "-encipher filename",
+    "description": "Convertit les pixels bruts d'une image en pixels chiffrés à l'aide d'une clé.",
+    "example": "convert input -encipher key.txt output",
+    "intent": "Je veux chiffrer l'image avec une clé pour protéger son contenu."
+  },
+  {
+    "title": "encodage du texte",
+    "command": "-encoding type",
+    "description": "Spécifie le type d'encodage du texte (UTF8, Latin1, etc.) pour le rendu de texte ou les métadonnées.",
+    "example": "convert input -encoding UTF8 -annotate +10+10 'Café' output",
+    "intent": "Je veux préciser l'encodage du texte (UTF8, Latin1...) pour que le texte ou les métadonnées s'affichent correctement."
+  },
+  {
+    "title": "boutisme (endianess)",
+    "command": "-endian type",
+    "description": "Définit l’ordre des octets (MSB ou LSB) utilisé pour la lecture/écriture des données d’image.",
+    "example": "convert input -endian MSB output",
+    "intent": "Je veux choisir l'ordre des octets (MSB/LSB) utilisé pour lire/écrire l'image afin d'assurer la compatibilité avec d'autres systèmes."
+  },
+  {
+    "title": "amélioration d'image",
+    "command": "-enhance",
+    "description": "Applique un filtre numérique pour améliorer une image bruitée.",
+    "example": "convert input -enhance output",
+    "intent": "Je veux améliorer la qualité d'une image bruitée en appliquant un filtre pour réduire le bruit/clarifier l'image."
+  },
+  {
+    "title": "égalisation d'histogramme",
+    "command": "-equalize",
+    "description": "Équilibre la distribution des intensités des pixels pour améliorer le contraste global.",
+    "example": "convert input -equalize output",
+    "intent": "Je veux améliorer le contraste global de l'image en équilibrant la luminosité des pixels (égalisation d'histogramme)."
+  },
+  {
+    "title": "opération d'évaluation",
+    "command": "-evaluate operator value",
+    "description": "Évalue une expression arithmétique ou logique sur les pixels de l'image (add, multiply, and, etc.).",
+    "example": "convert input -evaluate multiply 1.2 output",
+    "intent": "Je veux appliquer une opération (addition, multiplication, ET, etc.) aux pixels de l'image pour en modifier les valeurs."
+  },
+  {
+    "title": "évaluation sur séquence",
+    "command": "-evaluate-sequence operator",
+    "description": "Applique une opération mathématique ou logique sur une séquence d'images (min, max, mean...).",
+    "example": "convert frames/*.png -evaluate-sequence mean output.png",
+    "intent": "Je veux combiner plusieurs images en calculant pour chaque pixel une valeur (moyenne / minimum / maximum) afin d'obtenir une image unique."
+  },
+  {
+    "title": "ajustement de taille",
+    "command": "-extent geometry",
+    "description": "Ajuste la taille de l'image sans redimensionner le contenu, en ajoutant un fond au besoin.",
+    "example": "convert input -background white -extent 800x600 output",
+    "intent": "Je veux modifier la taille du canevas sans redimensionner le contenu, en ajoutant un fond ou des marges si nécessaire."
+  },
+  {
+    "title": "extraction de zone",
+    "command": "-extract geometry",
+    "description": "Extrait une région spécifique de l'image selon la géométrie donnée.",
+    "example": "convert input -extract 200x200+100+100 output",
+    "intent": "Je veux extraire / recadrer une zone précise de l'image (taille et position) pour ne garder que cette partie."
+  },
+  {
+    "title": "police (famille)",
+    "command": "-family name",
+    "description": "Définit la famille de police utilisée pour le rendu du texte.",
+    "example": "convert input -family 'Arial' -pointsize 20 -annotate +10+30 'Hello' output",
+    "intent": "Je veux choisir la famille de police (par exemple Arial) utilisée pour le texte ajouté ou affiché sur l'image."
+  },
+  {
+    "title": "analyse de caractéristiques",
+    "command": "-features distance",
+    "description": "Analyse les caractéristiques statistiques de l'image comme le contraste ou la corrélation.",
+    "example": "convert input -features 1.5 output",
+    "intent": "Je veux analyser des caractéristiques statistiques de l'image (contraste, corrélation, etc.) pour obtenir des mesures sur son contenu."
+  },
+  {
+    "title": "transformée de Fourier (FFT)",
+    "command": "-fft",
+    "description": "Applique la transformée de Fourier discrète (DFT) pour analyser les fréquences de l'image.",
+    "example": "convert input -fft output",
+    "intent": "Je veux appliquer une transformée de Fourier pour analyser les fréquences et motifs périodiques présents dans l'image."
+  },
+  {
+    "title": "couleur de remplissage",
+    "command": "-fill color",
+    "description": "Définit la couleur utilisée pour remplir des formes dessinées ou des zones annotées.",
+    "example": "convert input -fill red -draw 'rectangle 10,10 200,200' output",
+    "intent": "Je veux définir la couleur de remplissage (par exemple rouge) utilisée pour dessiner ou annoter des formes sur l'image."
+  },
+  {
+    "title": "filtre de redimensionnement",
+    "command": "-filter type",
+    "description": "Spécifie le filtre utilisé lors du redimensionnement (Lanczos, Gaussian, Mitchell...).",
+    "example": "convert input -filter Lanczos -resize 800x600 output",
+    "intent": "Je veux choisir le filtre de redimensionnement (Lanczos, Gaussian, Mitchell...) pour contrôler la qualité lors du changement de taille."
+  },
+  {
+    "title": "aplatir les calques",
+    "command": "-flatten",
+    "description": "Fusionne tous les calques ou images d'une séquence en une seule image plane.",
+    "example": "convert frames/*.png -flatten output.png",
+    "intent": "Je veux fusionner / aplatir tous les calques ou images d'une séquence en une seule image plate pour obtenir un résultat combiné."
+  },
+  {
+    "title": "retournement vertical",
+    "command": "-flip",
+    "description": "Retourne l'image verticalement (haut ↔ bas).",
+    "example": "convert input -flip output",
+    "intent": "Je veux retourner l'image verticalement pour inverser le haut et le bas."
+  },
+  {
+    "title": "remplissage de zone (floodfill)",
+    "command": "-floodfill geometry color",
+    "description": "Remplit une zone contiguë d'une couleur donnée, à partir d'une position spécifique.",
+    "example": "convert input -floodfill +10+10 blue output",
+    "intent": "Je veux remplir/peindre une zone contiguë à partir d'un point précis avec une couleur choisie."
+  },
+  {
+    "title": "retournement horizontal",
+    "command": "-flop",
+    "description": "Retourne l'image horizontalement (gauche ↔ droite).",
+    "example": "convert input -flop output",
+    "intent": "Je veux retourner l'image horizontalement pour inverser la gauche et la droite."
+  },
+  {
+    "title": "sélection de police",
+    "command": "-font name",
+    "description": "Définit la police utilisée pour le texte ajouté à l'image.",
+    "example": "convert input -font 'Times-New-Roman' -pointsize 24 -annotate +30+30 'Texte' output",
+    "intent": "Je veux choisir/définir la police utilisée pour le texte que j'ajoute sur l'image."
+  },
+  {
+    "title": "informations formatées",
+    "command": "-format string",
+    "description": "Affiche ou exporte des informations formatées sur l'image (format, taille, couleurs...).",
+    "example": "identify -format '%m %wx%h %z-bit\\n' input",
+    "intent": "Je veux afficher ou extraire des informations formatées sur l'image (format, dimensions, profondeur de couleur, etc.)."
+  },
+  {
+    "title": "cadre décoratif",
+    "command": "-frame geometry",
+    "description": "Ajoute un cadre ornemental autour de l'image.",
+    "example": "convert input -frame 10x10+2+2 output",
+    "intent": "Je veux ajouter un cadre décoratif / une bordure autour de l'image pour l'orner."
+  },
+  {
+    "title": "application de fonction",
+    "command": "-function name",
+    "description": "Applique une fonction mathématique à l'image (Sinusoid, Polynomial, Arcsin...).",
+    "example": "convert input -function Sinusoid 3x0.5 output",
+    "intent": "Je veux appliquer une fonction mathématique à l'image pour obtenir un effet visuel (par ex. ondulations avec Sinusoid)."
+  },
+  {
+    "title": "tolérance de couleur (fuzz)",
+    "command": "-fuzz distance",
+    "description": "Définit une tolérance de comparaison de couleurs : les couleurs proches dans cette distance sont considérées égales.",
+    "example": "convert input -fuzz 10% -fill white -opaque red output",
+    "intent": "Je veux régler la tolérance de couleur pour que des teintes proches soient traitées comme identiques (utile pour remplacer/effacer une couleur approximative)."
+  },
+  {
+    "title": "expression mathématique (fx)",
+    "command": "-fx expression",
+    "description": "Applique une expression mathématique à un ou plusieurs canaux de l'image.",
+    "example": "convert input -fx 'r*0.8, g, b' output",
+    "intent": "Je veux appliquer une formule mathématique aux canaux de l'image pour modifier l'apparence des couleurs / l'intensité."
+  },
+  {
+    "title": "correction gamma",
+    "command": "-gamma value",
+    "description": "Ajuste la luminosité globale en modifiant la courbe de gamma de l'image.",
+    "example": "convert input -gamma 1.2 output",
+    "intent": "Je veux ajuster la luminosité globale de l'image en modifiant sa courbe de gamma."
+  },
+  {
+    "title": "flou gaussien",
+    "command": "-gaussian-blur geometry",
+    "description": "Applique un flou gaussien pour réduire le bruit et adoucir les détails.",
+    "example": "convert input -gaussian-blur 0x3 output",
+    "intent": "Je veux adoucir l'image/estomper les détails pour réduire le bruit."
+  },
+  {
+    "title": "géométrie d'image",
+    "command": "-geometry geometry",
+    "description": "Spécifie la taille ou la position préférée de l'image pour certaines opérations.",
+    "example": "convert input -geometry 800x600 output",
+    "intent": "Je veux redimensionner ou positionner l'image à une taille/position précise."
+  },
+  {
+    "title": "gravité du texte",
+    "command": "-gravity type",
+    "description": "Contrôle l'ancrage horizontal et vertical du texte ou des éléments dessinés (North, Center, South...).",
+    "example": "convert input -gravity SouthEast -annotate +10+10 '© 2025' output",
+    "intent": "Je veux positionner/aligner du texte ou un élément (par ex. en bas à droite) sur l'image."
+  },
+  {
+    "title": "conversion en niveaux de gris",
+    "command": "-grayscale method",
+    "description": "Convertit l'image en niveaux de gris en utilisant une méthode (Brightness, Lightness, Average...).",
+    "example": "convert input -grayscale Average output",
+    "intent": "Je veux convertir l'image en niveaux de gris (noir et blanc) pour enlever les couleurs."
+  },
+  {
+    "title": "point vert primaire",
+    "command": "-green-primary point",
+    "description": "Définit le point de chromaticité primaire du vert dans l'espace de couleur.",
+    "example": "convert input -green-primary 0.3,0.6 output",
+    "intent": "Je veux définir la référence du vert dans l'espace colorimétrique pour contrôler la reproduction des couleurs."
+  },
+  {
+    "title": "aide (manuel)",
+    "command": "-help",
+    "description": "Affiche la liste complète des options et commandes disponibles.",
+    "example": "magick -help",
+    "intent": "Je veux afficher l'aide/le manuel pour voir la liste des options disponibles."
+  },
+  {
+    "title": "détection de lignes (Hough)",
+    "command": "-hough-lines geometry",
+    "description": "Identifie les lignes présentes dans une image à l'aide de la transformée de Hough.",
+    "example": "convert input -hough-lines 20x10 output",
+    "intent": "Je veux détecter/identifier les lignes droites présentes sur l'image."
+  },
+  {
+    "title": "identification d'image",
+    "command": "-identify",
+    "description": "Affiche les caractéristiques principales du fichier image (format, taille, couleurs, etc.).",
+    "example": "identify input.png",
+    "intent": "Je veux afficher/voir les informations techniques de l'image (format, taille, profondeur de couleur, etc.)."
+  },
+  {
+    "title": "transformée de Fourier inverse",
+    "command": "-ift",
+    "description": "Applique la transformée de Fourier inverse pour revenir dans le domaine spatial.",
+    "example": "convert input -ift output",
+    "intent": "Je veux reconstruire l'image à partir de sa représentation fréquentielle (retour au domaine spatial)."
+  },
+  {
+    "title": "illuminant de référence",
+    "command": "-illuminant type",
+    "description": "Spécifie l’illuminant de référence utilisé pour la gestion de la couleur (D50, D65, etc.).",
+    "example": "convert input -illuminant D65 output",
+    "intent": "Je veux choisir l'illuminant de référence (ex. D65) pour ajuster la gestion des couleurs."
+  },
+  {
+    "title": "implosion d'image",
+    "command": "-implode amount",
+    "description": "Implose ou explose les pixels de l'image autour de son centre selon la valeur donnée.",
+    "example": "convert input -implode 0.5 output",
+    "intent": "Je veux rapprocher ou éloigner les pixels vers/depuis le centre de l'image pour créer un effet de distorsion (implosion/expansion)."
+  },
+  {
+    "title": "insertion d'image",
+    "command": "-insert index",
+    "description": "Insère la dernière image à une position donnée dans une séquence.",
+    "example": "convert img1.png img2.png -insert 0 output.gif",
+    "intent": "Je veux insérer/placer la dernière image à une position précise dans une séquence d'images."
+  },
+  {
+    "title": "somme intégrale",
+    "command": "-integral",
+    "description": "Calcule la somme cumulée des valeurs de pixels dans l'image (image intégrale).",
+    "example": "convert input -integral output",
+    "intent": "Je veux créer une image intégrale qui contient la somme cumulée des valeurs de pixels."
+  },
+  {
+    "title": "intensité des pixels",
+    "command": "-intensity method",
+    "description": "Définit la méthode utilisée pour calculer l'intensité d'un pixel (Average, Lightness, etc.).",
+    "example": "convert input -intensity Average -grayscale Rec709Luminance output",
+    "intent": "Je veux choisir/définir la méthode pour calculer l'intensité d'un pixel (par ex. moyenne, luminosité) afin d'ajuster la conversion en niveaux de gris."
+  },
+  {
+    "title": "intention de rendu",
+    "command": "-intent type",
+    "description": "Spécifie le type d’intention de rendu pour la gestion des couleurs (Perceptual, Relative, etc.).",
+    "example": "convert input -intent Perceptual output",
+    "intent": "Je veux préciser l'intention de rendu (perceptual/relative/etc.) pour contrôler comment les couleurs sont gérées lors des conversions."
+  },
+  {
+    "title": "entrelacement d'image",
+    "command": "-interlace type",
+    "description": "Définit le schéma d'entrelacement du fichier de sortie (None, Line, Plane, Partition).",
+    "example": "convert input -interlace Line output.jpg",
+    "intent": "Je veux choisir le type d'entrelacement du fichier de sortie (aucun/ligne/plan/partition) pour contrôler la façon dont l'image se charge/affiche progressivement."
+  },
+  {
+    "title": "espacement entre lignes",
+    "command": "-interline-spacing value",
+    "description": "Définit l'espacement entre deux lignes de texte.",
+    "example": "convert input -interline-spacing 5 -annotate +10+50 'Texte multi-ligne' output",
+    "intent": "Je veux régler l'espacement vertical entre les lignes de texte (interligne) pour ajuster la mise en page."
+  },
+  {
+    "title": "interpolation de pixels",
+    "command": "-interpolate method",
+    "description": "Choisit la méthode d'interpolation des couleurs de pixels (Nearest, Bilinear, Bicubic...).",
+    "example": "convert input -interpolate Bicubic output",
+    "intent": "Je veux choisir la méthode d'interpolation des pixels (Nearest/Bilinear/Bicubic, etc.) pour contrôler la qualité lors du redimensionnement ou des transformations."
+  },
+  {
+    "title": "espacement entre mots",
+    "command": "-interword-spacing value",
+    "description": "Définit l'espacement horizontal entre les mots dans le texte.",
+    "example": "convert input -interword-spacing 4 -annotate +10+20 'Hello world' output",
+    "intent": "Je veux ajuster l'espacement horizontal entre les mots pour modifier l'apparence du texte."
+  },
+  {
+    "title": "espacement entre caractères",
+    "command": "-kerning value",
+    "description": "Ajuste l'espacement entre les caractères du texte.",
+    "example": "convert input -kerning 2 -annotate +20+50 'TEXTE' output",
+    "intent": "Je veux ajuster l'espacement entre les caractères (crénage/kerning) pour améliorer l'apparence du texte."
+  },
+  {
+    "title": "filtre Kuwahara",
+    "command": "-kuwahara geometry",
+    "description": "Applique un filtre de lissage qui préserve les bords tout en réduisant le bruit.",
+    "example": "convert input -kuwahara 0x5 output",
+    "intent": "Je veux lisser/réduire le bruit d'une image sans effacer les bords importants."
+  },
+  {
+    "title": "ajout d'étiquette",
+    "command": "-label string",
+    "description": "Assigne une étiquette (label) à l'image pour identification ou métadonnées.",
+    "example": "convert input -label 'Carte n°42' output",
+    "intent": "Je veux ajouter une étiquette/nom à une image pour l'identifier ou y stocker une information."
+  },
+  {
+    "title": "seuil adaptatif local (LAT)",
+    "command": "-lat geometry",
+    "description": "Applique un seuillage adaptatif local pour améliorer le contraste dans des zones sombres.",
+    "example": "convert input -lat 10x10+5% output",
+    "intent": "Je veux améliorer le contraste localement, surtout dans les zones sombres, en appliquant un seuillage adaptatif par petites zones."
+  },
+  {
+    "title": "gestion des calques",
+    "command": "-layers method",
+    "description": "Optimise, compare ou manipule les calques d'une séquence d'images.",
+    "example": "convert frames/*.png -layers optimize output.gif",
+    "intent": "Je veux gérer/optimiser les calques d'une image ou d'une séquence (par exemple pour réduire la taille d'un GIF ou comparer les différences entre calques)."
+  },
+  {
+    "title": "ajustement des niveaux",
+    "command": "-level value",
+    "description": "Ajuste les niveaux d'entrée/sortie et le gamma pour modifier le contraste global.",
+    "example": "convert input -level 10%,90%,1.2 output",
+    "intent": "Je veux régler les niveaux et le gamma pour corriger le contraste et la luminosité globale d'une image."
+  },
+  {
+    "title": "limite des ressources",
+    "command": "-limit type value",
+    "description": "Fixe une limite d'utilisation des ressources (mémoire, map, disk, etc.) pendant le traitement.",
+    "example": "convert input -limit memory 512MiB output",
+    "intent": "Je veux limiter la quantité de ressources (mémoire, disque, etc.) utilisée pendant le traitement d'images."
+  },
+  {
+    "title": "étirement linéaire",
+    "command": "-linear-stretch geometry",
+    "description": "Effectue un étirement linéaire de l'histogramme avec saturation des valeurs extrêmes.",
+    "example": "convert input -linear-stretch 2%x1% output",
+    "intent": "Je veux étirer l'histogramme d'une image pour augmenter le contraste en saturant légèrement les valeurs extrêmes."
+  },
+  {
+    "title": "redimensionnement liquide (seam carving)",
+    "command": "-liquid-rescale geometry",
+    "description": "Redimensionne intelligemment une image en préservant les éléments importants (seam carving).",
+    "example": "convert input -liquid-rescale 800x600 output",
+    "intent": "Je veux redimensionner une image de façon intelligente pour garder les éléments importants sans les déformer (redimensionnement intelligent / seam carving)."
+  },
+  {
+    "title": "liste des ressources",
+    "command": "-list type",
+    "description": "Affiche une liste d’éléments internes d’ImageMagick (formats, modules, ressources...).",
+    "example": "magick -list format",
+    "intent": "Je veux afficher la liste des formats/modules/ressources disponibles dans ImageMagick."
+  },
+  {
+    "title": "journalisation (log)",
+    "command": "-log format",
+    "description": "Spécifie le format des messages de débogage ou de journalisation.",
+    "example": "convert input -log '%t: %e' output",
+    "intent": "Je veux définir le format des messages de journalisation/débogage pour mieux lire et comprendre les logs."
+  },
+  {
+    "title": "boucle d'animation GIF",
+    "command": "-loop iterations",
+    "description": "Ajoute une extension Netscape pour faire boucler une animation GIF un certain nombre de fois.",
+    "example": "convert frames/*.png -loop 0 animation.gif",
+    "intent": "Je veux que mon GIF se répète un certain nombre de fois / qu’il tourne en boucle."
+  },
+  {
+    "title": "masquage d'image",
+    "command": "-mask filename",
+    "description": "Associe un masque de pixels à l'image, utilisé pour limiter les modifications à certaines zones.",
+    "example": "convert input -mask mask.png -blur 0x5 output",
+    "intent": "Je veux appliquer un masque pour limiter une modification à certaines zones de l'image / préserver les autres zones."
+  },
+  {
+    "title": "couleur du cadre (matte)",
+    "command": "-mattecolor color",
+    "description": "Définit la couleur de bordure utilisée pour les cadres ou fonds transparents.",
+    "example": "convert input -mattecolor black -frame 10x10 output",
+    "intent": "Je veux définir la couleur de la bordure/cadre ou du fond transparent."
+  },
+  {
+    "title": "filtre médian",
+    "command": "-median radius",
+    "description": "Applique un filtre médian pour réduire le bruit tout en préservant les bords.",
+    "example": "convert input -median 2 output",
+    "intent": "Je veux réduire le bruit de l'image tout en préservant les contours / lisser sans trop flouter les détails."
+  },
+  {
+    "title": "segmentation mean-shift",
+    "command": "-mean-shift geometry",
+    "description": "Délimite des régions à forme arbitraire en regroupant les pixels similaires.",
+    "example": "convert input -mean-shift 10x10 output",
+    "intent": "Je veux regrouper les pixels similaires pour délimiter des régions homogènes / détecter des zones de couleur ou de texture."
+  },
+  {
+    "title": "métrique de comparaison",
+    "command": "-metric type",
+    "description": "Définit la métrique utilisée pour comparer deux images (RMSE, PSNR, SSIM...).",
+    "example": "compare -metric RMSE img1.png img2.png diff.png",
+    "intent": "Je veux mesurer la différence entre deux images en utilisant une métrique (ex. RMSE, PSNR, SSIM)."
+  },
+  {
+    "title": "mode de couleur prédominant",
+    "command": "-mode radius",
+    "description": "Remplace chaque pixel par la couleur la plus fréquente de son voisinage.",
+    "example": "convert input -mode 3 output",
+    "intent": "Je veux remplacer chaque pixel par la couleur la plus fréquente de son voisinage pour simplifier/ uniformiser les zones de couleur."
+  },
+  {
+    "title": "modulation HSL",
+    "command": "-modulate value",
+    "description": "Modifie la luminosité, la saturation et la teinte de l'image.",
+    "example": "convert input -modulate 110,90,100 output",
+    "intent": "Je veux ajuster la luminosité, la saturation et la teinte de l'image (par ex. éclaircir, assombrir, augmenter ou diminuer la saturation)."
+  },
+  {
+    "title": "moments d'image",
+    "command": "-moments",
+    "description": "Affiche les moments statistiques de l'image (centres, dispersion, orientation...).",
+    "example": "convert input -moments output",
+    "intent": "Je veux obtenir des mesures statistiques de l'image (centre, dispersion, orientation) pour analyser sa forme."
+  },
+  {
+    "title": "surveillance de progression",
+    "command": "-monitor",
+    "description": "Affiche la progression du traitement d'image dans la console.",
+    "example": "convert input -monitor -resize 50% output",
+    "intent": "Je veux suivre la progression du traitement d'image dans la console / voir l'avancement en temps réel."
+  },
+  {
+    "title": "conversion en noir et blanc",
+    "command": "-monochrome",
+    "description": "Transforme l'image en noir et blanc pur (binaire).",
+    "example": "convert input -monochrome output",
+    "intent": "Je veux transformer l'image en noir et blanc pur (binaire) pour n'avoir que du noir et du blanc / un rendu type dessin en deux tons."
+  },
+  {
+    "title": "morphing d'images",
+    "command": "-morph value",
+    "description": "Crée une séquence d'images intermédiaires entre deux images.",
+    "example": "convert img1.png img2.png -morph 10 morph_%02d.png",
+    "intent": "Je veux générer une série d'images intermédiaires entre deux images pour créer une transition/séquence de morphing."
+  },
+  {
+    "title": "morphologie d'image",
+    "command": "-morphology method kernel",
+    "description": "Applique une opération morphologique (Erode, Dilate, Open, Close...) avec un noyau donné.",
+    "example": "convert input -morphology Dilate Diamond output",
+    "intent": "Je veux appliquer une opération morphologique (érosion, dilatation, ouverture, fermeture...) avec un noyau précis pour modifier la forme ou les détails visibles de l'image."
+  },
+  {
+    "title": "flou de mouvement",
+    "command": "-motion-blur geometry",
+    "description": "Simule un effet de flou directionnel (mouvement).",
+    "example": "convert input -motion-blur 0x10+30 output",
+    "intent": "Je veux ajouter un flou de mouvement directionnel pour donner l'impression que la scène ou l'objet est en mouvement / simuler la vitesse."
+  },
+  {
+    "title": "inversion des couleurs",
+    "command": "-negate",
+    "description": "Inverse les couleurs de l'image (crée un négatif).",
+    "example": "convert input -negate output",
+    "intent": "Je veux inverser les couleurs de l'image pour obtenir son négatif."
+  },
+  {
+    "title": "ajout ou réduction de bruit",
+    "command": "-noise radius",
+    "description": "Ajoute ou réduit le bruit dans l'image selon le rayon spécifié.",
+    "example": "convert input -noise 3 output",
+    "intent": "Je veux ajouter ou atténuer le bruit/le grain dans l'image selon le niveau (rayon) choisi."
+  },
+  {
+    "title": "normalisation des couleurs",
+    "command": "-normalize",
+    "description": "Étend la plage de couleurs pour occuper tout l’espace disponible.",
+    "example": "convert input -normalize output",
+    "intent": "Je veux étendre la plage de couleurs de l'image pour qu'elle utilise tout l'espace disponible, afin d'améliorer la répartition des tons / le contraste."
+  },
+  {
+    "title": "remplacement de couleur",
+    "command": "-opaque color",
+    "description": "Remplace une couleur spécifique par la couleur de remplissage définie via -fill.",
+    "example": "convert input -fill blue -opaque red output",
+    "intent": "Je veux remplacer une couleur précise dans l'image par une autre couleur de mon choix (changer, par exemple, tout le rouge en bleu)."
+  },
+  {
+    "title": "tramage ordonné",
+    "command": "-ordered-dither NxN",
+    "description": "Applique un tramage ordonné à l'image selon une matrice NxN.",
+    "example": "convert input -ordered-dither 4x4 output",
+    "intent": "Je veux appliquer un tramage ordonné avec une matrice NxN pour réduire les couleurs en motifs réguliers / obtenir un rendu pointillé/à motifs."
+  },
+  {
+    "title": "orientation d'image",
+    "command": "-orient type",
+    "description": "Définit ou modifie l'orientation EXIF de l'image.",
+    "example": "convert input -orient TopLeft output",
+    "intent": "Je veux définir ou corriger l'orientation EXIF de l'image pour que l'image soit affichée/rotatée correctement (par ex. tourner ou préciser l'orientation)."
+  },
+  {
+    "title": "taille du canevas (page)",
+    "command": "-page geometry",
+    "description": "Définit la taille et la position du canevas associé à l'image.",
+    "example": "convert input -page 800x600+10+10 output",
+    "intent": "Je veux définir la taille et la position du canevas de l'image pour placer/déplacer l'image sur une page."
+  },
+  {
+    "title": "effet peinture à l'huile",
+    "command": "-paint radius",
+    "description": "Simule un effet de peinture à l’huile en adoucissant les transitions de couleur.",
+    "example": "convert input -paint 3 output",
+    "intent": "Je veux appliquer un effet peinture à l'huile pour adoucir les transitions de couleur et donner un rendu artistique."
+  },
+  {
+    "title": "rendre perceptible",
+    "command": "-perceptible",
+    "description": "Force les pixels proches de zéro à devenir ±epsilon pour les rendre perceptibles.",
+    "example": "convert input -perceptible output",
+    "intent": "Je veux rendre perceptibles/visibles les pixels très proches de zéro (rendre les tons très faibles légèrement détectables)."
+  },
+  {
+    "title": "analyse rapide (ping)",
+    "command": "-ping",
+    "description": "Analyse les métadonnées de l'image sans la charger complètement (très rapide).",
+    "example": "identify -ping input.jpg",
+    "intent": "Je veux analyser rapidement les métadonnées d'une image sans la charger complètement."
+  },
+  {
+    "title": "taille de police (points)",
+    "command": "-pointsize value",
+    "description": "Définit la taille de la police (en points typographiques) pour les annotations texte.",
+    "example": "convert input -pointsize 24 -annotate +10+30 'Texte' output",
+    "intent": "Je veux définir la taille de la police (en points) pour le texte ou les annotations."
+  },
+  {
+    "title": "effet Polaroid",
+    "command": "-polaroid angle",
+    "description": "Simule une photo de type Polaroid avec une rotation et une bordure blanche.",
+    "example": "convert input -polaroid 5 output",
+    "intent": "Je veux transformer l'image pour qu'elle ressemble à une photo Polaroid avec bordure blanche et légère rotation/inclinaison."
+  },
+  {
+    "title": "polynôme d'image",
+    "command": "-poly terms",
+    "description": "Construit une image résultant d'une combinaison polynomiale de plusieurs images (coefficients et degrés).",
+    "example": "convert img1.png img2.png -poly '1,0.5' output",
+    "intent": "Je veux combiner plusieurs images en une seule en mélangeant leurs intensités selon des coefficients (combinaison polynomiale)."
+  },
+  {
+    "title": "postérisation",
+    "command": "-posterize levels",
+    "description": "Réduit l'image à un nombre limité de niveaux de couleur pour un effet artistique ou rétro.",
+    "example": "convert input -posterize 4 output",
+    "intent": "Je veux réduire le nombre de niveaux/couleurs de l'image pour créer un effet artistique ou rétro (postérisation)."
+  },
+  {
+    "title": "précision numérique",
+    "command": "-precision value",
+    "description": "Définit le nombre maximum de chiffres significatifs à afficher dans les valeurs numériques.",
+    "example": "convert input -precision 5 output",
+    "intent": "Je veux contrôler la précision affichée des valeurs numériques en réglant le nombre de chiffres significatifs."
+  },
+  {
+    "title": "aperçu d'image",
+    "command": "-preview type",
+    "description": "Génère une prévisualisation de l'image selon le type choisi (Gamma, Histogram, etc.).",
+    "example": "convert input -preview Gamma output",
+    "intent": "Je veux générer un aperçu/miniature de l'image selon un type choisi (Gamma, histogramme, etc.) pour visualiser rapidement son aspect."
+  },
+  {
+    "title": "impression console",
+    "command": "-print string",
+    "description": "Interprète et affiche une chaîne de texte dans la console (utile pour le débogage).",
+    "example": "convert input -print 'Processing done' output",
+    "intent": "Je veux afficher un message dans la console pour suivre ou déboguer le traitement de l'image."
+  },
+  {
+    "title": "filtre personnalisé",
+    "command": "-process image-filter",
+    "description": "Applique un filtre personnalisé à l'image via un module externe.",
+    "example": "convert input -process custom-filter output",
+    "intent": "Je veux appliquer un filtre/effet personnalisé à mon image en utilisant un module externe."
+  },
+  {
+    "title": "profil ICC/EXIF",
+    "command": "-profile filename",
+    "description": "Ajoute, supprime ou applique un profil de couleur (ICC, EXIF, etc.) à l'image.",
+    "example": "convert input -profile sRGB.icc output",
+    "intent": "Je veux ajouter, remplacer ou supprimer le profil de couleur (ICC/EXIF) de l'image pour corriger ou préserver les couleurs."
+  },
+  {
+    "title": "qualité de compression",
+    "command": "-quality value",
+    "description": "Définit le niveau de compression ou la qualité du fichier (pour JPEG, PNG, MIFF, etc.).",
+    "example": "convert input -quality 85 output.jpg",
+    "intent": "Je veux régler la qualité/la compression de l'image (par ex. réduire la taille du fichier ou conserver le rendu)."
+  },
+  {
+    "title": "quantification de couleurs",
+    "command": "-quantize colorspace",
+    "description": "Réduit les couleurs de l'image dans un espace colorimétrique donné (RGB, HSL, etc.).",
+    "example": "convert input -quantize RGB -colors 32 output",
+    "intent": "Je veux réduire le nombre de couleurs de l'image dans un espace colorimétrique donné (ex. RGB) pour limiter la palette ou diminuer la taille."
+  },
+  {
+    "title": "mode silencieux",
+    "command": "-quiet",
+    "description": "Supprime tous les avertissements et messages d'information pendant le traitement.",
+    "example": "convert input -quiet output",
+    "intent": "Je veux exécuter le traitement sans afficher d'avertissements ni de messages (mode silencieux)."
+  },
+  {
+    "title": "flou radial",
+    "command": "-rotational-blur angle",
+    "description": "Applique un flou de rotation autour du centre de l'image.",
+    "example": "convert input -rotational-blur 30 output",
+    "intent": "Je veux ajouter un flou de rotation/effet radial autour du centre pour donner l'impression de mouvement en rotation."
+  },
+  {
+    "title": "relief des bords (3D)",
+    "command": "-raise value",
+    "description": "Éclaircit ou assombrit les bords de l'image pour créer un effet 3D de relief.",
+    "example": "convert input -raise 10 output",
+    "intent": "Je veux créer un effet de relief 3D en éclaircissant ou en assombrissant les bords de l'image (pour simuler un bord relevé ou encastré)."
+  },
+  {
+    "title": "seuil aléatoire",
+    "command": "-random-threshold low,high",
+    "description": "Applique un seuillage aléatoire entre deux valeurs pour créer un effet de tramage bruité.",
+    "example": "convert input -random-threshold 30%,70% output",
+    "intent": "Je veux appliquer un seuillage aléatoire entre deux valeurs pour obtenir un tramage/bruit binaire sur l'image."
+  },
+  {
+    "title": "point rouge primaire",
+    "command": "-red-primary point",
+    "description": "Définit le point de chromaticité primaire du rouge dans l’espace colorimétrique.",
+    "example": "convert input -red-primary 0.64,0.33 output",
+    "intent": "Je veux définir précisément la teinte du rouge utilisée (point chromatique primaire) pour ajuster la reproduction des couleurs."
+  },
+  {
+    "title": "considération des avertissements",
+    "command": "-regard-warnings",
+    "description": "Fait échouer la commande en cas d'avertissement, pas seulement d'erreur.",
+    "example": "convert input -regard-warnings output",
+    "intent": "Je veux que la commande échoue aussi en cas d'avertissement, et pas seulement lorsqu'une erreur se produit."
+  },
+  {
+    "title": "région ciblée",
+    "command": "-region geometry",
+    "description": "Applique une option uniquement à une zone spécifique de l'image.",
+    "example": "convert input -region 100x100+50+50 -blur 0x5 output",
+    "intent": "Je veux appliquer une modification seulement sur une zone précise de l'image (une région/une portion)."
+  },
+  {
+    "title": "remappage de couleurs",
+    "command": "-remap filename",
+    "description": "Transforme les couleurs de l'image pour correspondre à une palette donnée.",
+    "example": "convert input -remap palette.png output",
+    "intent": "Je veux que les couleurs de mon image soient adaptées pour correspondre à une palette donnée / utiliser une palette de couleurs."
+  },
+  {
+    "title": "rendu vectoriel",
+    "command": "-render",
+    "description": "Rend le contenu vectoriel (texte, tracés) avant la sortie rasterisée.",
+    "example": "convert input.svg -render output.png",
+    "intent": "Je veux que le contenu vectoriel (texte, tracés) soit rendu correctement avant de produire l'image rasterisée."
+  },
+  {
+    "title": "réinitialisation du canevas",
+    "command": "-repage geometry",
+    "description": "Redéfinit la taille et la position du canevas d'une image existante.",
+    "example": "convert input -repage 800x600+0+0 output",
+    "intent": "Je veux redéfinir la taille et la position du canevas de mon image (changer le cadre/la zone de travail)."
+  },
+  {
+    "title": "changement de résolution",
+    "command": "-resample geometry",
+    "description": "Modifie la résolution (DPI) de l'image sans altérer ses dimensions en pixels.",
+    "example": "convert input -resample 300 output",
+    "intent": "Je veux modifier la résolution (DPI) de l'image sans changer ses dimensions en pixels."
+  },
+  {
+    "title": "reformage d'image",
+    "command": "-reshape geometry",
+    "description": "Reforme la structure géométrique de l'image (utile pour certains formats bruts).",
+    "example": "convert input -reshape 800x600 output",
+    "intent": "Je veux remodeler la structure géométrique de l'image, par exemple pour adapter des données brutes à une nouvelle géométrie."
+  },
+  {
+    "title": "redimensionnement",
+    "command": "-resize geometry",
+    "description": "Redimensionne l'image à la taille souhaitée avec interpolation.",
+    "example": "convert input -resize 800x600 output",
+    "intent": "Je veux changer la taille de l'image (agrandir/réduire) pour obtenir des dimensions précises."
+  },
+  {
+    "title": "respect des parenthèses",
+    "command": "-respect-parentheses",
+    "description": "Conserve les paramètres actifs uniquement à l'intérieur d’un groupe entre parenthèses.",
+    "example": "convert ( input -blur 0x3 ) output",
+    "intent": "Je veux que certains paramètres ne s'appliquent qu'à l'intérieur d'un groupe entre parenthèses, pour isoler des effets."
+  },
+  {
+    "title": "défilement (roll)",
+    "command": "-roll geometry",
+    "description": "Fait défiler l'image horizontalement ou verticalement d'un certain décalage.",
+    "example": "convert input -roll +100+0 output",
+    "intent": "Je veux faire défiler/rouler l'image horizontalement ou verticalement d'un décalage donné."
+  },
+  {
+    "title": "rotation de l'image",
+    "command": "-rotate degrees",
+    "description": "Fait pivoter l'image de l’angle spécifié (en degrés, sens horaire).",
+    "example": "convert input -rotate 90 output",
+    "intent": "Je veux faire pivoter l'image d'un certain nombre de degrés pour en changer l'orientation."
+  },
+  {
+    "title": "échantillonnage de pixels",
+    "command": "-sample geometry",
+    "description": "Redimensionne l'image en utilisant un simple rééchantillonnage des pixels (sans interpolation).",
+    "example": "convert input -sample 400x400 output",
+    "intent": "Je veux redimensionner l'image en rééchantillonnant les pixels sans lissage/interpolation, pour un résultat brut et rapide."
+  },
+  {
+    "title": "facteur d'échantillonnage",
+    "command": "-sampling-factor geometry",
+    "description": "Définit les facteurs d’échantillonnage horizontal et vertical (souvent pour JPEG).",
+    "example": "convert input -sampling-factor 2x1 output",
+    "intent": "Je veux régler la façon dont les couleurs sont sous-échantillonnées horizontalement et verticalement (utile pour l'encodage JPEG)."
+  },
+  {
+    "title": "mise à l'échelle",
+    "command": "-scale geometry",
+    "description": "Met à l’échelle l’image de manière simple (équivalent à un resize rapide).",
+    "example": "convert input -scale 50% output",
+    "intent": "Je veux mettre l'image à l'échelle (agrandir/réduire) de façon simple et rapide, par exemple réduire à 50%."
+  },
+  {
+    "title": "numéro de scène",
+    "command": "-scene value",
+    "description": "Définit le numéro de scène pour une image dans une séquence (utile pour GIF ou TIFF multi-pages).",
+    "example": "convert frames/*.png -scene 0 animation.gif",
+    "intent": "Je veux définir le numéro de scène/de départ d'une image dans une séquence pour créer un GIF ou un fichier multipage."
+  },
+  {
+    "title": "graine aléatoire",
+    "command": "-seed value",
+    "description": "Initialise la graine du générateur aléatoire pour un traitement déterministe.",
+    "example": "convert input -seed 1234 -noise 2 output",
+    "intent": "Je veux fixer la graine aléatoire pour que les effets aléatoires (bruit, variations) soient reproductibles."
+  },
+  {
+    "title": "segmentation d'image",
+    "command": "-segment values",
+    "description": "Segmente une image en régions selon la similarité des couleurs ou intensités.",
+    "example": "convert input -segment 0.5x0.5 output",
+    "intent": "Je veux segmenter l'image en régions de couleurs/tons similaires pour isoler des zones ou objets."
+  },
+  {
+    "title": "flou sélectif",
+    "command": "-selective-blur geometry",
+    "description": "Applique un flou uniquement sur les zones à faible contraste, en préservant les bords nets.",
+    "example": "convert input -selective-blur 0x5+10% output",
+    "intent": "Je veux appliquer un flou qui n'affecte que les zones peu contrastées pour garder les contours nets / atténuer le bruit sans perdre les bords."
+  },
+  {
+    "title": "séparation de canaux",
+    "command": "-separate",
+    "description": "Sépare les canaux (R, G, B, A...) de l'image en images en niveaux de gris distinctes.",
+    "example": "convert input -separate channel_%d.png",
+    "intent": "Je veux extraire chaque canal (R, G, B, Alpha...) en images séparées en niveaux de gris."
+  },
+  {
+    "title": "effet sépia",
+    "command": "-sepia-tone threshold",
+    "description": "Applique un effet sépia simulant une photo ancienne.",
+    "example": "convert input -sepia-tone 80% output",
+    "intent": "Je veux donner à l'image une teinte sépia/effet de photo ancienne en ajustant l'intensité."
+  },
+  {
+    "title": "attribut d'image",
+    "command": "-set attribute value",
+    "description": "Définit un attribut de l'image (par ex. titre, auteur, copyright, etc.).",
+    "example": "convert input -set author 'Cyril Mammar' output",
+    "intent": "Je veux ajouter ou modifier les informations de l'image (par ex. titre / auteur / copyright)."
+  },
+  {
+    "title": "ombrage (lumière distante)",
+    "command": "-shade degrees",
+    "description": "Éclaire l'image comme si elle était éclairée par une source lumineuse distante, créant un effet de relief.",
+    "example": "convert input -shade 120x30 output",
+    "intent": "Je veux éclairer l'image pour lui donner du relief en simulant une source lumineuse distante."
+  },
+  {
+    "title": "ombre portée",
+    "command": "-shadow geometry",
+    "description": "Crée une ombre portée de l'image, simulant une profondeur.",
+    "example": "convert input -shadow 80x3+5+5 output",
+    "intent": "Je veux ajouter une ombre portée à l'image pour simuler de la profondeur / un effet de levé."
+  },
+  {
+    "title": "netteté d'image",
+    "command": "-sharpen geometry",
+    "description": "Améliore la netteté en augmentant le contraste local entre les pixels.",
+    "example": "convert input -sharpen 0x2 output",
+    "intent": "Je veux rendre les détails de l'image plus nets / plus précis en augmentant la netteté."
+  },
+  {
+    "title": "rognage des bords",
+    "command": "-shave geometry",
+    "description": "Supprime un certain nombre de pixels sur les bords de l'image.",
+    "example": "convert input -shave 10x10 output",
+    "intent": "Je veux couper les bords de l'image en enlevant une marge de quelques pixels."
+  },
+  {
+    "title": "cisaillement (shear)",
+    "command": "-shear geometry",
+    "description": "Décale un bord de l’image le long de l’axe X ou Y pour créer un effet de cisaillement.",
+    "example": "convert input -shear 10x0 output",
+    "intent": "Je veux incliner/déformer légèrement l'image en décalant un bord horizontalement ou verticalement pour créer un effet de cisaillement."
+  },
+  {
+    "title": "contraste sigmoïdal",
+    "command": "-sigmoidal-contrast geometry",
+    "description": "Augmente le contraste sans saturer les hautes et basses lumières.",
+    "example": "convert input -sigmoidal-contrast 5x50% output",
+    "intent": "Je veux renforcer le contraste de façon douce pour conserver les détails dans les hautes et basses lumières."
+  },
+  {
+    "title": "fusion d'images (smush)",
+    "command": "-smush offset",
+    "description": "Assemble une séquence d'images côte à côte ou en pile.",
+    "example": "convert img1.png img2.png -smush 10 output",
+    "intent": "Je veux assembler/coler plusieurs images côte à côte ou en pile avec un espacement donné."
+  },
+  {
+    "title": "taille d'image",
+    "command": "-size geometry",
+    "description": "Spécifie la largeur et la hauteur de l'image lors de sa création.",
+    "example": "convert -size 800x600 canvas:white output.png",
+    "intent": "Je veux créer une image d'une taille précise (largeur × hauteur), par ex. 800×600."
+  },
+  {
+    "title": "effet esquisse",
+    "command": "-sketch geometry",
+    "description": "Simule un dessin au crayon à partir de l'image originale.",
+    "example": "convert input -sketch 0x20 output",
+    "intent": "Je veux transformer la photo en une esquisse / un dessin au crayon."
+  },
+  {
+    "title": "solarisation",
+    "command": "-solarize threshold",
+    "description": "Inverse les pixels dont l'intensité dépasse un certain seuil, créant un effet de solarisation.",
+    "example": "convert input -solarize 50% output",
+    "intent": "Je veux créer un effet de solarisation en inversant les pixels qui dépassent un certain seuil / inverser les zones trop claires."
+  },
+  {
+    "title": "tri des pixels",
+    "command": "-sort-pixels",
+    "description": "Trie les pixels de chaque ligne selon leur intensité lumineuse.",
+    "example": "convert input -sort-pixels output",
+    "intent": "Je veux trier les pixels de chaque ligne par ordre d'intensité pour obtenir un rendu visuel ordonné / trié."
+  },
+  {
+    "title": "insertion de fond",
+    "command": "-splice geometry",
+    "description": "Insère la couleur d’arrière-plan dans l’image, décalant son contenu.",
+    "example": "convert input -background white -splice 10x10 output",
+    "intent": "Je veux ajouter de l'espace rempli par la couleur d'arrière-plan (comme une bordure ou un insert) en décalant le contenu de l'image."
+  },
+  {
+    "title": "dispersion de pixels",
+    "command": "-spread radius",
+    "description": "Déplace aléatoirement les pixels de l'image pour créer un effet de diffusion.",
+    "example": "convert input -spread 5 output",
+    "intent": "Je veux créer un effet de diffusion/bruit en décalant aléatoirement les pixels pour un rendu éparpillé ou texturé."
+  },
+  {
+    "title": "statistique locale",
+    "command": "-statistic type geometry",
+    "description": "Remplace chaque pixel par la statistique (moyenne, médiane, etc.) de ses voisins.",
+    "example": "convert input -statistic Mean 5x5 output",
+    "intent": "Je veux lisser ou filtrer l'image en remplaçant chaque pixel par la moyenne, la médiane ou une autre statistique de ses voisins pour réduire le bruit / obtenir un effet de filtrage."
+  },
+  {
+    "title": "suppression des métadonnées",
+    "command": "-strip",
+    "description": "Supprime tous les profils, métadonnées et commentaires de l'image.",
+    "example": "convert input -strip output",
+    "intent": "Je veux supprimer toutes les métadonnées, profils et commentaires de l'image pour obtenir un fichier sans informations supplémentaires."
+  },
+  {
+    "title": "couleur de contour (stroke)",
+    "command": "-stroke color",
+    "description": "Définit la couleur de contour pour les formes vectorielles dessinées.",
+    "example": "convert input -stroke black -strokewidth 2 -draw 'rectangle 10,10 100,100' output",
+    "intent": "Je veux définir ou changer la couleur du contour/du trait pour les formes que je dessine (par ex. rectangles, cercles)."
+  },
+  {
+    "title": "épaisseur du contour",
+    "command": "-strokewidth value",
+    "description": "Définit l’épaisseur du contour utilisé pour les formes dessinées.",
+    "example": "convert input -strokewidth 3 -draw 'circle 50,50 50,10' output",
+    "intent": "Je veux régler l'épaisseur du contour/du trait des formes dessinées pour qu'il soit plus fin ou plus épais."
+  },
+  {
+    "title": "étirement de police",
+    "command": "-stretch type",
+    "description": "Définit l’étirement du texte (Normal, Condensed, Expanded...).",
+    "example": "convert input -stretch Expanded -annotate +10+10 'Texte' output",
+    "intent": "Je veux ajuster l'étirement du texte (normal, condensé, étendu) pour modifier l'apparence des caractères."
+  },
+  {
+    "title": "style de police",
+    "command": "-style type",
+    "description": "Définit le style du texte (Normal, Italic, Oblique).",
+    "example": "convert input -style Italic -annotate +10+10 'Texte' output",
+    "intent": "Je veux appliquer un style de police (par ex. italique ou oblique) au texte pour en changer l'apparence."
+  },
+  {
+    "title": "inversion d’images",
+    "command": "-swap indexes",
+    "description": "Inverse deux images dans une séquence selon leurs index.",
+    "example": "convert img1.png img2.png -swap 0,1 output",
+    "intent": "Je veux échanger l'ordre de deux images dans une séquence / intervertir deux images."
+  },
+  {
+    "title": "tourbillon (swirl)",
+    "command": "-swirl degrees",
+    "description": "Fait tourbillonner les pixels de l'image autour de son centre.",
+    "example": "convert input -swirl 90 output",
+    "intent": "Je veux appliquer un effet tourbillon pour déformer l'image en spirale."
+  },
+  {
+    "title": "synchronisation disque",
+    "command": "-synchronize",
+    "description": "Force la synchronisation de l’image sur le disque après écriture.",
+    "example": "convert input -synchronize output",
+    "intent": "Je veux forcer l'enregistrement/synchronisation de l'image sur le disque pour être sûr qu'elle est bien écrite."
+  },
+  {
+    "title": "marquage modifié",
+    "command": "-taint",
+    "description": "Marque l'image comme modifiée pour éviter la réutilisation du cache.",
+    "example": "convert input -taint output",
+    "intent": "Je veux marquer l'image comme modifiée pour empêcher sa réutilisation depuis le cache."
+  },
+  {
+    "title": "texture de fond",
+    "command": "-texture filename",
+    "description": "Applique une texture répétée en fond de l'image.",
+    "example": "convert input -texture texture.png output",
+    "intent": "Je veux remplir l'arrière-plan de l'image avec une texture qui se répète."
+  },
+  {
+    "title": "seuil binaire",
+    "command": "-threshold value",
+    "description": "Transforme les pixels selon un seuil : au-dessus = blanc, en dessous = noir.",
+    "example": "convert input -threshold 50% output",
+    "intent": "Je veux convertir l'image en noir et blanc en appliquant un seuil (au‑dessus = blanc, en‑dessous = noir)."
+  },
+  {
+    "title": "miniature",
+    "command": "-thumbnail geometry",
+    "description": "Crée une version miniature de l'image, optimisée pour les aperçus.",
+    "example": "convert input -thumbnail 200x200 output",
+    "intent": "Je veux créer une version miniature de l'image pour un aperçu / une vignette."
+  },
+  {
+    "title": "motif de remplissage",
+    "command": "-tile filename",
+    "description": "Utilise une image comme motif répété pour remplir des formes.",
+    "example": "convert input -tile pattern.png -draw 'rectangle 0,0 200,200' output",
+    "intent": "Je veux remplir une zone ou une forme avec un motif répété provenant d'une image."
+  },
+  {
+    "title": "décalage du motif",
+    "command": "-tile-offset geometry",
+    "description": "Décale la position de départ du motif de remplissage.",
+    "example": "convert input -tile-offset +10+10 output",
+    "intent": "Je veux décaler la position de départ du motif pour changer l'alignement du remplissage."
+  },
+  {
+    "title": "teinte de l'image",
+    "command": "-tint value",
+    "description": "Applique une teinte colorée à l'image en mélangeant avec la couleur de remplissage.",
+    "example": "convert input -fill blue -tint 40% output",
+    "intent": "Je veux teinter l'image avec une couleur pour lui donner une dominante / une nuance visible."
+  },
+  {
+    "title": "transformation affine",
+    "command": "-transform",
+    "description": "Applique une transformation affine complète (rotation, translation, cisaillement).",
+    "example": "convert input -transform output",
+    "intent": "Je veux appliquer une transformation à mon image, par exemple la faire pivoter, la déplacer ou l'incliner (cisaillement)."
+  },
+  {
+    "title": "rendre transparent",
+    "command": "-transparent color",
+    "description": "Rend toutes les zones d'une couleur donnée transparentes.",
+    "example": "convert input -transparent white output",
+    "intent": "Je veux rendre toutes les zones d'une couleur donnée transparentes (par ex. rendre le blanc invisible)."
+  },
+  {
+    "title": "définition de la couleur transparente",
+    "command": "-transparent-color color",
+    "description": "Définit la couleur qui sera considérée comme transparente dans certaines opérations.",
+    "example": "convert input -transparent-color white output",
+    "intent": "Je veux définir quelle couleur doit être considérée comme transparente lors des opérations suivantes / choisir la couleur à traiter comme transparente."
+  },
+  {
+    "title": "transposition d'image",
+    "command": "-transpose",
+    "description": "Retourne l'image verticalement puis la fait pivoter de 90°.",
+    "example": "convert input -transpose output",
+    "intent": "Je veux retourner mon image verticalement puis la faire pivoter de 90° (basculer et pivoter)."
+  },
+  {
+    "title": "transversion d'image",
+    "command": "-transverse",
+    "description": "Retourne l'image horizontalement puis la fait pivoter de 270°.",
+    "example": "convert input -transverse output",
+    "intent": "Je veux retourner mon image horizontalement puis la faire pivoter de 270° (ou l'équivalent d'une rotation de -90°)."
+  },
+  {
+    "title": "profondeur de l'arbre de couleurs",
+    "command": "-treedepth value",
+    "description": "Définit la profondeur de l’arbre de couleurs utilisé pour la quantification.",
+    "example": "convert input -treedepth 8 output",
+    "intent": "Je veux régler la profondeur de l'arbre de couleurs utilisée pour réduire/quantifier les couleurs de l'image."
+  },
+  {
+    "title": "rognage automatique",
+    "command": "-trim",
+    "description": "Supprime automatiquement les bordures uniformes autour de l'image.",
+    "example": "convert input -trim output",
+    "intent": "Je veux supprimer automatiquement les bordures uniformes autour de mon image (rogner les marges)."
+  },
+  {
+    "title": "type d'image",
+    "command": "-type type",
+    "description": "Spécifie le type d’image (TrueColor, Grayscale, Palette, etc.).",
+    "example": "convert input -type Grayscale output",
+    "intent": "Je veux définir le type d'image (par ex. couleur vraie, niveaux de gris ou palette) pour mon fichier."
+  },
+  {
+    "title": "fond d'annotation",
+    "command": "-undercolor color",
+    "description": "Définit la couleur de fond du rectangle derrière le texte annoté.",
+    "example": "convert input -undercolor yellow -annotate +10+10 'Texte' output",
+    "intent": "Je veux ajouter/définir une couleur de fond derrière un texte annoté pour le rendre plus lisible (par ex. un fond jaune)."
+  },
+  {
+    "title": "couleurs uniques",
+    "command": "-unique-colors",
+    "description": "Supprime les doublons et conserve une seule occurrence de chaque couleur.",
+    "example": "convert input -unique-colors output",
+    "intent": "Je veux garder une seule occurrence de chaque couleur dans l'image et supprimer les couleurs en double (réduire la palette)."
+  },
+  {
+    "title": "unités de résolution",
+    "command": "-units type",
+    "description": "Définit les unités de la résolution (PixelsPerInch ou PixelsPerCentimeter).",
+    "example": "convert input -units PixelsPerInch output",
+    "intent": "Je veux définir les unités de résolution de l'image (pixels par pouce / pixels par centimètre)."
+  },
+  {
+    "title": "accentuation (unsharp)",
+    "command": "-unsharp geometry",
+    "description": "Renforce les détails fins à l’aide d’un masque flou (unsharp mask).",
+    "example": "convert input -unsharp 0x2 output",
+    "intent": "Je veux accentuer/renforcer la netteté des petits détails de l'image."
+  },
+  {
+    "title": "mode verbeux",
+    "command": "-verbose",
+    "description": "Affiche des informations détaillées sur l'image et le traitement.",
+    "example": "convert input -verbose output",
+    "intent": "Je veux voir des informations détaillées sur l'image et les opérations effectuées."
+  },
+  {
+    "title": "version du programme",
+    "command": "-version",
+    "description": "Affiche la version actuelle d’ImageMagick installée.",
+    "example": "magick -version",
+    "intent": "Je veux connaître la version d'ImageMagick installée sur mon système."
+  },
+  {
+    "title": "vue FlashPix",
+    "command": "-view",
+    "description": "Applique une transformation de visualisation FlashPix (rarement utilisé).",
+    "example": "convert input -view output",
+    "intent": "Je veux appliquer une transformation de visualisation FlashPix à l'image."
+  },
+  {
+    "title": "vignettage",
+    "command": "-vignette geometry",
+    "description": "Adoucit les bords de l'image en créant un effet de vignette.",
+    "example": "convert input -vignette 0x10 output",
+    "intent": "Je veux créer un effet de vignette en assombrissant et en adoucissant les bords de l'image."
+  },
+  {
+    "title": "pixels virtuels",
+    "command": "-virtual-pixel method",
+    "description": "Définit comment traiter les pixels en dehors des limites de l'image (tile, mirror, black...).",
+    "example": "convert input -virtual-pixel tile -blur 0x5 output",
+    "intent": "Je veux définir comment les pixels hors image sont traités (p. ex. répéter/miroir/noir) lors des opérations qui touchent les bords."
+  },
+  {
+    "title": "onde sinusoïdale",
+    "command": "-wave geometry",
+    "description": "Déforme l'image selon une onde sinusoïdale.",
+    "example": "convert input -wave 25x150 output",
+    "intent": "Je veux déformer l'image avec une ondulation/effet de vague pour lui donner un aspect ondé."
+  },
+  {
+    "title": "réduction de bruit par ondelettes",
+    "command": "-wavelet-denoise threshold",
+    "description": "Supprime le bruit de l'image en utilisant une transformée en ondelettes.",
+    "example": "convert input -wavelet-denoise 0.5 output",
+    "intent": "Je veux supprimer/atténuer le bruit de l'image en utilisant le débruitage par ondelettes."
+  },
+  {
+    "title": "épaisseur de police (weight)",
+    "command": "-weight type",
+    "description": "Définit l’épaisseur du texte (Normal, Bold, Light...).",
+    "example": "convert input -weight Bold -annotate +10+10 'Texte' output",
+    "intent": "Je veux définir l'épaisseur (la graisse) du texte (par ex. Normal/Bold/Light) avant d'ajouter une annotation."
+  },
+  {
+    "title": "point blanc primaire",
+    "command": "-white-point point",
+    "description": "Définit le point de chromaticité du blanc dans l’espace colorimétrique.",
+    "example": "convert input -white-point 0.3127,0.3290 output",
+    "intent": "Je veux définir/choisir le point blanc (la chromaticité du blanc) utilisé pour l’image."
+  },
+  {
+    "title": "seuil blanc",
+    "command": "-white-threshold value",
+    "description": "Force tous les pixels au-dessus du seuil à devenir blancs.",
+    "example": "convert input -white-threshold 80% output",
+    "intent": "Je veux transformer en blanc tous les pixels dont la valeur/luminosité dépasse un certain seuil."
+  },
+  {
+    "title": "césure de mots",
+    "command": "-word-break type",
+    "description": "Définit la manière dont les sauts de ligne se produisent (normal ou break-word).",
+    "example": "convert input -word-break break-word -annotate +10+10 'Texte long' output",
+    "intent": "Je veux choisir/commenter la façon dont le texte se coupe en fin de ligne (césure normale / couper le mot) quand j’ajoute du texte à une image."
+  },
+  {
+    "title": "écriture de fichier",
+    "command": "-write filename",
+    "description": "Enregistre l'image à un emplacement spécifique, utile dans les chaînes de commandes.",
+    "example": "convert input -resize 50% -write output_half.png output_full.png",
+    "intent": "Je veux enregistrer/écrire l’image dans un fichier à un emplacement précis pendant la chaîne de traitement."
+  }
+]

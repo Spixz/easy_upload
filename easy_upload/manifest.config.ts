@@ -28,4 +28,8 @@ export default defineManifest({
   side_panel: {
     default_path: 'src/sidepanel/index.html',
   },
+  background: {
+    service_worker: "src/service_worker.ts",
+    type: "module"
+  },
 })

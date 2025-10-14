@@ -63,31 +63,32 @@ async function handleOnChangeListener(event: Event) {
     return;
   }
 
-  // 1. Empêche les autres écouteurs sur cet élément de s'exécuter
-  event.stopImmediatePropagation();
-  // 2. Empêche l'événement de continuer sa propagation (capture ou bubbling)
-  event.stopPropagation();
 
-  if (!file) {
-    return;
-  }
+  // // 1. Empêche les autres écouteurs sur cet élément de s'exécuter
+  // event.stopImmediatePropagation();
+  // // 2. Empêche l'événement de continuer sa propagation (capture ou bubbling)
+  // event.stopPropagation();
 
-  if (file.type.startsWith('image/') && file.type !== 'image/png') {
-    console.log(`Converting ${file.name} to PNG...`);
-    try {
-      const pngFile = await convertToPng(file);
-      console.log('Conversion successful.');
+  // if (!file) {
+  //   return;
+  // }
 
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(pngFile);
-      input.files = dataTransfer.files;
-      input.dataset.lock = "true";
+  // if (file.type.startsWith('image/') && file.type !== 'image/png') {
+  //   console.log(`Converting ${file.name} to PNG...`);
+  //   try {
+  //     const pngFile = await convertToPng(file);
+  //     console.log('Conversion successful.');
 
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    } catch (error) {
-      console.error('Error during file conversion:', error);
-    }
-  }
+  //     const dataTransfer = new DataTransfer();
+  //     dataTransfer.items.add(pngFile);
+  //     input.files = dataTransfer.files;
+  //     input.dataset.lock = "true";
+
+  //     input.dispatchEvent(new Event('change', { bubbles: true }));
+  //   } catch (error) {
+  //     console.error('Error during file conversion:', error);
+  //   }
+  // }
 }
 /**
  * upload 1, overitted = true
