@@ -1,39 +1,43 @@
-import Chat, { Bubble, Message, MessageProps } from '@chatui/core';
-import '@chatui/core/dist/index.css';
-import { ReactNode, useEffect } from 'react';
-import { ConversationNotifier } from './ConversationNotifier';
-import { MessagesNotifier } from './message/MessageNotifier';
+import Chat, { Bubble, MessageProps } from "@chatui/core";
+import "@chatui/core/dist/index.css";
+import { ReactNode, useEffect } from "react";
+import { ModelNotifier } from "./notifiers/ModelNotifier";
+import { MessagesNotifier } from "./notifiers/MessagesNotifier";
+import DefaultMessage from "./messages/default_message";
+import { createMessageInstance } from "./messages/messages";
 
 export default function Tchat() {
-    const messages = MessagesNotifier(state => state.messages);
-    const prompt = ConversationNotifier(state => state.prompt);
+  const messages = MessagesNotifier((state) => state.messages);
 
-    useEffect(() => {
-        ConversationNotifier.getState().init().then(() => {
-            console.log("conv initialisée");
-        })
-    }, []);
+  useEffect(() => {
+    ModelNotifier.getState()
+      .init()
+      .then(() => {
+        console.log("conv initialisée");
+      });
+  }, []);
 
-    async function handleSend(type: string, val: string) {
-        if (type === 'text' && val.trim()) {
-            prompt(val);
-        }
+  async function handleSend(type: string, val: string) {
+    if (type === "text" && val.trim()) {
+      ModelNotifier.getState().userPrompt(val);
     }
+  }
 
-    function renderMessageContent(msg: MessageProps): ReactNode {
-        const { content } = msg;
-        return <Bubble content={content} />;
-    }
+  function renderMessageContent(msg: MessageProps): ReactNode {
+    const message = createMessageInstance(msg);
 
-    return (
-        <div style={{ height: '100vh', width: '100vw' }}>
-            <Chat
-                locale="en-EN"
-                navbar={{ title: 'Assistant' }}
-                messages={messages}
-                renderMessageContent={renderMessageContent}
-                onSend={handleSend}
-            />
-        </div>
-    );
+    return message.renderMessageContent(msg);
+  }
+
+  return (
+    <div style={{ height: "100vh", width: "100vw" }}>
+      <Chat
+        locale="en-EN"
+        navbar={{ title: "Assistant" }}
+        messages={messages}
+        renderMessageContent={renderMessageContent}
+        onSend={handleSend}
+      />
+    </div>
+  );
 }

@@ -1,54 +1,6 @@
-import { beforeAll, afterAll, test, expect } from 'vitest'
-import puppeteer from 'puppeteer-core'
-import { spawn } from 'node:child_process'
-import fs from 'fs'
-
-let chromeProc: ReturnType<typeof spawn> | null = null
-let browser: Awaited<ReturnType<typeof puppeteer.connect>>
-
-beforeAll(async () => {
-  // Lance Chrome une seule fois
-  // chromeProc = spawn(
-  //   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-  //   [
-  //     '--remote-debugging-port=9222',
-  //     '--user-data-dir=./chrome_profile_tests',
-  //     '--no-first-run',
-  //     '--no-default-browser-check',
-  //   ],
-  //   { stdio: 'inherit' }
-  // )
-
-  // // attendre que Chrome ait démarré
-  await new Promise((r) => setTimeout(r, 4000))
-
-  // se connecter à Chrome
-  browser = await puppeteer.connect({
-    browserURL: 'http://127.0.0.1:9222',
-  })
-}, 60_000)
-
-// afterAll(async () => {
-//   if (browser) {
-//     await browser.disconnect()
-//   }
-//   if (chromeProc) {
-//     chromeProc.kill()
-//   }
-// })
-
-
-
-// test('LanguageModel API disponible', async () => {
-//   const page = await browser.newPage()
-//   await page.goto('https://example.com')
-
-//   const avail = await page.evaluate(() => LanguageModel.availability())
-//   console.log('Availability:', avail)
-//   page.close()
-
-//   expect(['available', 'downloadable', 'downloading', 'unavailable']).toContain(avail)
-// })
+import { test, expect } from "vitest";
+import puppeteer from "puppeteer-core";
+import fs from "fs";
 
 
 // ! Launch chrome with remote debugging before launching tests
@@ -196,7 +148,6 @@ test('youtube thumbnail - large prompt', async () => {
   expect(resObj["aspect_ratio"]).toMatch(/16:9/)
   page.close()
 })
-
 
 test('youtube thumbnail - large prompt v2', async () => {
   const browser = await puppeteer.connect({

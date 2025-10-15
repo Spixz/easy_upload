@@ -17,6 +17,7 @@ export default defineConfig({
     crx({ manifest }),
     zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
   ],
+  assetsInclude: ['**/*.txt'],
   server: {
     cors: {
       origin: [

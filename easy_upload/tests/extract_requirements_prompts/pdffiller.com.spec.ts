@@ -1,16 +1,6 @@
-import { beforeAll, test, expect } from 'vitest'
+import { test, expect } from 'vitest'
 import puppeteer from 'puppeteer-core'
 import fs from 'fs'
-
-let browser: Awaited<ReturnType<typeof puppeteer.connect>>
-
-beforeAll(async () => {
-  await new Promise((r) => setTimeout(r, 4000))
-
-  browser = await puppeteer.connect({
-    browserURL: 'http://127.0.0.1:9222',
-  })
-}, 60_000)
 
 
 // ! Launch chrome with remote debugging before launching tests

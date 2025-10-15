@@ -1,15 +1,17 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { MessagesNotifier } from "./message/MessageNotifier";
+import { MessagesNotifier } from "./MessagesNotifier";
 import { MessageProps } from "@chatui/core";
+import UserMessage from "../messages/user_message.tsx";
+import AssistantMessage from "../messages/assistant_message";
 
-export interface ConversationState {
+export interface ModelState {
   session: LanguageModel | null;
   init: () => Promise<void>;
-  prompt: (message: string) => Promise<void>;
+  userPrompt: (message: string) => Promise<void>;
 }
 
-export const ConversationNotifier = create<ConversationState>()(
+export const ModelNotifier = create<ModelState>()(
   devtools(
     (set, get) => ({
       session: null,
@@ -24,24 +26,14 @@ export const ConversationNotifier = create<ConversationState>()(
           return { session: session };
         });
       },
-      prompt: async (message: string) => {
-        const { createMessage, addMessage, handleStream } =
-          MessagesNotifier.getState();
+      userPrompt: async (message: string) => {
+        const { addMessage, handleStream } = MessagesNotifier.getState();
 
-        const userMessage: MessageProps = createMessage({
-          type: "text",
-          content: message,
-          position: "right",
-        });
-        addMessage(userMessage);
+        addMessage(new UserMessage(message));
 
         const stream = get().session?.promptStreaming(message);
         if (stream != null) {
-          const assistantMessage: MessageProps = createMessage({
-            type: "text",
-            content: "",
-            position: "left",
-          });
+          const assistantMessage: MessageProps = new AssistantMessage("");
           addMessage(assistantMessage);
           handleStream(assistantMessage._id, stream);
         }

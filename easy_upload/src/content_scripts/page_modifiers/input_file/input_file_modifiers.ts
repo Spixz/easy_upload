@@ -23,7 +23,7 @@ function processNode(node: Node) {
   }
 
   // Find iframes within the node
-  const iframes = element.querySelectorAll('iframe');
+  const iframes = element.querySelectorAll("iframe");
   iframes.forEach(handleIframe);
 }
 
@@ -33,27 +33,33 @@ function processNode(node: Node) {
  */
 function handleIframe(iframe: HTMLIFrameElement) {
   if (iframe.dataset.fileInputObserverAttached) return;
-  iframe.dataset.fileInputObserverAttached = 'true';
+  iframe.dataset.fileInputObserverAttached = "true";
 
-  console.log('Found an iframe, setting up listener...');
+  console.log("Found an iframe, setting up listener...");
 
   const setup = () => {
     try {
       const iframeDocument = iframe.contentDocument;
       if (iframeDocument) {
-        console.log('✅ Iframe is accessible, scanning and observing.');
+        console.log("✅ Iframe is accessible, scanning and observing.");
         processNode(iframeDocument.body); // Initial scan
         setupObserver(iframeDocument.body); // Observe for future changes
       }
     } catch (e) {
-      console.warn('Could not access iframe content. This is likely due to cross-origin restrictions.', e);
+      console.warn(
+        "Could not access iframe content. This is likely due to cross-origin restrictions.",
+        e,
+      );
     }
   };
 
-  if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+  if (
+    iframe.contentDocument &&
+    iframe.contentDocument.readyState === "complete"
+  ) {
     setup();
   } else {
-    iframe.addEventListener('load', setup);
+    iframe.addEventListener("load", setup);
   }
 }
 
@@ -63,10 +69,9 @@ function setupObserver(targetNode: Node) {
   });
 
   observer.observe(document.body, {
-    childList: true,       // écoute l’ajout/suppression d’éléments
-    subtree: true          // écoute tout le DOM, pas seulement body
+    childList: true, // écoute l’ajout/suppression d’éléments
+    subtree: true, // écoute tout le DOM, pas seulement body
   });
-
 }
 
 (function monitorFileInputs() {
