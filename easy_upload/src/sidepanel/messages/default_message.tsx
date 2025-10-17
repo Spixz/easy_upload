@@ -11,7 +11,7 @@ export default class DefaultMessage implements Partial<MessageProps> {
     this.content = content;
   }
 
-  renderMessageContent(message: MessageProps) {
-    return <Bubble content={message.content} />;
+  renderMessageContent(_: MessageProps) {
+    return <Bubble content={this.content} />;
   }
 }

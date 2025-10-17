@@ -5,3 +5,9 @@ export enum FileCategory {
     audio = "audio",
     all = "all"
 }
+
+export enum ModelMessageRole {
+    user = "user",
+    assistant = "assistant",
+    system = "system"
+}

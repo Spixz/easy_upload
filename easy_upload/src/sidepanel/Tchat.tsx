@@ -1,10 +1,19 @@
-import Chat, { Bubble, MessageProps } from "@chatui/core";
+import Chat, {
+  Bubble,
+  Button,
+  Card,
+  CardActions,
+  CardText,
+  MessageProps,
+  QuickRepliesProps,
+  QuickReplyItemProps,
+} from "@chatui/core";
 import "@chatui/core/dist/index.css";
 import { ReactNode, useEffect } from "react";
 import { ModelNotifier } from "./notifiers/ModelNotifier";
 import { MessagesNotifier } from "./notifiers/MessagesNotifier";
-import DefaultMessage from "./messages/default_message";
 import { createMessageInstance } from "./messages/messages";
+import { UserInputText } from "./components/user_input_text";
 
 export default function Tchat() {
   const messages = MessagesNotifier((state) => state.messages);
@@ -19,14 +28,20 @@ export default function Tchat() {
 
   async function handleSend(type: string, val: string) {
     if (type === "text" && val.trim()) {
-      ModelNotifier.getState().userPrompt(val);
+      ModelNotifier.getState().prompt({
+        message: val,
+        role: "user",
+        addInUi: {
+          input: true,
+          output: true,
+        },
+        streaming: true,
+      });
     }
   }
 
   function renderMessageContent(msg: MessageProps): ReactNode {
-    const message = createMessageInstance(msg);
-
-    return message.renderMessageContent(msg);
+    return createMessageInstance(msg).renderMessageContent(msg);
   }
 
   return (
@@ -37,6 +52,7 @@ export default function Tchat() {
         messages={messages}
         renderMessageContent={renderMessageContent}
         onSend={handleSend}
+        Composer={UserInputText}
       />
     </div>
   );

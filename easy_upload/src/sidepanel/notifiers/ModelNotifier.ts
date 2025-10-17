@@ -2,13 +2,26 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { MessagesNotifier } from "./MessagesNotifier";
 import { MessageProps } from "@chatui/core";
-import UserMessage from "../messages/user_message.tsx";
-import AssistantMessage from "../messages/assistant_message";
+import { AssistantMessage, UserMessage } from "../messages/messages.ts";
+
+export interface PromptProps {
+  message: string;
+  role: LanguageModelMessageRole;
+  addInUi: { input: boolean; output: boolean };
+  streaming: boolean;
+}
+
+export interface AddToSessionProps {
+  message: string;
+  role: LanguageModelMessageRole;
+  addInUi: boolean;
+}
 
 export interface ModelState {
   session: LanguageModel | null;
   init: () => Promise<void>;
-  userPrompt: (message: string) => Promise<void>;
+  prompt: (props: PromptProps) => Promise<string | void>;
+  addToSession: (props: AddToSessionProps) => void;
 }
 
 export const ModelNotifier = create<ModelState>()(
@@ -26,16 +39,52 @@ export const ModelNotifier = create<ModelState>()(
           return { session: session };
         });
       },
-      userPrompt: async (message: string) => {
+      prompt: async (props: PromptProps): Promise<string | void> => {
         const { addMessage, handleStream } = MessagesNotifier.getState();
+        const messageToSend: LanguageModelMessage = {
+          role: props.role as LanguageModelMessageRole,
+          content: props.message,
+        };
 
-        addMessage(new UserMessage(message));
+        if (props.addInUi.input) {
+          if (props.role == "user") {
+            addMessage(new UserMessage(props.message));
+          } else if (props.role == "assistant") {
+            addMessage(new AssistantMessage(props.message));
+          }
+        }
 
-        const stream = get().session?.promptStreaming(message);
-        if (stream != null) {
-          const assistantMessage: MessageProps = new AssistantMessage("");
-          addMessage(assistantMessage);
-          handleStream(assistantMessage._id, stream);
+        if (props.addInUi.output && props.streaming) {
+          const stream = get().session?.promptStreaming([messageToSend]);
+          if (stream != null) {
+            const assistantMessage: MessageProps = new AssistantMessage("");
+            addMessage(assistantMessage);
+            handleStream(assistantMessage._id, stream);
+            return;
+          }
+        }
+
+        const resp = await get().session?.prompt([messageToSend]);
+        if (props.addInUi.output) {
+          addMessage(new AssistantMessage(resp));
+        }
+        return resp;
+      },
+      addToSession: (props: AddToSessionProps) => {
+        const { addMessage } = MessagesNotifier.getState();
+        const messageToAdd: LanguageModelMessage = {
+          role: props.role as LanguageModelMessageRole,
+          content: props.message,
+        };
+
+        get().session?.append([messageToAdd]);
+
+        if (props.addInUi) {
+          if (props.role == "user") {
+            addMessage(new UserMessage(props.message));
+          } else if (props.role == "assistant") {
+            addMessage(new AssistantMessage(props.message));
+          }
         }
       },
     }),

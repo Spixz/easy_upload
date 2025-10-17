@@ -1,5 +1,6 @@
 import { FileCategory } from "@/commons/enums";
 import { InputRequirements } from "@/commons/interfaces";
+import { Requirements } from "@/commons/model_output_schemas/requirements";
 import { ExtractRequirements } from "@/core/extract_requirements/extract_requirements";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -7,7 +8,7 @@ import { devtools } from "zustand/middleware";
 export interface FileState {
   text_for_requirements: string[];
   file_category: FileCategory;
-  requirements: string;
+  requirements: Requirements;
   generateRequirements: (inputRequirements: InputRequirements) => Promise<void>;
 }
 
@@ -19,17 +20,12 @@ export const FileNotifier = create<FileState>()(
         file_category: inputRequirements.file_category,
       }));
 
-      const requirements: string =
-        await ExtractRequirements.extract(inputRequirements);
+      const requirements = await ExtractRequirements.extract(inputRequirements);
       console.log(requirements);
 
-      try {
-        set((_) => ({
-          requirements: requirements,
-        }));
-      } catch (err) {
-        console.error(err);
-      }
+      set((_) => ({
+        requirements: requirements,
+      }));
     },
   })),
 );
