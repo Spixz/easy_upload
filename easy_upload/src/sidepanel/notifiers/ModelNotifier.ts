@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { MessagesNotifier } from "./MessagesNotifier";
-import { MessageProps } from "@chatui/core";
 import { AssistantMessage, UserMessage } from "../messages/messages.ts";
 
 export interface PromptProps {
@@ -57,7 +56,7 @@ export const ModelNotifier = create<ModelState>()(
         if (props.addInUi.output && props.streaming) {
           const stream = get().session?.promptStreaming([messageToSend]);
           if (stream != null) {
-            const assistantMessage: MessageProps = new AssistantMessage("");
+            const assistantMessage = new AssistantMessage("");
             addMessage(assistantMessage);
             handleStream(assistantMessage._id, stream);
             return;

@@ -5,9 +5,6 @@ import { MessagesNotifier } from "./notifiers/MessagesNotifier";
 import { SystemMessage, ThinkingMessage } from "./messages/messages";
 import { ModelMessageRole } from "@/commons/enums";
 
-// ! creer une conversation (l'exposer avec l'autre zustand)
-// ! lancer la recup des requirements
-
 const port = chrome.runtime.connect({ name: "sidepanel-channel" });
 port.onMessage.addListener((msg: ChromeBridgeMessage) => {
   if (msg.name == "input_unprocess_requirements") {
@@ -23,9 +20,13 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
     await FileNotifier.getState().generateRequirements(requirements);
     const extractedRequirements = FileNotifier.getState().requirements;
     addMessage(new SystemMessage("Requirements récupérés"));
-    // addMessage(
-    //   new ThinkingMessage(extractedRequirements, ModelMessageRole.system),
-    // );
+    addMessage(
+      new ThinkingMessage(
+        "Requiements",
+        "start",
+        extractedRequirements.toString(),
+      ),
+    );
   } catch {
     addMessage(
       new SystemMessage(

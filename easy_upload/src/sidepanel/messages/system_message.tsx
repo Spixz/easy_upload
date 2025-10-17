@@ -7,17 +7,17 @@ export default class SystemMessage extends DefaultMessage {
   type = "text";
   position = "center" as const;
 
-  renderMessageContent(_: MessageProps) {
+  renderMessageContent = (message: MessageProps) => {
     return (
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
+          display: "flex",
+          justifyContent: "center",
+          width: "100%",
         }}
       >
-        <SysMessage content={this.content} />
+        <SysMessage content={message.content} />
       </div>
     );
-  }
+  };
 }

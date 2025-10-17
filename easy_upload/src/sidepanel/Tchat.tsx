@@ -1,18 +1,9 @@
-import Chat, {
-  Bubble,
-  Button,
-  Card,
-  CardActions,
-  CardText,
-  MessageProps,
-  QuickRepliesProps,
-  QuickReplyItemProps,
-} from "@chatui/core";
+import Chat, { Bubble, MessageProps } from "@chatui/core";
 import "@chatui/core/dist/index.css";
 import { ReactNode, useEffect } from "react";
 import { ModelNotifier } from "./notifiers/ModelNotifier";
 import { MessagesNotifier } from "./notifiers/MessagesNotifier";
-import { createMessageInstance } from "./messages/messages";
+import { DefaultMessage } from "./messages/messages";
 import { UserInputText } from "./components/user_input_text";
 
 export default function Tchat() {
@@ -41,13 +32,21 @@ export default function Tchat() {
   }
 
   function renderMessageContent(msg: MessageProps): ReactNode {
-    return createMessageInstance(msg).renderMessageContent(msg);
+    const message: DefaultMessage | undefined =
+      MessagesNotifier.getState().messages.find(
+        (message) => message._id == msg._id,
+      );
+    const errorMessage = "[Error : something wront happend]";
+
+    return (
+      message?.renderMessageContent(msg) ?? <Bubble content={errorMessage} />
+    );
   }
 
   return (
     <div style={{ height: "100vh", width: "100vw" }}>
       <Chat
-        locale="en-EN"
+        locale="en-US"
         navbar={{ title: "Assistant" }}
         messages={messages}
         renderMessageContent={renderMessageContent}

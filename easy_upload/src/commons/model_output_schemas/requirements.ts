@@ -26,6 +26,10 @@ export abstract class Requirements {
   static toRecord(): Record<string, any> {
     throw new Error("toRecord() must be implemented by subclasses");
   }
+
+  toString(): string {
+    return JSON.stringify(this, null, 2);
+  }
 }
 
 export class RequirementsImage extends Requirements {
@@ -59,6 +63,10 @@ export class RequirementsImage extends Requirements {
       other_file_infos: "string",
     };
   }
+
+  // toString(): string {
+  //   return JSON.stringify(this);
+  // }
 }
 
 export class RequirementsVideo extends Requirements {

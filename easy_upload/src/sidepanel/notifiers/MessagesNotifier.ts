@@ -1,11 +1,11 @@
 import { create } from "zustand";
-import { MessageProps } from "@chatui/core";
+import DefaultMessage from "../messages/default_message";
 
 export interface MessageState {
-  messages: MessageProps[];
-  addMessage: (message: MessageProps) => void;
+  messages: DefaultMessage[];
+  addMessage: (message: DefaultMessage) => void;
   deleteMessage: (id: string) => void;
-  updateMessage: (id: string, updates: Partial<MessageProps>) => void;
+  updateMessage: (id: string, updates: Partial<DefaultMessage>) => void;
   handleStream: (id: string, stream: AsyncIterable<string>) => Promise<void>;
 }
 
@@ -19,9 +19,13 @@ export const MessagesNotifier = create<MessageState>()((set, get) => ({
     })),
   updateMessage: (id, updates) =>
     set((state) => ({
-      messages: state.messages.map((msg) =>
-        msg._id === id ? { ...msg, ...updates } : msg,
-      ),
+      messages: state.messages.map((msg) => {
+        if (msg._id === id) {
+          const newMsg = Object.create(Object.getPrototypeOf(msg));
+          return Object.assign(newMsg, msg, updates);
+        }
+        return msg;
+      }),
     })),
   handleStream: async (id, stream) => {
     const existingMessage = get().messages.find((msg) => msg._id === id);

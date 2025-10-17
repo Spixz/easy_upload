@@ -1,48 +1,31 @@
-import {
-  Bubble,
-  MessageProps,
-  SystemMessage as SysMessage,
-  Think,
-} from "@chatui/core";
+import { LocaleProvider, MessageProps } from "@chatui/core";
 import DefaultMessage from "./default_message";
 import { User } from "@chatui/core/lib/components/Message/Message";
-import { ModelMessageRole } from "@/commons/enums";
+import ThinkingMessageContent from "./thinking_message_content";
 
 export default class ThinkingMessage extends DefaultMessage {
-  user: User = { name: "system" };
+  user: User = {};
   type = "text";
-  position: "left" | "right" | "center" = "center";
 
-  constructor(content: any, role: ModelMessageRole) {
+  constructor(
+    public title: string,
+    public alignement: "start" | "center" | "end",
+    content: any,
+  ) {
     super(content);
-    this.user = { name: role.toString() };
-
-    if (role == ModelMessageRole.user) {
-      this.position = "right";
-    } else if (role == ModelMessageRole.assistant) {
-      this.position = "left";
-    } else {
-      this.position = "center";
-    }
   }
 
-  renderMessageContent(_: MessageProps) {
+  renderMessageContent = (message: MessageProps) => {
     return (
       <div
         style={{
           display: "flex",
-          justifyContent: `${this.position}`,
+          justifyContent: `${this.alignement}`,
           width: "100%",
         }}
       >
-        {/* <SysMessage content={message.content} /> */}
-        <h3>Les requirements</h3>
-        <Bubble>
-          <Think>
-            <p>{this.content}</p>
-          </Think>
-        </Bubble>
+        <ThinkingMessageContent title={this.title} content={message.content} />
       </div>
     );
-  }
+  };
 }
