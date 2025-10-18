@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
-import "./messages_listener.ts";
+import "./sidepanel_listener.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

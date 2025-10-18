@@ -1,16 +1,15 @@
 import "webext-bridge/background";
-
 import { onMessage } from "webext-bridge/background";
-import {
-  ChromeBridgeMessage,
-  initSidepanelBridge,
-  sendToSidepanel,
-} from "./sw_sidepanel_bridge";
+import { initSidepanelBridge, sendToSidepanel } from "./sw_sidepanel_bridge";
+import { ensureOffscreenCreated, initOffscreenBridge } from "./sw_offscreen_bridge";
+import { ChromeBridgeMessage } from "@/commons/interfaces";
 
 console.log("init service worker upload extension");
 initSidepanelBridge();
+initOffscreenBridge();
 
 onMessage("open_sidepanel", async ({ data, sender }) => {
+  ensureOffscreenCreated();
   await chrome.sidePanel.open({ tabId: sender.tabId });
   console.log("Ouveture tu side panel demandé");
   try {
@@ -24,6 +23,7 @@ onMessage("open_sidepanel", async ({ data, sender }) => {
   }
 });
 
-chrome.sidePanel
-  .setPanelBehavior({ openPanelOnActionClick: true })
-  .catch((error) => console.error(error));
+chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).then(() => {
+  ensureOffscreenCreated();
+});
+// .catch((error) => console.error(error));

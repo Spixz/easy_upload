@@ -14,7 +14,7 @@ export default defineManifest({
     },
     default_popup: "src/popup/index.html",
   },
-  permissions: ["sidePanel", "contentSettings"],
+  permissions: ["sidePanel", "contentSettings", "offscreen"],
   content_scripts: [
     {
       js: [

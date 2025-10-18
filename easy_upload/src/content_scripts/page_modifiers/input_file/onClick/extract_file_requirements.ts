@@ -1,5 +1,3 @@
-// -------------------- Helpers: critères --------------------
-
 interface CustomMatchers {
   numbers: RegExp,
   extensions: RegExp,
@@ -26,8 +24,6 @@ function matcheCriteres(line: string, matchers: CustomMatchers) {
 function containeUrl(line: string) {
   return /(https?:\/\/|www\.)\S+/i.test(line);
 }
-
-// -------------------- Extraction --------------------
 
 function extractPageVisibleText(): string[] {
   const raw = document.body.innerText || "";

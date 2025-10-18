@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { MessagesNotifier } from "./MessagesNotifier";
 import { AssistantMessage, UserMessage } from "../messages/messages.ts";
+import initialPrompt from "./initial_prompt.txt?raw";
 
 export interface PromptProps {
   message: string;
@@ -28,11 +29,9 @@ export const ModelNotifier = create<ModelState>()(
     (set, get) => ({
       session: null,
       init: async () => {
-        const prompt =
-          "Tu es un assistant qui aide à la modifiction de fichiers";
         const session = await LanguageModel.create({
           expectedOutputs: [{ type: "text", languages: ["en"] }],
-          initialPrompts: [{ role: "user", content: prompt }],
+          initialPrompts: [{ role: "user", content: initialPrompt }],
         });
         set((_) => {
           return { session: session };

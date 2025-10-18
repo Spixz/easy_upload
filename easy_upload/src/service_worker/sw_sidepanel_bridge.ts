@@ -1,41 +1,49 @@
-export interface ChromeBridgeMessage {
-  name: string;
-  data: any;
-}
+import { ChromeBridgeMessage } from "@/commons/interfaces";
 
-let port: chrome.runtime.Port | null = null;
+let sidepanelPort: chrome.runtime.Port | null = null;
 let unsendMessages: ChromeBridgeMessage[] = [];
 
 export function initSidepanelBridge() {
-  if (port != null) return;
+  if (sidepanelPort != null) return;
 
-  chrome.runtime.onConnect.addListener((p) => {
-    if (p.name === "sidepanel-channel") {
+  console.log("[SidepannelBridge] Initialisation...");
+
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "sidepanel-channel") {
       console.log("[Bridge] service worker conneted to Sidepanel");
-      port = p;
+      sidepanelPort = port;
 
       unsendMessages.forEach(sendToSidepanel);
+      unsendMessages = [];
 
-      port.onMessage.addListener((msg: ChromeBridgeMessage) => {
-        console.log("[Bridge] Received from sidepanel:", msg);
-        if (msg.name == "salut") {
-          console.log("Salut recu du pannel au worker");
-        }
+      sidepanelPort.onMessage.addListener((msg: ChromeBridgeMessage) => {
+        console.log("[sw-Bridge] Received from sidepanel:", msg);
+        handleSidepanelMessage(msg);
       });
 
-      port.onDisconnect.addListener(() => {
-        console.log("[Bridge] Sidepanel disconnected of service worker");
-        port = null;
+      sidepanelPort.onDisconnect.addListener(() => {
+        console.log("[sw-Bridge] Sidepanel disconnected of service worker");
+        sidepanelPort = null;
       });
     }
   });
 }
 
 export function sendToSidepanel(message: ChromeBridgeMessage) {
-  if (port) {
-    port.postMessage(message);
+  if (sidepanelPort) {
+    sidepanelPort.postMessage(message);
   } else {
     unsendMessages.push(message);
     console.warn("[SW => sidepanel] error: No active sidepanel connection");
+  }
+}
+
+function handleSidepanelMessage(message: ChromeBridgeMessage) {
+  switch (message.name) {
+    case "salut":
+      console.log("Salut recu du pannel au worker");
+      break;
+    default:
+      console.warn("[SidepanelBridge] Message inconnu :", message);
   }
 }
