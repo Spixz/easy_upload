@@ -24,6 +24,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "ts-enum-util": "^4.1.0",
+    "wasm-imagemagick": "^1.2.8",
     "webext-bridge": "^6.0.1",
     "zustand": "^5.0.8"
   },

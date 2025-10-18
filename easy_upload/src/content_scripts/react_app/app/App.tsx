@@ -5,7 +5,7 @@ import Tchat from './Tchat'
 export default function App() {
   return (<>
     <Tchat />
-    <DownloadModelPopup />
+    {/* <DownloadModelPopup /> */}
   </>)
 }
 

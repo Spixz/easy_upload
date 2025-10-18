@@ -3,7 +3,14 @@
 // =============================
 
 import { FFmpeg } from "@ffmpeg/ffmpeg";
+// const ImageMagick = await import(chrome.runtime.getURL("wasm/magick.js"));
+const Magick = await import(
+  /* @vite-ignore */ chrome.runtime.getURL("wasm/magickApi.js")
+);
 
+
+// Charger le runtime wasm
+Magick.getFileName("FriedrichNietzsche.png");
 // Type de message unifié
 export interface ChromeBridgeMessage {
   name: string;
@@ -11,15 +18,18 @@ export interface ChromeBridgeMessage {
 }
 
 // Port vers le Service Worker
-const port = chrome.runtime.connect({ name: "offscreen-channel" });
+const offscreenPort = chrome.runtime.connect({ name: "offscreen-channel" });
+const ffmpegInstance: FFmpeg = new FFmpeg();
 
-port.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
+offscreenPort.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
   console.log("[Offscreen] ← Message du SW :", msg);
 
   switch (msg.name) {
     case "ping-from-sidepanel":
-      // Exemple de réponse simple
-      port.postMessage({ name: "pong", data: "👋 Hello depuis Offscreen" });
+      offscreenPort.postMessage({
+        name: "pong",
+        data: "👋 Hello depuis Offscreen",
+      });
       break;
 
     case "convert-video":
@@ -34,15 +44,58 @@ port.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
       await magickConvert(msg.data);
       break;
 
+    case "test-imagemagick":
+      console.log("offscreen : message recu pour manip fichier imagemagick");
+      basicManip();
+      break;
+
     default:
       console.warn("[Offscreen] Message inconnu :", msg);
   }
 });
 
-// =============================
-// Chargement WASM : FFmpeg
-// =============================
-const ffmpegInstance: FFmpeg = new FFmpeg();
+async function basicManip() {
+  const imageUrl = chrome.runtime.getURL("FriedrichNietzsche.png");
+
+  // ✅ vérifier que le fichier existe bien
+  const response = await fetch(imageUrl);
+  if (!response.ok) throw new Error("Image introuvable : " + imageUrl);
+
+  let arrayBuffer = await response.arrayBuffer();
+  let sourceBytes = new Uint8Array(arrayBuffer);
+
+  // calling ImageMagick with one source image, and command to rotate & resize image
+  const inputFiles = [{ name: "srcFile.png", content: sourceBytes }];
+  const command = [
+    "convert",
+    "srcFile.png",
+    "-rotate",
+    "90",
+    "-resize",
+    "200%",
+    "out.png",
+  ];
+  let processedFiles = await Magick.Call(inputFiles, command);
+
+  // response can be multiple files (example split) here we know we just have one
+  let firstOutputImage = processedFiles[0];
+  // outputImage.src = URL.createObjectURL(firstOutputImage['blob'])
+  console.log("[Offscreen] ✅ Image créée :", firstOutputImage.name);
+
+  // 🔥 Créer un Blob à partir du fichier de sortie
+  const blob = firstOutputImage.blob;
+  const arrayBufferOut = await blob.arrayBuffer();
+
+  // ✅ Envoyer le blob au Service Worker
+  offscreenPort.postMessage({
+    name: "magick-result",
+    data: {
+      blob: arrayBufferOut,
+      type: blob.type,
+      name: firstOutputImage.name,
+    },
+  });
+}
 
 async function ensureFFmpeg() {
   console.log("[Offscreen] Chargement de FFmpeg multi-core...");
@@ -55,6 +108,8 @@ async function ensureFFmpeg() {
   console.log("[Offscreen] ✅ FFmpeg multi-core prêt");
   return ffmpegInstance;
 }
+
+async function ensureImageMagick() {}
 
 async function ffmpegConvert(fileData: {
   arrayBuffer: ArrayBuffer;
@@ -102,11 +157,11 @@ async function magickConvert(fileData: {
     "output.png",
   ]);
   const out = magick.FS.readFile("output.png");
-  port.postMessage({ name: "magick-result", data: out.buffer });
+  offscreenPort.postMessage({ name: "magick-result", data: out.buffer });
 }
 
 console.log("[Offscreen] 🚀 Offscreen TS initialisé");
-port.postMessage({
+offscreenPort.postMessage({
   name: "offscreen-ready",
   data: "WASM chargés quand besoin",
 });

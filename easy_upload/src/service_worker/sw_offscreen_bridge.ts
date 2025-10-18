@@ -66,8 +66,9 @@ function handleOffscreenMessage(msg: ChromeBridgeMessage) {
       console.log("[OffscreenBridge] 🎬 Résultat FFmpeg reçu :", msg.data);
       break;
     case "magick-result":
-      console.log("[OffscreenBridge] 🖼️ Résultat ImageMagick reçu :", msg.data);
+      console.log("[SW] 🖼️ Résultat ImageMagick reçu :", msg.data);
       break;
+
     default:
       console.warn("[OffscreenBridge] Message inconnu :", msg);
   }
