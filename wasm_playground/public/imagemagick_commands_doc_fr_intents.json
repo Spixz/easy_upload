@@ -1706,5 +1706,12 @@
     "description": "Enregistre l'image à un emplacement spécifique, utile dans les chaînes de commandes.",
     "example": "convert input -resize 50% -write output_half.png output_full.png",
     "intent": "Je veux enregistrer/écrire l’image dans un fichier à un emplacement précis pendant la chaîne de traitement."
+  },
+  {
+    "title": "conversion de format d'image",
+    "command": "convert input.format output.format",
+    "description": "Convertit une image d’un format à un autre (par exemple PNG vers JPEG, TIFF vers WEBP, etc.).",
+    "example": "convert input.png output.jpg",
+    "intent": "Je veux convertir mon image d’un format vers un autre, par exemple passer d’un fichier PNG à un fichier JPEG."
   }
 ]
