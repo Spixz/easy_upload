@@ -5,14 +5,14 @@ import { ExtractRequirements } from "@/core/extract_requirements/extract_require
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-export interface FileState {
+export interface UserFileState {
   text_for_requirements: string[];
   file_category: FileCategory;
   requirements: Requirements;
   generateRequirements: (inputRequirements: InputRequirements) => Promise<void>;
 }
 
-export const FileNotifier = create<FileState>()(
+export const UserFileNotifier = create<UserFileState>()(
   devtools((set, get) => ({
     async generateRequirements(inputRequirements: InputRequirements) {
       set((_) => ({

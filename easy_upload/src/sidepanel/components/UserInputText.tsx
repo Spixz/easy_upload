@@ -3,22 +3,15 @@
 import { Flex } from "@chatui/core";
 import { Composer, ComposerProps } from "@chatui/core/lib/components/Composer";
 import { CustomButton } from "./CustomButton";
-import { ModelNotifier } from "../notifiers/ModelNotifier";
-import { fileUploadFailed } from "../workflow/worflow";
+import { fileUploadFailed } from "../conversation/handle_user_actions";
+import DisabledWrapper from "./DisabledWrapper";
+import { ConversationNotifier } from "../conversation/ConversationNotifier";
 
-// Define the possible states for the upload
-type UploadStatus = "idle" | "success" | "error";
+export const UserInputText = (props: ComposerProps) => {
+  const { ...composerProps } = props;
+  const { userInputEnabled } = ConversationNotifier();
 
-// Add the new prop to the component's props
-interface UserInputTextProps extends ComposerProps {
-  uploadStatus: UploadStatus;
-}
-
-export const UserInputText = (props: UserInputTextProps) => {
-  const { uploadStatus, ...composerProps } = props;
-
-  const primaryColor = "#ffb390"; // A standard primary color
-
+  const primaryColor = "#ffb390";
   return (
     <div>
       <div
@@ -28,7 +21,6 @@ export const UserInputText = (props: UserInputTextProps) => {
           borderTop: "1px solid #f0f0f0",
         }}
       >
-        {/* <h3>How did the file upload go?</h3> */}
         <Flex wrap="wrap" style={{ gap: "8px" }}>
           <CustomButton
             borderColor={primaryColor}
@@ -44,7 +36,9 @@ export const UserInputText = (props: UserInputTextProps) => {
         </Flex>
       </div>
 
-      <Composer {...composerProps} />
+      <DisabledWrapper disabled={!userInputEnabled}>
+        <Composer {...composerProps} />
+      </DisabledWrapper>
     </div>
   );
 };

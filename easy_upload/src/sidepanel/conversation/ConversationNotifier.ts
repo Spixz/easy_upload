@@ -1,16 +1,19 @@
 import { create } from "zustand";
-import DefaultMessage from "../messages/default_message";
+import DefaultMessage from "./messages/default_message";
 
-export interface MessageState {
+export interface ConversationState {
   messages: DefaultMessage[];
+  userInputEnabled: boolean;
   addMessage: (message: DefaultMessage) => void;
   deleteMessage: (id: string) => void;
   updateMessage: (id: string, updates: Partial<DefaultMessage>) => void;
   handleStream: (id: string, stream: AsyncIterable<string>) => Promise<void>;
+  changeUserInputStatus: (val: boolean) => void;
 }
 
-export const MessagesNotifier = create<MessageState>()((set, get) => ({
+export const ConversationNotifier = create<ConversationState>()((set, get) => ({
   messages: [],
+  userInputEnabled: true,
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
   deleteMessage: (id) =>
@@ -38,5 +41,10 @@ export const MessagesNotifier = create<MessageState>()((set, get) => ({
         content: txt,
       });
     }
+    
+    ConversationNotifier.getState().changeUserInputStatus(true);
+  },
+  changeUserInputStatus: (val) => {
+    set((_) => ({ userInputEnabled: val }));
   },
 }));

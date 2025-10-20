@@ -11,7 +11,7 @@ export class ExtractRequirements {
   static async extract(input: InputRequirements): Promise<Requirements> {
     const session = await LanguageModel.create({
       expectedOutputs: [{ type: "text", languages: ["en"] }],
-      initialPrompts: [{ role: "user", content: prompt }],
+      initialPrompts: [{ role: "system", content: prompt }],
     });
 
     const RequirementsType = Requirements.fromFileCategory(input.file_category);
