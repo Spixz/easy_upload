@@ -44,14 +44,14 @@ async function isEditingRequest(message: string): Promise<boolean> {
       },
       newSession: true,
     });
+  console.log("model output :", res);
 
   if (
     res &&
     typeof res === "object" &&
-    "processUserMessage" in res &&
-    res.processUserMessage === true
+    Object.values(res).some((v) => v === true)
   ) {
-    handleUserEditingRequest();
+    handleUserEditingRequest(message);
     return true;
   }
   return false;

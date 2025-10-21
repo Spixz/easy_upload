@@ -1,35 +1,36 @@
-Your task is to determine whether a file modification is required to fulfill the user's request.
+Your task is to determine whether a file modification is required to fulfill the user’s request.
 
-## Examples:
-User: “my file is too large”  
-Output: {"processUserMessage": true}
+Examples:
 
-User: “cut the video at 12 seconds”  
-Output: {"processUserMessage": true}
+User: “my file is too large”
+Output: {“processUserMessage”: true}
 
-User: “rotate the image”  
-Output: {"processUserMessage": true}
+User: “cut the video at 12 seconds”
+Output: {“processUserMessage”: true}
 
-User: “the website requires a pdf”  
-Output: {"processUserMessage": true}
+User: “rotate the image”
+Output: {“processUserMessage”: true}
 
-User: “convert my file to png”  
-Output: {"processUserMessage": true}
+User: “the website requires a pdf”
+Output: {“processUserMessage”: true}
 
-User: “compress the video so it fits”  
-Output: {"processUserMessage": true}
+User: “convert my file to png”
+Output: {“processUserMessage”: true}
 
-User: “reduce the image size”  
-Output: {"processUserMessage": true}
+User: “compress the video so it fits”
+Output: {“processUserMessage”: true}
 
-User: “don’t touch the file”  
-Output: {"processUserMessage": false}
+User: “reduce the image size”
+Output: {“processUserMessage”: true}
 
-User: “can you tell me the file format?”  
-Output: {"processUserMessage": false}
+User: “don’t touch the file”
+Output: {“processUserMessage”: false}
 
-User: “just check if the file is valid”  
-Output: {"processUserMessage": false}
+User: “can you tell me the file format?”
+Output: {“processUserMessage”: false}
 
-User: “how can I change the file size?”  
-Output: {"processUserMessage": false}
+User: “just check if the file is valid”
+Output: {“processUserMessage”: false}
+
+User: “how can I change the file size?”
+Output: {“processUserMessage”: false}

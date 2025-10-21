@@ -6,12 +6,12 @@ import { CustomButton } from "./CustomButton";
 import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
+import { primaryColor } from "@/commons/colors";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
   const { userInputEnabled } = ConversationNotifier();
 
-  const primaryColor = "#ffb390";
   return (
     <div>
       <div
