@@ -16,9 +16,6 @@ export function initOffscreenBridge() {
       console.log("[OffscreenBridge] ✅ Offscreen connecté au Service Worker");
       offscreenPort = port;
 
-      unsentMessages.forEach(sendToOffscreen);
-      unsentMessages = [];
-
       port.onMessage.addListener((msg: ChromeBridgeMessage) => {
         console.log("[OffscreenBridge] ← Message Offscreen :", msg);
         handleOffscreenMessage(msg);
@@ -28,6 +25,9 @@ export function initOffscreenBridge() {
         console.warn("[OffscreenBridge] ⚠️ Offscreen déconnecté");
         offscreenPort = null;
       });
+      
+      unsentMessages.forEach(sendToOffscreen);
+      unsentMessages = [];
     }
   });
 }

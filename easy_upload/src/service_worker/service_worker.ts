@@ -30,5 +30,6 @@ onMessage("open_sidepanel", async ({ data, sender }) => {
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).then(() => {
   ensureOffscreenCreated();
+  // sendToOffscreen({ name: "test-imagemagick" });
 });
 // .catch((error) => console.error(error));

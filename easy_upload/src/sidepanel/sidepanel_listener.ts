@@ -7,10 +7,22 @@ import {
 } from "./conversation/messages/messages";
 
 const sidepanelPort = chrome.runtime.connect({ name: "sidepanel-channel" });
+
 sidepanelPort.onMessage.addListener(handleWorkerMessage);
 
+function handleWorkerMessage(message: ChromeBridgeMessage) {
+  console.log("message recu par le sidepannel", message);
+  switch (message.name) {
+    case "input_unprocess_requirements":
+      onInputUnprocessRequirements(message.data);
+      break;
+    default:
+      console.warn("[SidepanelListener] Message inconnu :", message);
+  }
+}
+
 async function onInputUnprocessRequirements(requirements: InputRequirements) {
-  const { addMessage } = ConversationNotifier();
+  const { addMessage } = ConversationNotifier.getState();
 
   addMessage(new SystemMessage("Récupération des requirements en cours ..."));
   try {
@@ -30,15 +42,5 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
         "Une erreur s'est produite durant la récupération des requirements",
       ),
     );
-  }
-}
-
-function handleWorkerMessage(message: ChromeBridgeMessage) {
-  switch (message.name) {
-    case "input_unprocess_requirements":
-      onInputUnprocessRequirements(message.data);
-      break;
-    default:
-      console.warn("[SidepanelListener] Message inconnu :", message);
   }
 }

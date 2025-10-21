@@ -13,9 +13,6 @@ export function initSidepanelBridge() {
       console.log("[Bridge] service worker conneted to Sidepanel");
       sidepanelPort = port;
 
-      unsendMessages.forEach(sendToSidepanel);
-      unsendMessages = [];
-
       sidepanelPort.onMessage.addListener((msg: ChromeBridgeMessage) => {
         console.log("[sw-Bridge] Received from sidepanel:", msg);
         handleSidepanelMessage(msg);
@@ -25,6 +22,9 @@ export function initSidepanelBridge() {
         console.log("[sw-Bridge] Sidepanel disconnected of service worker");
         sidepanelPort = null;
       });
+
+      unsendMessages.forEach(sendToSidepanel);
+      unsendMessages = [];
     }
   });
 }

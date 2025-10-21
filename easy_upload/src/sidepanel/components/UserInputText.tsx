@@ -10,7 +10,7 @@ import { primaryColor } from "@/commons/colors";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
-  const { userInputEnabled } = ConversationNotifier();
+  const { userInputEnabled } = ConversationNotifier.getState();
 
   return (
     <div>
