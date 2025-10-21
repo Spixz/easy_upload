@@ -8,7 +8,7 @@ import handleUserMessage from "./conversation/handle_user_message";
 import { UserInputText } from "./components/UserInputText";
 
 export default function Tchat() {
-  const { messages } = ConversationNotifier.getState();
+  const messages = ConversationNotifier((state) => state.messages);
 
   useEffect(() => {
     ModelNotifier.getState()

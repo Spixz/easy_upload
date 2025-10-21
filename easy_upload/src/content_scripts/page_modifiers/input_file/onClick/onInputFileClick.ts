@@ -21,8 +21,8 @@ export async function onInputFileClick(input: HTMLInputElement): Promise<void> {
     visibleOnly: false,
   });
   console.log(potentialRequirements);
-  const allowedCategories: FileCategory[] = input.accept
-    .split(",")
+  const allowedCategories: FileCategory[] = input.dataset
+    .originalAccept!.split(",")
     .map(inferCategoryFromMimeString)
     .filter((value) => value != null);
   const mainAllowedCategory: FileCategory =
