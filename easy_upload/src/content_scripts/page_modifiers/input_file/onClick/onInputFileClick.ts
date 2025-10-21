@@ -7,15 +7,15 @@ import { sendMessage } from "webext-bridge/content-script";
 import { InputRequirements } from "@/commons/interfaces";
 // import "webext-bridge/content-script";
 
-export default function inputOnClickListener(input: HTMLInputElement) {
-  if (input.dataset.onClickListenerAttached != null) return;
+// export default function inputOnClickListener(input: HTMLInputElement) {
+//   if (input.dataset.onClickListenerAttached != null) return;
 
-  input.addEventListener("click", () => handleClick(input), true);
-  input.dataset.onClickListenerAttached = "";
-  console.log(`On click custom attaché sur `, input);
-}
+//   input.addEventListener("click", () => handleClick(input), true);
+//   input.dataset.onClickListenerAttached = "";
+//   console.log(`On click custom attaché sur `, input);
+// }
 
-async function handleClick(input: HTMLInputElement): Promise<void> {
+export async function onInputFileClick(input: HTMLInputElement): Promise<void> {
   console.log("L'user à cliqué sur l'input");
   const potentialRequirements: string[] = extractPotentialRequirementsFromPage({
     visibleOnly: false,

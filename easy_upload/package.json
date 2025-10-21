@@ -19,6 +19,7 @@
     "@types/arrive": "^2.4.4",
     "@types/dom-chromium-ai": "^0.0.10",
     "arrive": "^2.5.2",
+    "file-type": "^21.0.0",
     "is-video": "^2.0.0",
     "mime": "^4.1.0",
     "react": "^19.1.0",

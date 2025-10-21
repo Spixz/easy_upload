@@ -19,7 +19,7 @@ export default defineManifest({
     {
       js: [
         "src/content_scripts/react_app/main.tsx",
-        "src/content_scripts/page_modifiers/input_file/input_file_modifiers.ts",
+        "src/content_scripts/page_modifiers/on_document_click.ts",
       ],
       matches: ["<all_urls>"],
     },

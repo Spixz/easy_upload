@@ -1,5 +1,8 @@
 import 'arrive';
 
+
+// TODO : outdated, to delete
+
 /**
  * Converts an image file to PNG format.
  * @param file The image file to convert.

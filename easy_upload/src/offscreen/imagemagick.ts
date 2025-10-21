@@ -30,6 +30,7 @@ export async function basicManip() {
   let sourceBytes = new Uint8Array(arrayBuffer);
 
   // calling ImageMagick with one source image, and command to rotate & resize image
+  // file-type pour 
   const inputFiles = [{ name: "srcFile.png", content: sourceBytes }];
   const command = [
     "convert",
