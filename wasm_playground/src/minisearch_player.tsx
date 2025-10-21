@@ -31,7 +31,7 @@ export default function MinisearchPlayer() {
     useEffect(() => {
         async function loadData() {
             try {
-                const response = await fetch("/imagemagick_commands_doc_fr_intents.json")
+                const response = await fetch("/imagemagick_commands_doc_en_intents.json")
                 if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`)
                 const data: MagickCommand[] = await response.json()
 
