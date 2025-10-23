@@ -1,4 +1,5 @@
 import { onInputFileClick } from "./input_file/onClick/onInputFileClick";
+import { sendChunkedMessage } from "ext-send-chunked-message";
 
 export function attachFileInputInterceptor(doc: Document) {
   doc.addEventListener("click", (e) => {
@@ -12,10 +13,11 @@ export function attachFileInputInterceptor(doc: Document) {
         const file = input.files?.[0];
         if (!file) return;
 
-        //   const processed = await processFile(file);
-        //   replaceFileInInput(input, processed);
-
-        input.value = ""; // permet la re-sélection du même fichier
+        const buff: ArrayBuffer = await file.arrayBuffer();
+        sendChunkedMessage({
+          data: Array.from(new Uint8Array(buff)),
+        });
+        // input.value = ""; // permet la re-sélection du même fichier
         input.removeEventListener("change", onChange);
       };
 

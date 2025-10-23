@@ -1,5 +1,4 @@
 import { UserTask } from "@/commons/interfaces";
-import ImagemagickTool from "./imagemagick_tool";
 
 type TaskStatus = "pending" | "inProgress" | "done" | "error";
 
@@ -18,13 +17,18 @@ export abstract class ToolTask {
     this.selectCommand();
   }
 
-  static factory(userTask: UserTask): ToolTask | undefined {
+  static async factory(userTask: UserTask): Promise<ToolTask | undefined> {
     switch (userTask.tool_name) {
-      case "imagemagick":
+      case "imagemagick": {
+        const { default: ImagemagickTool } = await import("./imagemagick_tool");
         return new ImagemagickTool(userTask);
+      }
     }
   }
-  //TODO : create une factory qui intancie la bonne classe en fonction de l'outil
+
+  set setStatus(status: TaskStatus) {
+    this.status = status;
+  }
 
   abstract selectCommand(): Promise<void>; // peut etre null par exemple pour imageCutter
   // quio que, est ce que je donnerai pas aussi une db et créerai pas des commmandes

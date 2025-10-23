@@ -38,8 +38,8 @@ export const UserInputText = (props: ComposerProps) => {
           />
           <CustomButton
             borderColor={primaryColor}
-            onClick={() => {
-              const imagemagickTask = ToolTask.factory({
+            onClick={async () => {
+              const imagemagickTask = await ToolTask.factory({
                 tool_name: "imagemagick",
                 i_want: "rotate the image on the left",
               });

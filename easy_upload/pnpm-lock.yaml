@@ -32,6 +32,9 @@ importers:
       arrive:
         specifier: ^2.5.2
         version: 2.5.2
+      ext-send-chunked-message:
+        specifier: ^1.0.0
+        version: 1.0.0
       file-type:
         specifier: ^21.0.0
         version: 21.0.0
@@ -1163,6 +1166,9 @@ packages:
   expect-type@1.2.2:
     resolution: {integrity: sha512-JhFGDVJ7tmDJItKhYgJCGLOWjuK9vPxiXoUFLwLDc99NlmklilbiQJwoctZtt13+xMw91MCk/REan6MWHqDjyA==}
     engines: {node: '>=12.0.0'}
+
+  ext-send-chunked-message@1.0.0:
+    resolution: {integrity: sha512-SB90DDYTcVhyKJcvq/kZJ7gJ0lV7aioRVRpT0MeK5df78e3Bgk/mzUB0c34vENO6ZzhGCGnL8e8ITqvgJ5eCwA==}
 
   extract-zip@2.0.1:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
@@ -3221,6 +3227,8 @@ snapshots:
   events@3.3.0: {}
 
   expect-type@1.2.2: {}
+
+  ext-send-chunked-message@1.0.0: {}
 
   extract-zip@2.0.1:
     dependencies:
