@@ -7,6 +7,7 @@ import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
+import { ToolTask } from "../tools/tool_task";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -34,6 +35,18 @@ export const UserInputText = (props: ComposerProps) => {
             borderColor={primaryColor}
             onClick={() => console.log("Set status to idle")}
             text="What can you do?"
+          />
+          <CustomButton
+            borderColor={primaryColor}
+            onClick={() => {
+              const imagemagickTask = ToolTask.factory({
+                tool_name: "imagemagick",
+                i_want: "rotate the image on the left",
+              });
+
+              imagemagickTask?.selectCommand();
+            }}
+            text="test Tool task"
           />
         </Flex>
       </div>

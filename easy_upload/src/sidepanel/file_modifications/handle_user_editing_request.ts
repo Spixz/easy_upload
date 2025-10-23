@@ -1,12 +1,9 @@
+import { UserTask } from "@/commons/interfaces";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { AssistantMessage } from "../conversation/messages/messages";
 import { ModelNotifier } from "../model/ModelNotifier";
 import generateTaskPrompt from "./prompts/generate_tasks_prompt.txt?raw";
 
-interface Task {
-  tool_name: string;
-  i_want: string;
-}
 
 export async function handleUserEditingRequest(
   userRequest: string,
@@ -27,7 +24,7 @@ export async function handleUserEditingRequest(
   });
 
   try {
-    const tasks = tasksResp as Task[];
+    const tasks = tasksResp as UserTask[];
     console.log(tasks);
     addMessage(new AssistantMessage(tasksListToString(tasks)));
   } catch (err) {
@@ -39,7 +36,7 @@ export async function handleUserEditingRequest(
   }
 }
 
-function tasksListToString(tasks: Task[]): string {
+function tasksListToString(tasks: UserTask[]): string {
   return tasks
     .map((task) => `- I will use the ${task.tool_name} tool to ${task.i_want}`)
     .join("\n");

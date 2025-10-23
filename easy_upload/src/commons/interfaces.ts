@@ -9,3 +9,10 @@ export interface ChromeBridgeMessage {
   name: string;
   data: any;
 }
+
+export interface UserTask {
+  tool_name: string;
+  i_want: string;
+}
+
+export type ToolName = "imageCutter" | "imagemagick" | "ffmpeg";

@@ -10,7 +10,6 @@ import {
     Typography,
 } from "@mui/material"
 
-// ✅ Type des objets dans ton JSON
 interface MagickCommand {
     title: string
     command: string

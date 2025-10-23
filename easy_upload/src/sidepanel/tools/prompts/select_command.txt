@@ -1,0 +1,13 @@
+Among the proposed commands, you must return the number of the one that best matches the user’s intent.
+
+## Example
+
+**Input:**
+user intent: “I want to compress the image to reduce its file size”
+tool proposals:
+0 - I want to set a specific option for the output format (e.g., compression/size limit or metadata) to control the exported file’s characteristics.
+1 - I want to compress the image to make its file size smaller without changing its format.
+2 - I want to apply a predefined color correction using a CDL file to adjust the image colors.
+
+**Output:**
+{ tool_number: 1 }
