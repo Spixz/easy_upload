@@ -53,5 +53,8 @@ export default class FfmpegTool extends ToolTask {
       this.initializationSuccess = false;
     }
   }
-  override async exec(): Promise<void> {}
+
+  override async exec(): Promise<void> {
+    const userFile = 
+  }
 }

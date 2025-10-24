@@ -5,6 +5,8 @@ import {
   SystemMessage,
   ThinkingMessage,
 } from "./conversation/messages/messages";
+import { addOnChunkedMessageListener } from "ext-send-chunked-message";
+import { userInputFilenameInOPFS } from "@/commons/const";
 
 const sidepanelPort = chrome.runtime.connect({ name: "sidepanel-channel" });
 
@@ -20,6 +22,47 @@ function handleWorkerMessage(message: ChromeBridgeMessage) {
       console.warn("[SidepanelListener] Message inconnu :", message);
   }
 }
+
+addOnChunkedMessageListener(async (message, sender, sendResponse) => {
+  console.log("sidpanel 📩 Message reçu de", sender);
+  console.log("📦 Données reçues:", message);
+
+  if (message?.type != "user input file changed") {
+    return;
+  }
+
+  const bytes = new Uint8Array(message.data);
+  const root = await navigator.storage.getDirectory();
+  const fileHandle = await root.getFileHandle(userInputFilenameInOPFS, {
+    create: true,
+  });
+  const writable = await fileHandle.createWritable();
+
+  await writable.write(bytes);
+  await writable.close();
+  if (bytes.length != 0) {
+    UserFileNotifier.getState().updateUserInputFileStatus(false);
+  }
+
+  console.log("✅ Fin de l'écriture du fichier");
+
+  //   // 🧠 Vérification : relis le fichier pour confirmer sa taille
+  //   const savedHandle = await root.getFileHandle("user_input_file");
+  //   const savedFile = await savedHandle.getFile();
+
+  //   console.log("📏 Taille sauvegardée :", savedFile.size, "octets");
+
+  //   if (savedFile.size === bytes.byteLength) {
+  //     console.log("✅ Vérification réussie : tailles identiques !");
+  //   } else {
+  //     console.warn(
+  //       "⚠️ Taille différente ! attendu:",
+  //       bytes.byteLength,
+  //       "obtenu:",
+  //       savedFile.size
+  //     );
+  //   }
+});
 
 async function onInputUnprocessRequirements(requirements: InputRequirements) {
   const { addMessage } = ConversationNotifier.getState();

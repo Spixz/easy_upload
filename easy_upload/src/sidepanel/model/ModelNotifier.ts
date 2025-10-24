@@ -91,7 +91,7 @@ export const ModelNotifier = create<ModelState>()(
       },
       cancelPrompt: () => {
         get().abortController.abort("Session terminated");
-        ConversationNotifier.getState().changeUserInputStatus(true);
+        ConversationNotifier.getState().enableUserInput(true);
       },
       async promptForTask(
         props: PromptForTask,

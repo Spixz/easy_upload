@@ -7,11 +7,12 @@ import isEtitingRequestInitialPrompt from "./prompts/is_editing_request.txt?raw"
 export default async function handleUserMessage(type: string, message: string) {
   if (type === "text" && message.trim()) {
     ConversationNotifier.getState().addMessage(new UserMessage(message));
-    ConversationNotifier.getState().changeUserInputStatus(false);
+    ConversationNotifier.getState().enableUserInput(false);
 
-    const shouldStopProcessing = await analyseUserMessage(message);
-
-    if (shouldStopProcessing) return;
+    if (await isEditingRequest(message)) {
+      handleUserEditingRequest(message);
+      return;
+    }
 
     ModelNotifier.getState().prompt({
       message: message,
@@ -23,15 +24,6 @@ export default async function handleUserMessage(type: string, message: string) {
       streaming: true,
     });
   }
-}
-
-export async function analyseUserMessage(message: string): Promise<boolean> {
-  var blockPromptingRequest = false;
-
-  if (await isEditingRequest(message)) blockPromptingRequest = true;
-  console.log(`is editing request : ${blockPromptingRequest}`);
-
-  return blockPromptingRequest;
 }
 
 async function isEditingRequest(message: string): Promise<boolean> {
@@ -49,9 +41,8 @@ async function isEditingRequest(message: string): Promise<boolean> {
   if (
     res &&
     typeof res === "object" &&
-    Object.values(res).some((v) => v === true)
+    Object.values(res).some((v) => v == true || v == "true")
   ) {
-    handleUserEditingRequest(message);
     return true;
   }
   return false;

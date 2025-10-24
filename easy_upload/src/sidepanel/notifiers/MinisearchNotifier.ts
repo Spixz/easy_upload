@@ -37,7 +37,7 @@ export const MinisearchNotifier = create<MinisearchState>()(
 
 async function initImagemagickDb(): Promise<MiniSearch<MagickCommand>> {
   const commandsPath = chrome.runtime.getURL(
-    "public/minisearch_db/imagemagick_commands.json",
+    "minisearch_db/imagemagick_commands.json",
   );
   const response = await fetch(commandsPath);
   if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
@@ -61,7 +61,7 @@ async function initImagemagickDb(): Promise<MiniSearch<MagickCommand>> {
 
 async function initFfmpegDb(): Promise<MiniSearch<FfmpegCommand>> {
   const commandsPath = chrome.runtime.getURL(
-    "public/minisearch_db/ffmpeg_commands.json",
+    "minisearch_db/ffmpeg_commands.json",
   );
   const response = await fetch(commandsPath);
   if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);

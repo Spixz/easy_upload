@@ -8,6 +8,7 @@ import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
 import { ToolTask } from "../tools/tool_task";
+import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -24,7 +25,16 @@ export const UserInputText = (props: ComposerProps) => {
           borderTop: "1px solid #f0f0f0",
         }}
       >
-        <Flex wrap="wrap" style={{ gap: "8px" }}>
+        <Flex
+          wrap="wrap"
+          style={{
+            gap: "8px",
+            opacity: userInputEnabled ? 1 : 0.5,
+            pointerEvents: userInputEnabled ? "auto" : "none",
+            transition: "opacity 0.3s ease-in-out",
+            position: "relative",
+          }}
+        >
           <CustomButton
             borderColor={primaryColor}
             isNew={true}
@@ -39,12 +49,24 @@ export const UserInputText = (props: ComposerProps) => {
           <CustomButton
             borderColor={primaryColor}
             onClick={async () => {
-              const imagemagickTask = await ToolTask.factory({
-                tool_name: "imagemagick",
-                i_want: "rotate the image on the left",
-              });
+              // const imagemagickTask = await ToolTask.factory({
+              //   tool_name: "imagemagick",
+              //   i_want: "rotate the image on the left",
+              // });
 
-              imagemagickTask?.selectCommand();
+              // imagemagickTask?.selectCommand();
+              const userTasks = [
+                {
+                  tool_name: "imagemagick",
+                  i_want: "rotate the image 90 degrees to the left",
+                },
+              ];
+              await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
+                userTasks,
+              );
+
+              // ! si bouton exec cliquer
+              ToolTaskManagerNotifier.getState().execTasks();
             }}
             text="test Tool task"
           />

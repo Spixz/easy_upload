@@ -4,28 +4,37 @@ import { Requirements } from "@/commons/model_output_schemas/requirements";
 import { ExtractRequirements } from "@/core/extract_requirements/extract_requirements";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { ConversationNotifier } from "../conversation/ConversationNotifier";
 
 export interface UserFileState {
-  text_for_requirements: string[];
-  file_category: FileCategory;
+  textForRequirements: string[];
+  fileCategory: FileCategory;
   requirements: Requirements;
+  inputFileIsEmpty: boolean;
   generateRequirements: (inputRequirements: InputRequirements) => Promise<void>;
+  updateUserInputFileStatus: (isEmpty: boolean) => void;
 }
 
 export const UserFileNotifier = create<UserFileState>()(
   devtools((set, get) => ({
+    inputFileIsEmpty: true,
     async generateRequirements(inputRequirements: InputRequirements) {
       set((_) => ({
-        text_for_requirements: inputRequirements.text_for_requirements,
-        file_category: inputRequirements.file_category,
+        textForRequirements: inputRequirements.text_for_requirements,
+        fileCategory: inputRequirements.file_category,
       }));
 
+      ConversationNotifier.getState().enableUserInput(false);
       const requirements = await ExtractRequirements.extract(inputRequirements);
       console.log(requirements);
+      ConversationNotifier.getState().enableUserInput(true);
 
       set((_) => ({
         requirements: requirements,
       }));
+    },
+    updateUserInputFileStatus(isEmpty) {
+      set((_) => ({ inputFileIsEmpty: isEmpty }));
     },
   })),
 );

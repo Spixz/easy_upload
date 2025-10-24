@@ -284,7 +284,7 @@
     "command": "-clone index",
     "input_type": {},
     "description": "Clones a specific image from a sequence of images (index is zero-based).",
-    "example": "convert input.png ( +clone -rotate 90 ) -append output.png",
+    "example": "convert input ( +clone -rotate 90 ) -append output",
     "intent": "I want to clone/duplicate a specific image from a sequence (indexed from 0) to reuse or transform it separately."
   },
   {
@@ -618,9 +618,9 @@
   {
     "title": "image enhancement",
     "command": "-enhance",
-    "description": "Applies a digital filter to enhance a noisy image.",
+    "description": "Applies a digital filter to enhance the image.",
     "example": "convert input -enhance output",
-    "intent": "I want to improve a noisy image's quality by applying a filter to reduce noise and clarify the image.",
+    "intent": "I want to improve the image quality by applying a filter to clarify the image.",
     "input_type": {}
   },
   {
@@ -836,7 +836,7 @@
     "command": "-help",
     "input_type": {},
     "description": "Displays the full list of available options and commands.",
-    "example": "magick -help",
+    "example": "-help",
     "intent": "I want to display the help/manual to see the available options."
   },
   {
@@ -852,7 +852,7 @@
     "command": "-identify",
     "input_type": {},
     "description": "Displays the main characteristics of the image file (format, size, colors, etc.).",
-    "example": "identify input.png",
+    "example": "identify input",
     "intent": "I want to view the image's technical information (format, size, color depth, etc.)."
   },
   {
@@ -1219,7 +1219,7 @@
     "title": "quick analysis (ping)",
     "command": "-ping",
     "description": "Inspects image metadata without fully loading the image (very fast).",
-    "example": "identify -ping input.jpg",
+    "example": "identify -ping input",
     "intent": "I want to quickly inspect an image's metadata without fully loading it.",
     "input_type": {}
   },
@@ -1297,13 +1297,13 @@
   },
   {
     "title": "image compression",
-    "command": "magick input -quality 80 -strip -background white -flatten output",
+    "command": "input -quality 80 -strip -background white -flatten output",
     "description": "Compresses the image to reduce file size while keeping the same format. Metadata is stripped and transparency is flattened when needed (e.g. for JPEG).",
-    "example": "magick input.jpg -quality 80 -strip -background white -flatten output.jpg",
+    "example": "input -quality 80 -strip -background white -flatten output",
     "intent": "I want to compress the image to make its file size smaller without changing its format.",
     "input_type": {
-      "pdf": "magick -density 150 input.pdf -quality 80 -strip -background white -flatten output.pdf",
-      "gif": "magick input.gif -coalesce -layers optimize output.gif"
+      "pdf": "-density 150 input -quality 80 -strip -background white -flatten output.pdf",
+      "gif": "input -coalesce -layers optimize output.gif"
     }
   },
   {
@@ -1766,12 +1766,12 @@
     "title": "Make transparant => Remove background color",
     "command": "-fuzz 10% -transparent white",
     "description": "Removes a uniform background (e.g., white) and makes it transparent. Useful for converting opaque images to PNG with transparency.",
-    "example": "magick input.jpg -fuzz 10% -transparent white output.png",
+    "example": "input -fuzz 10% -transparent white output.png",
     "intent": "I want to remove the white (or uniform) background and make it transparent.",
     "input_type": {
-      "jpg": "magick input.jpg -fuzz 10% -transparent white output.png",
-      "jpeg": "magick input.jpeg -fuzz 10% -transparent white output.png",
-      "bmp": "magick input.bmp -fuzz 10% -transparent white output.png"
+      "jpg": "input -fuzz 10% -transparent white output.png",
+      "jpeg": "input -fuzz 10% -transparent white output.png",
+      "bmp": "input -fuzz 10% -transparent white output.png"
     }
   },
   {
@@ -1954,14 +1954,14 @@
     "title": "image format conversion",
     "command": "convert input.format -background white -flatten output.format ",
     "description": "Converts an image from one format to another (for example PNG to JPEG, TIFF to WEBP, etc.).",
-    "example": "convert input.png output.jpg",
+    "example": "convert input output.xxx",
     "input_type": {
-      "pdf": "convert -density 150 input.pdf -background white -flatten output.xxx",
-      "svg": "convert -background none input.svg output.xxx",
-      "gif": "convert input.gif -coalesce output.xxx",
-      "tiff": "convert input.tiff -depth 8 output.xxx",
-      "heic": "convert input.heic output.xxx",
-      "avif": "convert input.avif output.xxx"
+      "pdf": "convert -density 150 input -background white -flatten output.xxx",
+      "svg": "convert -background none input output.xxx",
+      "gif": "convert input -coalesce output.xxx",
+      "tiff": "convert input -depth 8 output.xxx",
+      "heic": "convert input output.xxx",
+      "avif": "convert input output.xxx"
     },
     "intent": "I want to convert my image from one format to another, for example from a PNG file to a JPEG file."
   },
@@ -1969,12 +1969,12 @@
     "title": "Auto color and contrast correction",
     "command": "input -auto-level -contrast output",
     "description": "Automatically balances brightness and contrast to improve the image’s visual quality. Useful for dull or underexposed photos.",
-    "example": "magick input.jpg -auto-level -contrast output.jpg",
+    "example": "input -auto-level -contrast output",
     "intent": "I want to automatically enhance my image’s brightness and contrast to make it look clearer and more vivid.",
     "input_type": {
-      "gif": "input.gif -coalesce -auto-level -contrast -layers optimize output.gif",
-      "pdf": "-density 150 input.pdf -auto-level -contrast output.pdf",
-      "svg": "-background none input.svg -auto-level -contrast output.svg"
+      "gif": "input -coalesce -auto-level -contrast -layers optimize output",
+      "pdf": "-density 150 input -auto-level -contrast output",
+      "svg": "-background none input -auto-level -contrast output"
     }
   }
 ]

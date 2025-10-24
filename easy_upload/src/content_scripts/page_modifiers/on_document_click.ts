@@ -15,6 +15,7 @@ export function attachFileInputInterceptor(doc: Document) {
 
         const buff: ArrayBuffer = await file.arrayBuffer();
         sendChunkedMessage({
+          type: "user input file changed",
           data: Array.from(new Uint8Array(buff)),
         });
         // input.value = ""; // permet la re-sélection du même fichier

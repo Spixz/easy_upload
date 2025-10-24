@@ -8,7 +8,7 @@ export interface ConversationState {
   deleteMessage: (id: string) => void;
   updateMessage: (id: string, updates: Partial<DefaultMessage>) => void;
   handleStream: (id: string, stream: AsyncIterable<string>) => Promise<void>;
-  changeUserInputStatus: (val: boolean) => void;
+  enableUserInput: (val: boolean) => void;
 }
 
 export const ConversationNotifier = create<ConversationState>()((set, get) => ({
@@ -41,10 +41,10 @@ export const ConversationNotifier = create<ConversationState>()((set, get) => ({
         content: txt,
       });
     }
-    
-    ConversationNotifier.getState().changeUserInputStatus(true);
+
+    ConversationNotifier.getState().enableUserInput(true);
   },
-  changeUserInputStatus: (val) => {
+  enableUserInput: (val) => {
     set((_) => ({ userInputEnabled: val }));
   },
 }));

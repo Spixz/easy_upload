@@ -1,4 +1,5 @@
 import { UserTask } from "@/commons/interfaces";
+import { BasicCliCommand } from "../notifiers/MinisearchNotifier";
 
 type TaskStatus = "pending" | "inProgress" | "done" | "error";
 
@@ -8,20 +9,23 @@ export abstract class ToolTask {
   status: TaskStatus;
   initializationSuccess: boolean;
   command?: string;
+  commandSchema?: BasicCliCommand;
   resultPath?: string;
 
   constructor(userTask: UserTask) {
     this.goal = userTask.i_want;
     this.status = "pending";
     this.initializationSuccess = false;
-    this.selectCommand();
   }
 
   static async factory(userTask: UserTask): Promise<ToolTask | undefined> {
     switch (userTask.tool_name) {
       case "imagemagick": {
         const { default: ImagemagickTool } = await import("./imagemagick_tool");
-        return new ImagemagickTool(userTask);
+        const tool = new ImagemagickTool(userTask);
+
+        await tool.selectCommand();
+        if (tool.initializationSuccess) return tool;
       }
     }
   }
@@ -33,7 +37,10 @@ export abstract class ToolTask {
   abstract selectCommand(): Promise<void>; // peut etre null par exemple pour imageCutter
   // quio que, est ce que je donnerai pas aussi une db et créerai pas des commmandes
   // pour lui pour configurer l'interface
-  abstract exec(): Promise<void>;
+  abstract exec(props: {
+    inputFilename: string;
+    outputFilename: string;
+  }): Promise<void>;
   // lance la tache.
   // par ex pour imageCutter envoi un message qui ouvre une fenetre. Par contre
   /// il faut qu'il puisse savoir quand la tache est terminée.
