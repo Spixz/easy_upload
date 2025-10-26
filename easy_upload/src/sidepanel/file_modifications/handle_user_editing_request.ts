@@ -1,6 +1,9 @@
 import { UserTask } from "@/commons/interfaces";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
-import { AssistantMessage } from "../conversation/messages/messages";
+import {
+  AskForTasksExecutionMessage,
+  AssistantMessage,
+} from "../conversation/messages/messages";
 import { ModelNotifier } from "../model/ModelNotifier";
 import generateTaskPrompt from "./prompts/generate_tasks_prompt.txt?raw";
 import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
@@ -28,11 +31,8 @@ export async function handleUserEditingRequest(
     userTasks,
   );
 
-  // ! si bouton exec cliquer
-  await ToolTaskManagerNotifier.getState().execTasks();
-  ConversationNotifier.getState().enableUserInput(true);
-
-  // const generateToolsTaskFromTask
+  const askExecutionMessage = new AskForTasksExecutionMessage();
+  ConversationNotifier.getState().addMessage(askExecutionMessage);
 }
 
 async function generateUserTasksFromGoals(

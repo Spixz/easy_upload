@@ -8,7 +8,7 @@ import { ToolTask } from "./tool_task";
 import { ModelNotifier } from "../model/ModelNotifier";
 import selectCommandPrompt from "./prompts/select_command.txt?raw";
 import generateCommandPrompt from "./prompts/generate_command.txt?raw";
-import { detectFileExt, getFileInOPFS } from "@/commons/helpers";
+import { detectFileExt, getFileInOPFS } from "@/commons/helpers/helpers";
 import { sidepanelPort } from "../sidepanel_listener";
 import {
   ChromeBridgeMessage,
@@ -123,9 +123,7 @@ export default class ImagemagickTool extends ToolTask {
       console.log("Offscreen resp :");
       console.log(offscreenResp);
     } catch (err) {
-      console.warn(
-        `The generated command output contain an error : ${JSON.stringify(generatedCommandRes)}`,
-      );
+      throw `The generated command output contain an error : ${JSON.stringify(generatedCommandRes)}`;
     }
 
     // j'ai bien le format du fichier maintent faire ma tambouille

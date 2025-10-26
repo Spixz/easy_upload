@@ -7,7 +7,6 @@ import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
-import { ToolTask } from "../tools/tool_task";
 import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
 
 export const UserInputText = (props: ComposerProps) => {
@@ -49,12 +48,6 @@ export const UserInputText = (props: ComposerProps) => {
           <CustomButton
             borderColor={primaryColor}
             onClick={async () => {
-              // const imagemagickTask = await ToolTask.factory({
-              //   tool_name: "imagemagick",
-              //   i_want: "rotate the image on the left",
-              // });
-
-              // imagemagickTask?.selectCommand();
               const userTasks = [
                 {
                   tool_name: "imagemagick",

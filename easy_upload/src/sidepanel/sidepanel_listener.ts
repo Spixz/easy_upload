@@ -19,7 +19,7 @@ function handleWorkerMessage(message: ChromeBridgeMessage) {
   console.log("message recu par le sidepannel", message);
   switch (message.name) {
     case "input_unprocess_requirements":
-      onInputUnprocessRequirements(message.data);
+      // onInputUnprocessRequirements(message.data);
       break;
     case "exec-command-in-offscreen-resp":
       break;
@@ -44,6 +44,7 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
       ),
     );
   } catch {
+    ConversationNotifier.getState().enableUserInput(true);
     addMessage(
       new SystemMessage("An error occurred while fetching the requirements."),
     );

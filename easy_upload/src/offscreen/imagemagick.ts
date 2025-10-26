@@ -3,7 +3,7 @@ import {
   OffscreenCommandExecutionResult,
 } from "@/commons/communications_interfaces";
 import offscreenPort from "./offscreen_port";
-import { getFileInOPFS, writeFileInOPFS } from "@/commons/helpers";
+import { getFileInOPFS, writeFileInOPFS } from "@/commons/helpers/helpers";
 import { MagickOutputFile } from "wasm-imagemagick";
 
 const Magick = await import(
