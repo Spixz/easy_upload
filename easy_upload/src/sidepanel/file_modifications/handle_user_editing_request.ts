@@ -14,12 +14,15 @@ export async function handleUserEditingRequest(
     new AssistantMessage("Alright, I’m preparing a plan to modify your file"),
   );
 
-  const userTasks = await generateUserTasksFromGoals(userRequest);
+  const userTasks: UserTask[] = await generateUserTasksFromGoals(userRequest);
 
   if (userTasks.length == 0) {
     ConversationNotifier.getState().enableUserInput(true);
     return;
   }
+
+  console.log("Les taches sur plan pour modifier le fichier:");
+  console.log(userTasks);
 
   await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
     userTasks,

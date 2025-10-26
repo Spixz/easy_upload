@@ -8,7 +8,8 @@ export abstract class ToolTask {
   goal: string;
   status: TaskStatus;
   initializationSuccess: boolean;
-  command?: string;
+  outputOPFSFilename: string = crypto.randomUUID();
+  commandToExecute?: string;
   commandSchema?: BasicCliCommand;
   resultPath?: string;
 
@@ -38,8 +39,7 @@ export abstract class ToolTask {
   // quio que, est ce que je donnerai pas aussi une db et créerai pas des commmandes
   // pour lui pour configurer l'interface
   abstract exec(props: {
-    inputFilename: string;
-    outputFilename: string;
+    inputOPFSFilename: string;
   }): Promise<void>;
   // lance la tache.
   // par ex pour imageCutter envoi un message qui ouvre une fenetre. Par contre

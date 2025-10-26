@@ -26,14 +26,12 @@ export const ToolTaskManagerNotifier = create<ToolTaskManagerState>()(
         console.log(tasks);
 
         for (const [index, task] of tasks.entries()) {
-          const outputFilename = crypto.randomUUID();
-          console.log(`Execution de la tache : ${index} - ${task.goal}`);
+          console.log(`||| Execution de la tache : ${index} - ${task.goal} |||`);
           try {
             await task.exec({
-              inputFilename: fileToWorkOn,
-              outputFilename: outputFilename,
+              inputOPFSFilename: fileToWorkOn,
             });
-            fileToWorkOn = outputFilename;
+            fileToWorkOn = task.outputOPFSFilename;
           } catch (err) {
             console.warn(
               `Une erreur s'est produite durant l'éxécution de la task ${index} - ${task.goal}`,
@@ -76,38 +74,3 @@ export const ToolTaskManagerNotifier = create<ToolTaskManagerState>()(
     },
   ),
 );
-
-// export class ToolTaskManager {
-//   _toolTasks: ToolTask[];
-
-//   constructor() {
-//     this._toolTasks = [];
-//   }
-
-//   async execTasks() {
-//     let fileToWorkOn: string = userInputFilenameInOPFS;
-
-//     for (const [index, task] of this._toolTasks.entries()) {
-//       const outputFilename = crypto.randomUUID();
-//       try {
-//         await task.exec({
-//           inputFilename: fileToWorkOn,
-//           outputFilename: outputFilename,
-//         });
-//         fileToWorkOn = outputFilename;
-//       } catch (err) {
-//         console.warn(
-//           `Une erreur s'est produite durant l'éxécution de la task ${index} - ${task.goal}`,
-//         );
-//       }
-//     }
-//   }
-
-//   get toolTasks(): ToolTask[] {
-//     return this._toolTasks;
-//   }
-
-//   set toolTasks(tasks: ToolTask[]) {
-//     this._toolTasks = tasks;
-//   }
-// }

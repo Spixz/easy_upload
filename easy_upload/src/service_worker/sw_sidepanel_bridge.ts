@@ -1,4 +1,5 @@
-import { ChromeBridgeMessage } from "@/commons/interfaces";
+import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import { sendToOffscreen } from "./sw_offscreen_bridge";
 
 let sidepanelPort: chrome.runtime.Port | null = null;
 let unsendMessages: ChromeBridgeMessage[] = [];
@@ -40,8 +41,12 @@ export function sendToSidepanel(message: ChromeBridgeMessage) {
 
 function handleSidepanelMessage(message: ChromeBridgeMessage) {
   switch (message.name) {
-    case "salut":
-      console.log("Salut recu du pannel au worker");
+    case "exec-command-in-offscreen":
+      sendToOffscreen({
+        name: "exec-command-in-offscreen",
+        data: message.data,
+      });
+
       break;
     default:
       console.warn("[SidepanelBridge] Message inconnu :", message);

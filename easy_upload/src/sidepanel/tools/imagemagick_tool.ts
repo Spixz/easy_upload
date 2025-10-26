@@ -1,6 +1,5 @@
 import { UserTask } from "@/commons/interfaces";
 import {
-  BasicCliCommand,
   MagickCommand,
   MinisearchNotifier,
   searchResultsToCliCommands,
@@ -10,6 +9,12 @@ import { ModelNotifier } from "../model/ModelNotifier";
 import selectCommandPrompt from "./prompts/select_command.txt?raw";
 import generateCommandPrompt from "./prompts/generate_command.txt?raw";
 import { detectFileExt, getFileInOPFS } from "@/commons/helpers";
+import { sidepanelPort } from "../sidepanel_listener";
+import {
+  ChromeBridgeMessage,
+  OffscreenCommandExecutionRequest,
+  OffscreenCommandExecutionResult,
+} from "@/commons/communications_interfaces";
 
 export default class ImagemagickTool extends ToolTask {
   constructor(userTask: UserTask) {
@@ -29,11 +34,13 @@ export default class ImagemagickTool extends ToolTask {
       return;
     }
 
-    const proposition = searchResultsToCliCommands(potentialCommands).slice(
+    const propositions = searchResultsToCliCommands(potentialCommands).slice(
       0,
-      3,
+      4,
     );
-    const propositionsIntents = proposition.map(
+    console.log("les commandes récupérés par minisearch");
+    console.log(propositions);
+    const propositionsIntents = propositions.map(
       (command, index) => `${index} - ${command.intent}`,
     );
     const content = `user intents: ${this.goal}\ntool proposal:\n${propositionsIntents.join("\n")} `;
@@ -46,7 +53,7 @@ export default class ImagemagickTool extends ToolTask {
 
     try {
       const index = Number(Object.values(toolIndex)[0]);
-      const selectedCommand: MagickCommand = proposition[index];
+      const selectedCommand: MagickCommand = propositions[index];
       console.log(selectedCommand);
       this.commandSchema = selectedCommand;
       this.initializationSuccess = true;
@@ -56,11 +63,8 @@ export default class ImagemagickTool extends ToolTask {
     }
   }
 
-  override async exec(props: {
-    inputFilename: string;
-    outputFilename: string;
-  }): Promise<void> {
-    const inputFile = await getFileInOPFS(props.inputFilename);
+  override async exec(props: { inputOPFSFilename: string }): Promise<void> {
+    const inputFile = await getFileInOPFS(props.inputOPFSFilename);
     if (inputFile == null) {
       console.error(`l'input file est innexistant ou vide`);
       throw "input file doesn't exist or is empty";
@@ -68,7 +72,7 @@ export default class ImagemagickTool extends ToolTask {
 
     const fileType = await detectFileExt(inputFile);
     var commandExample = this.commandSchema!.example;
-    console.log(fileType);
+    console.log(`exec input file type : [${fileType}]`);
 
     if (
       fileType != null &&
@@ -76,7 +80,7 @@ export default class ImagemagickTool extends ToolTask {
       fileType in this.commandSchema!.inputType
     ) {
       commandExample = this.commandSchema!.inputType[fileType]!;
-      console.log(`commande spécifique au type trouvé ${commandExample}`);
+      console.log(`commande spécifique au type trouvé: ${commandExample}`);
     }
 
     const promptRequest = {
@@ -93,21 +97,37 @@ export default class ImagemagickTool extends ToolTask {
     });
 
     try {
-      const generatedCommand: string = Object.values(generatedCommandRes)[0];
-
-      console.log("generated command");
-      console.log(generatedCommand);
+      let generatedCommand: string = Object.values(generatedCommandRes)[0];
 
       if (fileType != null) {
-        generatedCommand.replace(" input ", `input${fileType}`);
+        generatedCommand = generatedCommand.replace(
+          " input ",
+          ` input.${fileType} `,
+        );
       }
 
-      console.log(`generated command with file type ${generatedCommand}`);
+      console.log(`generated command: ${generatedCommand}`);
+
+      const taskId = crypto.randomUUID();
+      sidepanelPort.postMessage({
+        name: "exec-command-in-offscreen",
+        data: {
+          id: taskId,
+          inputOPFSFilename: props.inputOPFSFilename,
+          outputOPFSFilename: this.outputOPFSFilename,
+          command: generatedCommand,
+        } as OffscreenCommandExecutionRequest,
+      } as ChromeBridgeMessage);
+
+      const offscreenResp = await getOffscreenCommandResult(taskId);
+      console.log("Offscreen resp :");
+      console.log(offscreenResp);
     } catch (err) {
       console.warn(
         `The generated command output contain an error : ${JSON.stringify(generatedCommandRes)}`,
       );
     }
+
     // j'ai bien le format du fichier maintent faire ma tambouille
     // pour modifier le nom de l'output.
     // en gros si
@@ -115,4 +135,25 @@ export default class ImagemagickTool extends ToolTask {
     // si flemme de marquer la commande, pour l'instant,
     // mettre dans public le fichier et le mettre dans opfs au clic sur le bouton
   }
+}
+
+function getOffscreenCommandResult(
+  taskId: string,
+): Promise<OffscreenCommandExecutionResult> {
+  return new Promise((resolve, _) => {
+    const timemoutId = setTimeout(() => {
+      console.log(`L'éxécutio de ${taskId} à timeout.`);
+      return resolve({
+        id: taskId,
+        success: false,
+      } as OffscreenCommandExecutionResult);
+    }, 20000);
+
+    sidepanelPort.onMessage.addListener((message: ChromeBridgeMessage) => {
+      if (message.name == "exec-command-in-offscreen-resp") {
+        clearTimeout(timemoutId);
+        resolve(message.data as OffscreenCommandExecutionResult);
+      }
+    });
+  });
 }

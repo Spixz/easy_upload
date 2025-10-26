@@ -1,81 +1,59 @@
+import {
+  OffscreenCommandExecutionRequest,
+  OffscreenCommandExecutionResult,
+} from "@/commons/communications_interfaces";
 import offscreenPort from "./offscreen_port";
+import { getFileInOPFS, writeFileInOPFS } from "@/commons/helpers";
+import { MagickOutputFile } from "wasm-imagemagick";
 
 const Magick = await import(
   /* @vite-ignore */ chrome.runtime.getURL("wasm/magickApi.js")
 );
 
-let magickModule: any = null;
-
-// async function ensureMagick() {
-//   if (magickModule) return magickModule;
-//   console.log("[Offscreen] Chargement de ImageMagick.wasm...");
-//   const mod = await import(
-//     /* @vite-ignore */ chrome.runtime.getURL("wasm/magick.js")
-//   );
-//   magickModule = await mod.default({
-//     locateFile: (f: string) => chrome.runtime.getURL(`wasm/${f}`),
-//   });
-//   console.log("[Offscreen] ✅ ImageMagick prêt");
-//   return magickModule;
-// }
-
-export async function basicManip() {
-  const imageUrl = chrome.runtime.getURL("FriedrichNietzsche.png");
-
-  // ✅ vérifier que le fichier existe bien
-  const response = await fetch(imageUrl);
-  if (!response.ok) throw new Error("Image introuvable : " + imageUrl);
-
-  let arrayBuffer = await response.arrayBuffer();
-  let sourceBytes = new Uint8Array(arrayBuffer);
-
-  // calling ImageMagick with one source image, and command to rotate & resize image
-  // file-type pour 
-  const inputFiles = [{ name: "srcFile.png", content: sourceBytes }];
-  const command = [
-    "convert",
-    "srcFile.png",
-    "-rotate",
-    "90",
-    "-resize",
-    "200%",
-    "out.png",
-  ];
-  let processedFiles = await Magick.Call(inputFiles, command);
-
-  // response can be multiple files (example split) here we know we just have one
-  let firstOutputImage = processedFiles[0];
-  // outputImage.src = URL.createObjectURL(firstOutputImage['blob'])
-  console.log("[Offscreen] ✅ Image créée :", firstOutputImage.name);
-
-  // 🔥 Créer un Blob à partir du fichier de sortie
-  const blob = firstOutputImage.blob;
-  const arrayBufferOut = await blob.arrayBuffer();
-
-  // ✅ Envoyer le blob au Service Worker
+function sendExecCommandResponse(id: string, success: boolean) {
   offscreenPort.postMessage({
-    name: "magick-result",
+    name: "exec-command-in-offscreen-resp",
     data: {
-      blob: arrayBufferOut,
-      type: blob.type,
-      name: firstOutputImage.name,
-    },
+      id: id,
+      success: success,
+    } as OffscreenCommandExecutionResult,
   });
 }
 
-// async function magickConvert(fileData: {
-//   arrayBuffer: ArrayBuffer;
-//   name: string;
-// }) {
-//   const magick = await ensureMagick();
-//   magick.FS.writeFile(fileData.name, new Uint8Array(fileData.arrayBuffer));
-//   await magick.callMain([
-//     "convert",
-//     fileData.name,
-//     "-resize",
-//     "512x512",
-//     "output.png",
-//   ]);
-//   const out = magick.FS.readFile("output.png");
-//   offscreenPort.postMessage({ name: "magick-result", data: out.buffer });
-// }
+export async function executeMagiskCommand(
+  request: OffscreenCommandExecutionRequest,
+) {
+  try {
+    const inputFile = await getFileInOPFS(request.inputOPFSFilename);
+    if (inputFile == null) {
+      throw "l'input file est innexistant ou vide";
+    }
+
+    let arrayBuffer = await inputFile.arrayBuffer();
+    let sourceBytes = new Uint8Array(arrayBuffer);
+
+    // calling ImageMagick with one source image, and command to rotate & resize image
+    // file-type pour
+
+    const command = request.command;
+    const inputName = command.match(/input(?:\.\w+)?/)?.[0] || "input";
+    const inputFiles = [{ name: inputName, content: sourceBytes }];
+    let processedFiles: MagickOutputFile[] = await Magick.Call(
+      inputFiles,
+      command.split(" "),
+    );
+
+    let firstOutputImage = processedFiles[0];
+
+    await writeFileInOPFS(request.outputOPFSFilename, firstOutputImage.blob);
+    console.log(`succes de lexecution : Fileouput bien écris dans le OPFS`);
+    sendExecCommandResponse(request.id, true);
+  } catch (err) {
+    console.error(
+      "An error occured during the excution of the magisk command:",
+    );
+    console.error(request);
+    console.error(err);
+    sendExecCommandResponse(request.id, false);
+  }
+}

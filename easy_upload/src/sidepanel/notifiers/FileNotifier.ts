@@ -12,7 +12,7 @@ export interface UserFileState {
   requirements: Requirements;
   inputFileIsEmpty: boolean;
   generateRequirements: (inputRequirements: InputRequirements) => Promise<void>;
-  updateUserInputFileStatus: (isEmpty: boolean) => void;
+  updateUserFileIsEmpty: (isEmpty: boolean) => void;
 }
 
 export const UserFileNotifier = create<UserFileState>()(
@@ -33,7 +33,7 @@ export const UserFileNotifier = create<UserFileState>()(
         requirements: requirements,
       }));
     },
-    updateUserInputFileStatus(isEmpty) {
+    updateUserFileIsEmpty(isEmpty: boolean) {
       set((_) => ({ inputFileIsEmpty: isEmpty }));
     },
   })),

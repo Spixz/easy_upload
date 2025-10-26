@@ -2,11 +2,11 @@ import "webext-bridge/background";
 import { ensureOffscreenCreated, sendToOffscreen } from "./sw_offscreen_bridge";
 import { sendToSidepanel } from "./sw_sidepanel_bridge";
 import { onMessage } from "webext-bridge/background";
-import { ChromeBridgeMessage } from "@/commons/interfaces";
+import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
 
 onMessage("open_sidepanel", async ({ data, sender }) => {
   ensureOffscreenCreated();
-  sendToOffscreen({ name: "test-imagemagick" });
+  
   await chrome.sidePanel.open({ tabId: sender.tabId });
   console.log("Ouveture tu side panel demandé");
   try {

@@ -5,10 +5,6 @@ export interface InputRequirements {
     file_category: FileCategory
 }
 
-export interface ChromeBridgeMessage {
-  name: string;
-  data: any;
-}
 
 export interface UserTask {
   tool_name: string;

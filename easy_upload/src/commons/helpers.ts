@@ -8,7 +8,6 @@ export async function detectFileExt(file: File | Blob): Promise<string | null> {
   const buffer = new Uint8Array(await file.slice(0, 4100).arrayBuffer());
 
   const detected = await fileTypeFromBuffer(buffer);
-  console.log(`detected via le magic byte : ${detected?.ext}`);
   if (detected?.ext) return detected.ext.toLowerCase();
 
   const fileName = (file as File).name;
@@ -50,7 +49,22 @@ export async function getFileInOPFS(filename: string): Promise<File | null> {
 
     return file;
   } catch (err: any) {
-    console.error("Erreur durant la récupération du fichier :", err);
+    console.error("[getFileInOPFS] erreur");
+    console.log(err);
     return null;
   }
+}
+
+export async function writeFileInOPFS(
+  filename: string,
+  fileContent: FileSystemWriteChunkType,
+): Promise<void> {
+  const root = await navigator.storage.getDirectory();
+  const fileHandle = await root.getFileHandle(filename, {
+    create: true,
+  });
+  const writable = await fileHandle.createWritable();
+
+  await writable.write(fileContent);
+  await writable.close();
 }

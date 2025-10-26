@@ -1963,7 +1963,7 @@
       "heic": "convert input.heic output.xxx",
       "avif": "convert input.avif output.xxx"
     },
-    "intent": "I want to convert my image from one format to another, for example from a PNG file to a JPEG file."
+    "intent": "I want to convert my image to another format. Convert to anoother format. From one format to another, for example from a PNG file to a JPEG file."
   },
   {
     "title": "Auto color and contrast correction",

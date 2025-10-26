@@ -1,7 +1,5 @@
-export interface ChromeBridgeMessage {
-  name: string;
-  data?: any;
-}
+import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import { sendToSidepanel } from "./sw_sidepanel_bridge";
 
 let offscreenPort: chrome.runtime.Port | null = null;
 let unsentMessages: ChromeBridgeMessage[] = [];
@@ -25,7 +23,7 @@ export function initOffscreenBridge() {
         console.warn("[OffscreenBridge] ⚠️ Offscreen déconnecté");
         offscreenPort = null;
       });
-      
+
       unsentMessages.forEach(sendToOffscreen);
       unsentMessages = [];
     }
@@ -45,8 +43,11 @@ export function sendToOffscreen(message: ChromeBridgeMessage) {
 }
 
 export async function ensureOffscreenCreated() {
-  const has = await chrome.offscreen.hasDocument?.();
-  if (has) return;
+  const existingDocs = await chrome.offscreen.hasDocument?.();
+
+  if (existingDocs) {
+    await chrome.offscreen.closeDocument();
+  }
 
   console.log("[OffscreenBridge] 🧱 Création du document offscreen...");
   await chrome.offscreen.createDocument({
@@ -67,6 +68,9 @@ function handleOffscreenMessage(msg: ChromeBridgeMessage) {
       break;
     case "magick-result":
       console.log("[SW] 🖼️ Résultat ImageMagick reçu :", msg.data);
+      break;
+    case "exec-command-in-offscreen-resp":
+      sendToSidepanel(msg);
       break;
 
     default:

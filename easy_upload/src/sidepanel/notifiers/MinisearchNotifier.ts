@@ -44,7 +44,7 @@ async function initImagemagickDb(): Promise<MiniSearch<MagickCommand>> {
   const data: MagickCommand[] = await response.json();
 
   const ms = new MiniSearch<MagickCommand>({
-    fields: ["intent"],
+    fields: ["title", "intent"],
     storeFields: [
       "title",
       "command",
@@ -68,7 +68,7 @@ async function initFfmpegDb(): Promise<MiniSearch<FfmpegCommand>> {
   const data: FfmpegCommand[] = await response.json();
 
   const ms = new MiniSearch<FfmpegCommand>({
-    fields: ["intent"],
+    fields: ["title", "intent"],
     storeFields: [
       "title",
       "command",

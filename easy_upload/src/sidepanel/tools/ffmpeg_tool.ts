@@ -9,7 +9,6 @@ import { ModelNotifier } from "../model/ModelNotifier";
 import selectCommandPrompt from "./prompts/select_command.txt?raw";
 
 export default class FfmpegTool extends ToolTask {
-  commandSchema?: FfmpegCommand;
   constructor(userTask: UserTask) {
     super(userTask);
   }
@@ -54,7 +53,5 @@ export default class FfmpegTool extends ToolTask {
     }
   }
 
-  override async exec(): Promise<void> {
-    const userFile = 
-  }
+  override async exec(props: { inputOPFSFilename: string }): Promise<void> {}
 }
