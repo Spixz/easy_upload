@@ -70,16 +70,16 @@ export default class ImagemagickTool extends ToolTask {
       throw "input file doesn't exist or is empty";
     }
 
-    const fileType = await detectFileExt(inputFile);
+    const fileExtension = (await detectFileExt(inputFile))?.ext;
     var commandExample = this.commandSchema!.example;
-    console.log(`exec input file type : [${fileType}]`);
+    console.log(`exec input file type : [${fileExtension}]`);
 
     if (
-      fileType != null &&
+      fileExtension != null &&
       this.commandSchema?.inputType != null &&
-      fileType in this.commandSchema!.inputType
+      fileExtension in this.commandSchema!.inputType
     ) {
-      commandExample = this.commandSchema!.inputType[fileType]!;
+      commandExample = this.commandSchema!.inputType[fileExtension]!;
       console.log(`commande spécifique au type trouvé: ${commandExample}`);
     }
 
@@ -99,10 +99,10 @@ export default class ImagemagickTool extends ToolTask {
     try {
       let generatedCommand: string = Object.values(generatedCommandRes)[0];
 
-      if (fileType != null) {
+      if (fileExtension != null) {
         generatedCommand = generatedCommand.replace(
           " input ",
-          ` input.${fileType} `,
+          ` input.${fileExtension} `,
         );
       }
 
@@ -125,13 +125,6 @@ export default class ImagemagickTool extends ToolTask {
     } catch (err) {
       throw `The generated command output contain an error : ${JSON.stringify(generatedCommandRes)}`;
     }
-
-    // j'ai bien le format du fichier maintent faire ma tambouille
-    // pour modifier le nom de l'output.
-    // en gros si
-
-    // si flemme de marquer la commande, pour l'instant,
-    // mettre dans public le fichier et le mettre dans opfs au clic sur le bouton
   }
 }
 

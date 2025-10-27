@@ -8,6 +8,8 @@ import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
 import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
+import { UserFileNotifier } from "../notifiers/FileNotifier";
+import { userInputFilenameInOPFS } from "@/commons/const";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -48,18 +50,21 @@ export const UserInputText = (props: ComposerProps) => {
           <CustomButton
             borderColor={primaryColor}
             onClick={async () => {
-              const userTasks = [
-                {
-                  tool_name: "imagemagick",
-                  i_want: "rotate the image 90 degrees to the left",
-                },
-              ];
-              await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
-                userTasks,
-              );
+              // const userTasks = [
+              //   {
+              //     tool_name: "imagemagick",
+              //     i_want: "rotate the image 90 degrees to the left",
+              //   },
+              // ];
+              // await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
+              //   userTasks,
+              // );
 
-              // ! si bouton exec cliquer
-              ToolTaskManagerNotifier.getState().execTasks();
+              // // ! si bouton exec cliquer
+              // ToolTaskManagerNotifier.getState().execTasks();
+              UserFileNotifier.getState().injectFileInContentScript(
+                userInputFilenameInOPFS,
+              );
             }}
             text="test Tool task"
           />

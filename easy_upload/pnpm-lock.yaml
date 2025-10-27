@@ -35,9 +35,6 @@ importers:
       arrive:
         specifier: ^2.5.2
         version: 2.5.2
-      ext-send-chunked-message:
-        specifier: ^1.0.0
-        version: 1.0.0
       file-type:
         specifier: ^21.0.0
         version: 21.0.0
@@ -50,6 +47,9 @@ importers:
       minisearch:
         specifier: ^7.2.0
         version: 7.2.0
+      notyf:
+        specifier: ^3.10.0
+        version: 3.10.0
       pdfjs-dist:
         specifier: ^5.4.296
         version: 5.4.296
@@ -1248,9 +1248,6 @@ packages:
     resolution: {integrity: sha512-JhFGDVJ7tmDJItKhYgJCGLOWjuK9vPxiXoUFLwLDc99NlmklilbiQJwoctZtt13+xMw91MCk/REan6MWHqDjyA==}
     engines: {node: '>=12.0.0'}
 
-  ext-send-chunked-message@1.0.0:
-    resolution: {integrity: sha512-SB90DDYTcVhyKJcvq/kZJ7gJ0lV7aioRVRpT0MeK5df78e3Bgk/mzUB0c34vENO6ZzhGCGnL8e8ITqvgJ5eCwA==}
-
   extract-zip@2.0.1:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
     engines: {node: '>= 10.17.0'}
@@ -1599,6 +1596,9 @@ packages:
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+
+  notyf@3.10.0:
+    resolution: {integrity: sha512-Mtnp+0qiZxgrH+TzVlzhWyZceHdAZ/UWK0/ju9U0HQeDpap1mZ8cC7H5wSI5mwgni6yeAjaxsTw0sbMK+aSuHw==}
 
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
@@ -3401,8 +3401,6 @@ snapshots:
 
   expect-type@1.2.2: {}
 
-  ext-send-chunked-message@1.0.0: {}
-
   extract-zip@2.0.1:
     dependencies:
       debug: 4.4.3
@@ -3722,6 +3720,8 @@ snapshots:
   node-releases@2.0.21: {}
 
   normalize-path@3.0.0: {}
+
+  notyf@3.10.0: {}
 
   nth-check@2.1.1:
     dependencies:

@@ -5,9 +5,9 @@ import {
   SystemMessage,
   ThinkingMessage,
 } from "./conversation/messages/messages";
-import { addOnChunkedMessageListener } from "ext-send-chunked-message";
 import { userInputFilenameInOPFS } from "@/commons/const";
 import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import { addOnChunkedMessageListener } from "@/vendors/ext-send-chuncked-message";
 
 export const sidepanelPort = chrome.runtime.connect({
   name: "sidepanel-channel",
@@ -52,49 +52,36 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
 }
 
 addOnChunkedMessageListener(
-  async (message: any, sender: any, sendResponse: any) => {
+  (message: any, sender: any, sendResponse: any) => {
     console.log("sidpanel 📩 Message reçu de", sender);
     console.log("📦 Données reçues:", message);
 
     if (message?.type != "user input file changed") {
       return;
     }
-
-    const bytes = new Uint8Array(message.data);
-    if (bytes.length == 0) {
-      UserFileNotifier.getState().updateUserFileIsEmpty(false);
-      console.log(
-        "Le fichier (user file input) recu par le sidepannel est vide.",
-      );
-      return;
-    }
-
-    const root = await navigator.storage.getDirectory();
-    const fileHandle = await root.getFileHandle(userInputFilenameInOPFS, {
-      create: true,
-    });
-    const writable = await fileHandle.createWritable();
-
-    await writable.write(bytes);
-    await writable.close();
-
-    console.log("✅ Fin de l'écriture du fichier");
-
-    //   // 🧠 Vérification : relis le fichier pour confirmer sa taille
-    //   const savedHandle = await root.getFileHandle("user_input_file");
-    //   const savedFile = await savedHandle.getFile();
-
-    //   console.log("📏 Taille sauvegardée :", savedFile.size, "octets");
-
-    //   if (savedFile.size === bytes.byteLength) {
-    //     console.log("✅ Vérification réussie : tailles identiques !");
-    //   } else {
-    //     console.warn(
-    //       "⚠️ Taille différente ! attendu:",
-    //       bytes.byteLength,
-    //       "obtenu:",
-    //       savedFile.size
-    //     );
-    //   }
+    handleFileReception(message);
   },
+  { channel: "cc-to-panel" },
 );
+
+async function handleFileReception(message: any) {
+  const bytes = new Uint8Array(message.data);
+  if (bytes.length == 0) {
+    UserFileNotifier.getState().updateUserFileIsEmpty(false);
+    console.log(
+      "Le fichier (user file input) recu par le sidepannel est vide.",
+    );
+    return;
+  }
+
+  const root = await navigator.storage.getDirectory();
+  const fileHandle = await root.getFileHandle(userInputFilenameInOPFS, {
+    create: true,
+  });
+  const writable = await fileHandle.createWritable();
+
+  await writable.write(bytes);
+  await writable.close();
+
+  console.log("✅ Fin de l'écriture du fichier");
+}

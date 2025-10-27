@@ -22,6 +22,22 @@ export function FileOverviewOverlay({
   overlay: OverlayProps;
   onClose: () => void;
 }) {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (overlay.open) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [overlay.open, onClose]);
+
   if (!overlay.open) return null;
 
   return (
@@ -43,6 +59,7 @@ export function FileOverviewOverlay({
           borderRadius: 12,
           padding: 12,
           overflow: "auto",
+          maxHeight: "95vh",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -62,14 +79,28 @@ export function FileOverviewOverlay({
 }
 
 function Previewer({ url, extension }: { url: string; extension: string }) {
+  const [numPages, setNumPages] = useState<number>();
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
-  const [pdfHeight, setPdfHeight] = useState<number>();
+  const [containerWidth, setContainerWidth] = useState<number>();
 
   useEffect(() => {
-    if (containerRef) {
-      setPdfHeight(containerRef.clientHeight);
-    }
+    const handleResize = () => {
+      if (containerRef) {
+        setContainerWidth(containerRef.clientWidth);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [containerRef]);
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
 
   function onDocumentLoadError(error: Error) {
     console.error("Error while loading document:", error.message);
@@ -108,23 +139,33 @@ function Previewer({ url, extension }: { url: string; extension: string }) {
       <div
         ref={setContainerRef}
         style={{
-          height: "65vh",
-          width: "80vw",
-          padding: "0 20px",
-          boxSizing: "border-box",
-          display: "flex",
-          justifyContent: "center",
+          width: "50vw",
+          background: "#f1f1f1",
         }}
       >
-        {pdfHeight && (
-          <Document file={url}>
-            <Page
-              renderTextLayer={false}
-              renderAnnotationLayer={false}
-              height={pdfHeight}
-            />
-          </Document>
-        )}
+        <Document
+          file={url}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+        >
+          {Array.from(new Array(numPages), (_, index) => (
+            <div
+              key={`page_container_${index + 1}`}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "1rem 0",
+              }}
+            >
+              <Page
+                pageNumber={index + 1}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                width={containerWidth ? containerWidth * 0.9 : undefined}
+              />
+            </div>
+          ))}
+        </Document>
       </div>
     );
   }

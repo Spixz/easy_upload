@@ -5,6 +5,9 @@ import { ExtractRequirements } from "@/core/extract_requirements/extract_require
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
+import { getFileInOPFS } from "@/commons/helpers/helpers";
+import { sidepanelPort } from "../sidepanel_listener";
+import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
 
 export interface UserFileState {
   textForRequirements: string[];
@@ -12,7 +15,8 @@ export interface UserFileState {
   requirements: Requirements;
   inputFileIsEmpty: boolean;
   generateRequirements: (inputRequirements: InputRequirements) => Promise<void>;
-  updateUserFileIsEmpty: (isEmpty: boolean) => void;
+  updateUserFileIsEmpty: (isEmpty: boolean) => Promise<void>;
+  injectFileInContentScript: (filename: string) => void;
 }
 
 export const UserFileNotifier = create<UserFileState>()(
@@ -32,6 +36,12 @@ export const UserFileNotifier = create<UserFileState>()(
       set((_) => ({
         requirements: requirements,
       }));
+    },
+    async injectFileInContentScript(filename: string) {
+      sidepanelPort.postMessage({
+        name: "inject-file",
+        data: filename,
+      } as ChromeBridgeMessage);
     },
     updateUserFileIsEmpty(isEmpty: boolean) {
       set((_) => ({ inputFileIsEmpty: isEmpty }));

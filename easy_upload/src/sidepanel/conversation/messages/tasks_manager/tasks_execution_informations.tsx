@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react";
 import { FileOverviewOverlay, OverlayProps } from "./file_overview_overlay";
+import { UserFileNotifier } from "@/sidepanel/notifiers/FileNotifier";
 
 function statusLabel(s: TaskStatus): string {
   switch (s) {
@@ -23,7 +24,123 @@ function statusLabel(s: TaskStatus): string {
   }
 }
 
-function TaskItem({
+export function TasksExecutionInformations() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const toolTasks = ToolTaskManagerNotifier((state) => state._toolTasks);
+
+  const [overlay, setOverlay] = useState<OverlayProps>({ open: false });
+
+  const currentIndex = useMemo(
+    () => toolTasks.findIndex((task) => task.status === "inProgress"),
+    [toolTasks],
+  );
+
+  const handlePreview = useCallback(async (task: ToolTask) => {
+    if (!task.outputOPFSFilename) return;
+    const fileHandle = await navigator.storage
+      .getDirectory()
+      .then((root) => root.getFileHandle(task.outputOPFSFilename));
+    const file = await fileHandle.getFile();
+    const url = URL.createObjectURL(file);
+    const extension = await detectFileExt(file);
+
+    setOverlay({
+      open: true,
+      url,
+      title: task.goal,
+      extension: extension?.ext ?? undefined,
+    });
+  }, []);
+
+  const handleDownload = useCallback(async (task: ToolTask) => {
+    const root = await navigator.storage.getDirectory();
+    const fileHandle = await root.getFileHandle(task.outputOPFSFilename);
+    const file = await fileHandle.getFile();
+    const url = URL.createObjectURL(file);
+    const a = document.createElement("a");
+    a.href = url;
+
+    const format = await detectFileExt(file);
+    a.download = format?.ext
+      ? `${task.outputOPFSFilename}.${format.ext}`
+      : task.outputOPFSFilename;
+
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const handleInject = useCallback(async (task: ToolTask) => {
+    UserFileNotifier.getState().injectFileInContentScript(
+      task.outputOPFSFilename,
+    );
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (overlay.url) URL.revokeObjectURL(overlay.url);
+    };
+  }, [overlay.url]);
+
+  return (
+    <div style={styles.card}>
+      <div style={styles.header}>Tasks in progress</div>
+
+      {toolTasks.length === 0 ? (
+        <div style={{ color: "#9CA3AF", fontSize: 14 }}>No pending tasks.</div>
+      ) : (
+        <div>
+          {toolTasks.map((task, index) => {
+            const isLast = index == toolTasks.length - 1;
+            const showLineActive =
+              ["inProgress", "done", "error"].includes(task.status) ||
+              index < currentIndex;
+
+            return (
+              <TaskItemComponent
+                key={task.id}
+                task={task}
+                isLast={isLast}
+                showRail
+                showLineActive={showLineActive}
+              >
+                <div style={styles.title}>{task.goal}</div>
+
+                {task.commandToExecute && (
+                  <div style={styles.metaLine}>
+                    <strong>Command:</strong> {task.commandToExecute}
+                  </div>
+                )}
+
+                <div style={styles.metaLine}>
+                  <strong>Status:</strong> {statusLabel(task.status)}
+                </div>
+
+                <ActionButtonsComponent
+                  task={task}
+                  onPreview={handlePreview}
+                  onDownload={handleDownload}
+                  onInject={handleInject}
+                />
+              </TaskItemComponent>
+            );
+          })}
+        </div>
+      )}
+
+      <input ref={inputRef} type="file" hidden />
+
+      <FileOverviewOverlay
+        overlay={overlay}
+        onClose={() =>
+          setOverlay({ open: false, title: "", url: "", extension: "" })
+        }
+      />
+    </div>
+  );
+}
+
+function TaskItemComponent({
   task,
   isLast,
   showRail,
@@ -40,7 +157,7 @@ function TaskItem({
     <div style={styles.row}>
       <div style={styles.leftRail}>
         {showRail && <div style={styles.railLine(showLineActive)} />}
-        <StatusDot status={task.status} />
+        <StatusDotComponent status={task.status} />
       </div>
       <div style={styles.item}>
         {children}
@@ -50,7 +167,7 @@ function TaskItem({
   );
 }
 
-function ActionButtons({
+function ActionButtonsComponent({
   task,
   onPreview,
   onDownload,
@@ -61,7 +178,7 @@ function ActionButtons({
   onDownload: (t: ToolTask) => void;
   onInject: (t: ToolTask) => void;
 }) {
-  const disabled = !isActionEnabled(task.status) || !task.outputOPFSFilename;
+  const disabled = task.status != "done";
 
   return (
     <div style={styles.actions}>
@@ -90,131 +207,7 @@ function ActionButtons({
   );
 }
 
-export function TasksExecutionInformations() {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const toolTasks = ToolTaskManagerNotifier((state) => state._toolTasks);
-
-  const [overlay, setOverlay] = useState<OverlayProps>({ open: false });
-
-  const currentIndex = useMemo(
-    () => toolTasks.findIndex((t) => t.status === "inProgress"),
-    [toolTasks],
-  );
-
-  const handlePreview = useCallback(async (t: ToolTask) => {
-    if (!t.outputOPFSFilename) return;
-    const fileHandle = await navigator.storage
-      .getDirectory()
-      .then((root) => root.getFileHandle(t.outputOPFSFilename));
-    const file = await fileHandle.getFile();
-    const url = URL.createObjectURL(file);
-    const extension = await detectFileExt(file);
-
-    setOverlay({
-      open: true,
-      url,
-      title: t.goal,
-      extension: extension || undefined,
-    });
-  }, []);
-
-  const handleDownload = useCallback(async (t: ToolTask) => {
-    const root = await navigator.storage.getDirectory();
-    const fileHandle = await root.getFileHandle(t.outputOPFSFilename);
-    const file = await fileHandle.getFile();
-    const url = URL.createObjectURL(file);
-    const a = document.createElement("a");
-    a.href = url;
-
-    const ext = await detectFileExt(file);
-    a.download = ext ? `${t.outputOPFSFilename}.${ext}` : t.outputOPFSFilename;
-
-    a.click();
-    URL.revokeObjectURL(url);
-  }, []);
-
-  const handleInject = useCallback(async (t: ToolTask) => {
-    if (!inputRef.current) return;
-    const root = await navigator.storage.getDirectory();
-    const fileHandle = await root.getFileHandle(t.outputOPFSFilename);
-    const file = await fileHandle.getFile();
-
-    const dt = new DataTransfer();
-    dt.items.add(file);
-    inputRef.current.files = dt.files;
-    inputRef.current.dispatchEvent(new Event("change", { bubbles: true }));
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (overlay.url) URL.revokeObjectURL(overlay.url);
-    };
-  }, [overlay.url]);
-
-  return (
-    <div style={styles.card}>
-      <div style={styles.header}>Tasks in progress</div>
-
-      {toolTasks.length === 0 ? (
-        <div style={{ color: "#9CA3AF", fontSize: 14 }}>No pending tasks.</div>
-      ) : (
-        <div>
-          {toolTasks.map((task, index) => {
-            const isLast = index == toolTasks.length - 1;
-            const showLineActive =
-              ["inProgress", "done", "error"].includes(task.status) ||
-              index < currentIndex;
-
-            return (
-              <TaskItem
-                key={task.id}
-                task={task}
-                isLast={isLast}
-                showRail
-                showLineActive={showLineActive}
-              >
-                <div style={styles.title}>{task.goal}</div>
-
-                {task.commandToExecute && (
-                  <div style={styles.metaLine}>
-                    <strong>Command:</strong> {task.commandToExecute}
-                  </div>
-                )}
-
-                <div style={styles.metaLine}>
-                  <strong>Status:</strong> {statusLabel(task.status)}
-                </div>
-
-                <ActionButtons
-                  task={task}
-                  onPreview={handlePreview}
-                  onDownload={handleDownload}
-                  onInject={handleInject}
-                />
-              </TaskItem>
-            );
-          })}
-        </div>
-      )}
-
-      <input ref={inputRef} type="file" hidden />
-
-      <FileOverviewOverlay
-        overlay={overlay}
-        onClose={() =>
-          setOverlay({ open: false, title: "", url: "", extension: "" })
-        }
-      />
-    </div>
-  );
-}
-
-function isActionEnabled(status: TaskStatus) {
-  return status === "done";
-}
-
-function StatusDot({ status }: { status: TaskStatus }) {
+function StatusDotComponent({ status }: { status: TaskStatus }) {
   return <div style={styles.dot(STATUS_COLORS[status])} />;
 }
 

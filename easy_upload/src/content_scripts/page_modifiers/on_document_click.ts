@@ -1,11 +1,18 @@
+import { detectFileExt } from "@/commons/helpers/helpers";
 import { onInputFileClick } from "./input_file/onClick/onInputFileClick";
-import { sendChunkedMessage } from "ext-send-chunked-message";
+import {
+  addOnChunkedMessageListener,
+  sendChunkedMessage,
+} from "@/vendors/ext-send-chuncked-message";
+import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 
 export function attachFileInputInterceptor(doc: Document) {
   doc.addEventListener("click", (e) => {
     const input = e.target;
     if (input instanceof HTMLInputElement && input.type === "file") {
       input.dataset.originalAccept = input.accept;
+      input.dataset.inputSelectedByUser = "";
       input.accept = "*/*";
 
       onInputFileClick(input);
@@ -14,10 +21,13 @@ export function attachFileInputInterceptor(doc: Document) {
         if (!file) return;
 
         const buff: ArrayBuffer = await file.arrayBuffer();
-        sendChunkedMessage({
-          type: "user input file changed",
-          data: Array.from(new Uint8Array(buff)),
-        });
+        sendChunkedMessage(
+          {
+            type: "user input file changed",
+            data: Array.from(new Uint8Array(buff)),
+          },
+          { channel: "cc-to-panel" },
+        );
         // input.value = ""; // permet la re-sélection du même fichier
         input.removeEventListener("change", onChange);
       };
@@ -38,6 +48,52 @@ const observer = new MutationObserver(() => {
     }
   }
 });
+
+function displayErrorMessage(message: string) {
+  const notyf = new Notyf();
+  notyf.error({
+    message: message,
+    duration: 2500,
+    position: {
+      x: "right",
+      y: "bottom",
+    },
+  });
+}
+
+addOnChunkedMessageListener(
+  (message: any, _, __) => {
+    const selectedInputs: NodeListOf<HTMLInputElement> =
+      document.querySelectorAll(
+        'input[type="file"][data-input-selected-by-user]',
+      );
+    if (selectedInputs.length != 0) {
+      displayErrorMessage("The upload field is no longer available");
+      return;
+    }
+    const selectedInput = selectedInputs[0];
+
+    const bytes = new Uint8Array(message.data);
+    if (bytes.length != 0) {
+      displayErrorMessage("The file to be re-injected is empty");
+      return;
+    }
+
+    detectFileExt(new Blob([bytes])).then((fileFormat) => {
+      const fileToInject = new File([bytes], "injected_file", {
+        type: fileFormat?.ext ?? "",
+      });
+
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(fileToInject);
+      selectedInput.files = dataTransfer.files;
+
+      selectedInput.dispatchEvent(new Event("change", { bubbles: true }));
+      console.log("File successfully injected");
+    });
+  },
+  { channel: "sw-to-cc" },
+);
 
 observer.observe(document.body, { childList: true, subtree: true });
 attachFileInputInterceptor(document);
