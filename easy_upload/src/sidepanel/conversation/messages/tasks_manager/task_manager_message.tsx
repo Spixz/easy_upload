@@ -3,18 +3,20 @@ import {
   MessageProps,
   User,
 } from "@chatui/core/lib/components/Message/Message";
-import { TasksExecutionInformations } from "./tasks_execution_informations";
+import { SessionExecutionInformations } from "./tasks_execution_informations";
 
 export default class TaskManagerMessage extends DefaultMessage {
   user: User = { name: "assistant" };
   type = "text";
   position = "left" as const;
+  sessionId: string;
 
-  constructor() {
+  constructor(sessionId: string) {
     super(null);
+    this.sessionId = sessionId;
   }
 
   renderMessageContent = (_: MessageProps) => {
-    return <TasksExecutionInformations />;
+    return <SessionExecutionInformations sessionId={this.sessionId} />;
   };
 }

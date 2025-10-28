@@ -1,20 +1,18 @@
 import React from "react";
 
-interface CustomButtonProps {
-  onClick?: () => void;
-  borderColor?: string;
-  text: string;
-  title?: string;
-  isNew?: boolean;
-}
-
-export const CustomButton: React.FC<CustomButtonProps> = ({
+export function CustomButton({
   onClick,
   borderColor,
   text,
   title,
   isNew,
-}) => {
+}: {
+  onClick: () => void;
+  borderColor?: string;
+  text: string;
+  title?: string;
+  isNew?: boolean;
+}) {
   const buttonStyle: React.CSSProperties = {
     position: "relative",
     minWidth: "auto",
@@ -48,4 +46,4 @@ export const CustomButton: React.FC<CustomButtonProps> = ({
       {isNew && <span style={newIndicatorStyle}></span>}
     </button>
   );
-};
+}

@@ -1,13 +1,10 @@
 import { detectFileExt } from "@/commons/helpers/helpers";
 import { TaskStatus, ToolTask } from "@/sidepanel/tools/tool_task";
-import { ToolTaskManagerNotifier } from "@/sidepanel/tools/tool_task_manager";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import {
+  TaskSession,
+  TasksSessionManagerNotifier,
+} from "@/sidepanel/tools/tasks_session_manager";
+import React, { useCallback, useEffect, useState } from "react";
 import { FileOverviewOverlay, OverlayProps } from "./file_overview_overlay";
 import { UserFileNotifier } from "@/sidepanel/notifiers/FileNotifier";
 
@@ -24,17 +21,27 @@ function statusLabel(s: TaskStatus): string {
   }
 }
 
-export function TasksExecutionInformations() {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const toolTasks = ToolTaskManagerNotifier((state) => state._toolTasks);
-
-  const [overlay, setOverlay] = useState<OverlayProps>({ open: false });
-
-  const currentIndex = useMemo(
-    () => toolTasks.findIndex((task) => task.status === "inProgress"),
-    [toolTasks],
+export function SessionExecutionInformations({
+  sessionId,
+}: {
+  sessionId: string;
+}) {
+  const session: TaskSession | undefined = TasksSessionManagerNotifier(
+    (state) => state._sessions.find((session) => session.id === sessionId),
   );
+  const toolTasks: ToolTask[] = session?.tasks ?? [];
+
+  const fileToWorkOn = TasksSessionManagerNotifier(
+    (state) => state._fileToWorkOn,
+  );
+  const setFileToWorkOn = TasksSessionManagerNotifier(
+    (state) => state.setFileToWorkOn,
+  );
+
+  const currentIndex = toolTasks.findIndex(
+    (task) => task.status === "inProgress",
+  );
+  const [overlay, setOverlay] = useState<OverlayProps>({ open: false });
 
   const handlePreview = useCallback(async (task: ToolTask) => {
     if (!task.outputOPFSFilename) return;
@@ -44,7 +51,6 @@ export function TasksExecutionInformations() {
     const file = await fileHandle.getFile();
     const url = URL.createObjectURL(file);
     const extension = await detectFileExt(file);
-
     setOverlay({
       open: true,
       url,
@@ -60,12 +66,10 @@ export function TasksExecutionInformations() {
     const url = URL.createObjectURL(file);
     const a = document.createElement("a");
     a.href = url;
-
     const format = await detectFileExt(file);
     a.download = format?.ext
       ? `${task.outputOPFSFilename}.${format.ext}`
       : task.outputOPFSFilename;
-
     a.click();
     URL.revokeObjectURL(url);
   }, []);
@@ -84,17 +88,20 @@ export function TasksExecutionInformations() {
 
   return (
     <div style={styles.card}>
-      <div style={styles.header}>Tasks in progress</div>
+      <div style={styles.header}>Session Tasks</div>
 
       {toolTasks.length === 0 ? (
-        <div style={{ color: "#9CA3AF", fontSize: 14 }}>No pending tasks.</div>
+        <div style={{ color: "#9CA3AF", fontSize: 14 }}>
+          No tasks in this session.
+        </div>
       ) : (
         <div>
           {toolTasks.map((task, index) => {
-            const isLast = index == toolTasks.length - 1;
+            const isLast = index === toolTasks.length - 1;
             const showLineActive =
               ["inProgress", "done", "error"].includes(task.status) ||
               index < currentIndex;
+            const isCurrentWorkFile = task.outputOPFSFilename === fileToWorkOn;
 
             return (
               <TaskItemComponent
@@ -104,7 +111,14 @@ export function TasksExecutionInformations() {
                 showRail
                 showLineActive={showLineActive}
               >
-                <div style={styles.title}>{task.goal}</div>
+                <div style={styles.titleWrapper}>
+                  <div style={styles.title}>{task.goal}</div>
+                  {isCurrentWorkFile && (
+                    <div title="Current work file">
+                      <TargetIcon />
+                    </div>
+                  )}
+                </div>
 
                 {task.commandToExecute && (
                   <div style={styles.metaLine}>
@@ -121,14 +135,14 @@ export function TasksExecutionInformations() {
                   onPreview={handlePreview}
                   onDownload={handleDownload}
                   onInject={handleInject}
+                  onSetWorkFile={() => setFileToWorkOn(task.outputOPFSFilename)}
+                  isCurrentWorkFile={isCurrentWorkFile}
                 />
               </TaskItemComponent>
             );
           })}
         </div>
       )}
-
-      <input ref={inputRef} type="file" hidden />
 
       <FileOverviewOverlay
         overlay={overlay}
@@ -172,29 +186,35 @@ function ActionButtonsComponent({
   onPreview,
   onDownload,
   onInject,
+  onSetWorkFile,
+  isCurrentWorkFile,
 }: {
   task: ToolTask;
   onPreview: (t: ToolTask) => void;
   onDownload: (t: ToolTask) => void;
   onInject: (t: ToolTask) => void;
+  onSetWorkFile: () => void;
+  isCurrentWorkFile: boolean;
 }) {
-  const disabled = task.status != "done";
+  const disabled = task.status !== "done";
 
   return (
     <div style={styles.actions}>
       <button
-        style={{ ...styles.button, ...(disabled && styles.buttonDisabled) }}
+        style={{ ...styles.iconButton, ...(disabled && styles.buttonDisabled) }}
         disabled={disabled}
         onClick={() => !disabled && onPreview(task)}
+        title="Preview file"
       >
-        Preview
+        <EyeIcon />
       </button>
       <button
-        style={{ ...styles.button, ...(disabled && styles.buttonDisabled) }}
+        style={{ ...styles.iconButton, ...(disabled && styles.buttonDisabled) }}
         disabled={disabled}
         onClick={() => !disabled && onDownload(task)}
+        title="Download file"
       >
-        Download
+        <DownloadIcon />
       </button>
       <button
         style={{ ...styles.button, ...(disabled && styles.buttonDisabled) }}
@@ -203,6 +223,17 @@ function ActionButtonsComponent({
       >
         Inject
       </button>
+      <button
+        style={{
+          ...styles.button,
+          ...(disabled && styles.buttonDisabled),
+          ...(isCurrentWorkFile && styles.buttonActive),
+        }}
+        disabled={disabled}
+        onClick={() => !disabled && onSetWorkFile()}
+      >
+        {isCurrentWorkFile ? "✓ Active" : "Work from this"}
+      </button>
     </div>
   );
 }
@@ -210,6 +241,60 @@ function ActionButtonsComponent({
 function StatusDotComponent({ status }: { status: TaskStatus }) {
   return <div style={styles.dot(STATUS_COLORS[status])} />;
 }
+
+const EyeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" x2="12" y1="15" y2="3" />
+  </svg>
+);
+
+const TargetIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    style={{ color: "#0284C7" }}
+  >
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </svg>
+);
 
 const STATUS_COLORS: Record<TaskStatus, string> = {
   pending: "#D1D5DB",
@@ -221,7 +306,7 @@ const STATUS_COLORS: Record<TaskStatus, string> = {
 const styles = {
   card: {
     borderRadius: 16,
-    border: "1px solid #E5E7EB",
+    border: "1px solid #E5E7EB", // Ici c'est ok, on ne le modifie jamais
     background: "#FFFFFF",
     padding: 16,
     maxWidth: 720,
@@ -265,6 +350,13 @@ const styles = {
   item: {
     paddingBottom: 14,
   } as React.CSSProperties,
+  titleWrapper: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "8px",
+    marginBottom: 6,
+  } as React.CSSProperties,
   title: {
     fontSize: 14,
     fontWeight: 600,
@@ -272,7 +364,6 @@ const styles = {
     lineHeight: 1.35,
     wordBreak: "break-word",
     whiteSpace: "pre-wrap",
-    marginBottom: 6,
   } as React.CSSProperties,
   metaLine: {
     fontSize: 12,
@@ -284,16 +375,48 @@ const styles = {
     display: "flex",
     gap: 8,
     flexWrap: "wrap",
+    alignItems: "center",
   } as React.CSSProperties,
+
+  // --- MODIFICATION ICI ---
   button: {
     fontSize: 12,
     padding: "6px 10px",
     borderRadius: 10,
     background: "#F9FAFB",
     color: "#111827",
-    border: "1px solid #E5E7EB",
     cursor: "pointer",
+    fontWeight: 500,
+    // On décompose la propriété 'border'
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "#E5E7EB",
   } as React.CSSProperties,
+
+  // --- MODIFICATION ICI ---
+  iconButton: {
+    fontSize: 12,
+    padding: "6px",
+    borderRadius: 10,
+    background: "#F9FAFB",
+    color: "#374151",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    // On décompose la propriété 'border'
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "#E5E7EB",
+  } as React.CSSProperties,
+
+  buttonActive: {
+    background: "#E0F2FE",
+    borderColor: "#7DD3FC", // Maintenant, ceci surcharge proprement la propriété de base
+    color: "#0369A1",
+    fontWeight: 600,
+  } as React.CSSProperties,
+
   buttonDisabled: {
     opacity: 0.5,
     cursor: "not-allowed",

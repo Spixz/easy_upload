@@ -6,16 +6,14 @@ import {
 } from "../conversation/messages/messages";
 import { ModelNotifier } from "../model/ModelNotifier";
 import generateTaskPrompt from "./prompts/generate_tasks_prompt.txt?raw";
-import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
+import { TasksSessionManagerNotifier } from "../tools/tasks_session_manager";
 
 export async function handleUserEditingRequest(
   userRequest: string,
 ): Promise<void> {
   const { addMessage } = ConversationNotifier.getState();
 
-  addMessage(
-    new AssistantMessage("I’m preparing a plan to modify your file"),
-  );
+  addMessage(new AssistantMessage("I’m preparing a plan to modify your file"));
 
   const userTasks: UserTask[] = await generateUserTasksFromGoals(userRequest);
 
@@ -27,9 +25,7 @@ export async function handleUserEditingRequest(
   console.log("Les taches sur plan pour modifier le fichier:");
   console.log(userTasks);
 
-  await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
-    userTasks,
-  );
+  await TasksSessionManagerNotifier.getState().createSession(userTasks);
 
   const askExecutionMessage = new AskForTasksExecutionMessage();
   ConversationNotifier.getState().addMessage(askExecutionMessage);

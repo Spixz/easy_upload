@@ -1,15 +1,19 @@
 import { Bubble, Button, Flex, MessageProps } from "@chatui/core";
 import DefaultMessage from "./default_message";
 import { User } from "@chatui/core/lib/components/Message/Message";
-import { ToolTaskManagerNotifier } from "@/sidepanel/tools/tool_task_manager";
+import { TasksSessionManagerNotifier } from "@/sidepanel/tools/tasks_session_manager";
 import { ConversationNotifier } from "../ConversationNotifier";
 import AssistantMessage from "./assistant_message";
 import TaskManagerMessage from "./tasks_manager/task_manager_message";
 
 function onClickStartTasks() {
-  const taskManagerMessage = new TaskManagerMessage();
+  const currentSession =
+    TasksSessionManagerNotifier.getState().getCurrentSession();
+  if (currentSession == undefined) return;
+
+  const taskManagerMessage = new TaskManagerMessage(currentSession.id);
   ConversationNotifier.getState().addMessage(taskManagerMessage);
-  ToolTaskManagerNotifier.getState().execTasks();
+  TasksSessionManagerNotifier.getState().execCurrentSession();
 }
 
 async function onClickNotStartTasks() {

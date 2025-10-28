@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 
-interface ChatMessageProps {
-  title: string;
-  content: React.ReactNode; // 'any' is possible, but React.ReactNode is better for things to render
-}
-
-const ThinkingMessageContent: React.FC<ChatMessageProps> = ({
+export function ThinkingMessageContent({
   title,
   content,
-}) => {
+}: {
+  title: string;
+  content: string;
+}) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleToggle = () => {
@@ -67,6 +65,6 @@ const ThinkingMessageContent: React.FC<ChatMessageProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default ThinkingMessageContent;
