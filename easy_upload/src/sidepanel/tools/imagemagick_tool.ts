@@ -13,8 +13,8 @@ import { sidepanelPort } from "../sidepanel_listener";
 import {
   ChromeBridgeMessage,
   OffscreenCommandExecutionRequest,
-  OffscreenCommandExecutionResult,
 } from "@/commons/communications_interfaces";
+import { getOffscreenCommandResult } from "./get_offscreen_result";
 
 export default class ImagemagickTool extends ToolTask {
   constructor(userTask: UserTask) {
@@ -96,55 +96,31 @@ export default class ImagemagickTool extends ToolTask {
       newSession: true,
     });
 
-    try {
-      let generatedCommand: string = Object.values(generatedCommandRes)[0];
+    let generatedCommand: string = Object.values(generatedCommandRes)[0];
 
-      if (fileExtension != null) {
-        generatedCommand = generatedCommand.replace(
-          " input ",
-          ` input.${fileExtension} `,
-        );
-      }
-
-      console.log(`generated command: ${generatedCommand}`);
-
-      const taskId = crypto.randomUUID();
-      sidepanelPort.postMessage({
-        name: "exec-command-in-offscreen",
-        data: {
-          id: taskId,
-          inputOPFSFilename: props.inputOPFSFilename,
-          outputOPFSFilename: this.outputOPFSFilename,
-          command: generatedCommand,
-        } as OffscreenCommandExecutionRequest,
-      } as ChromeBridgeMessage);
-
-      const offscreenResp = await getOffscreenCommandResult(taskId);
-      console.log("Offscreen resp :");
-      console.log(offscreenResp);
-    } catch (err) {
-      throw `The generated command output contain an error : ${JSON.stringify(generatedCommandRes)}`;
+    if (fileExtension != null) {
+      generatedCommand = generatedCommand.replace(
+        " input ",
+        ` input.${fileExtension} `,
+      );
     }
-  }
-}
 
-function getOffscreenCommandResult(
-  taskId: string,
-): Promise<OffscreenCommandExecutionResult> {
-  return new Promise((resolve, _) => {
-    const timemoutId = setTimeout(() => {
-      console.log(`L'éxécutio de ${taskId} à timeout.`);
-      return resolve({
+    console.log(`generated command: ${generatedCommand}`);
+
+    const taskId = crypto.randomUUID();
+    sidepanelPort.postMessage({
+      name: "exec-command-in-offscreen",
+      data: {
         id: taskId,
-        success: false,
-      } as OffscreenCommandExecutionResult);
-    }, 20000);
+        tool: "imagemagick",
+        inputOPFSFilename: props.inputOPFSFilename,
+        outputOPFSFilename: this.outputOPFSFilename,
+        command: generatedCommand,
+      } as OffscreenCommandExecutionRequest,
+    } as ChromeBridgeMessage);
 
-    sidepanelPort.onMessage.addListener((message: ChromeBridgeMessage) => {
-      if (message.name == "exec-command-in-offscreen-resp") {
-        clearTimeout(timemoutId);
-        resolve(message.data as OffscreenCommandExecutionResult);
-      }
-    });
-  });
+    const offscreenResp = await getOffscreenCommandResult(taskId);
+    console.log("Offscreen resp :");
+    console.log(offscreenResp);
+  }
 }

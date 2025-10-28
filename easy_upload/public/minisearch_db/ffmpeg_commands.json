@@ -40,14 +40,6 @@
         "intent": "I want to reduce my video resolution to make it lighter or more compatible."
     },
     {
-        "title": "Remove audio track",
-        "command": "-i input -an output",
-        "description": "Removes all audio tracks so the output contains video only.",
-        "example": "-i input -an output",
-        "input_type": {},
-        "intent": "I want to remove the sound and keep only the video."
-    },
-    {
         "title": "Trim / cut video",
         "command": "-i input -ss 00:00:10 -to 00:00:20 -c copy output",
         "description": "Keeps only the segment between a start time (-ss) and an end time (-to). Times can be given as HH:MM:SS(.ms) or seconds. Example: start=00:00:10, end=00:00:20 keeps 10s of video.",

@@ -21,12 +21,20 @@ export abstract class ToolTask {
 
   static async factory(userTask: UserTask): Promise<ToolTask | undefined> {
     switch (userTask.tool_name) {
-      case "imagemagick": {
+      case "imagemagick":
         const { default: ImagemagickTool } = await import("./imagemagick_tool");
         const tool = new ImagemagickTool(userTask);
 
         await tool.selectCommand();
         if (tool.initializationSuccess) return tool;
+        break;
+      case "ffmpeg": {
+        const { default: FfmpegTool } = await import("./ffmpeg_tool");
+        const tool = new FfmpegTool(userTask);
+
+        await tool.selectCommand();
+        if (tool.initializationSuccess) return tool;
+        break;
       }
     }
   }

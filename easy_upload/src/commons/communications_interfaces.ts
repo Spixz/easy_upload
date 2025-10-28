@@ -1,3 +1,5 @@
+import { ToolName } from "./interfaces";
+
 export interface ChromeBridgeMessage {
   name: string;
   data: any;
@@ -5,6 +7,7 @@ export interface ChromeBridgeMessage {
 
 export interface OffscreenCommandExecutionRequest {
   id: string;
+  tool: ToolName;
   inputOPFSFilename: string;
   outputOPFSFilename: string;
   command: string;

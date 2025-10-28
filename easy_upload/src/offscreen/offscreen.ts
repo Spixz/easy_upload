@@ -1,10 +1,10 @@
 import offscreenPort from "./offscreen_port";
-import { ensureFFmpeg, ffmpegConvert } from "./ffmpeg";
 import { executeMagiskCommand } from "./imagemagick";
 import {
   ChromeBridgeMessage,
   OffscreenCommandExecutionRequest,
 } from "@/commons/communications_interfaces";
+import { executeFmmpegCommand } from "./ffmpeg";
 
 offscreenPort.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
   console.log("[Offscreen] ← Message du SW :", msg);
@@ -12,15 +12,14 @@ offscreenPort.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
   console.log(msg);
 
   switch (msg.name) {
-    case "convert-video":
-      await ensureFFmpeg();
-      console.log("[Offscreen] ffmpeg prêt, conversion...");
-      await ffmpegConvert(msg.data);
-      break;
-
     case "exec-command-in-offscreen":
+      const request: OffscreenCommandExecutionRequest = msg.data;
       console.log("demance de commande recu par le offscreeen !");
-      await executeMagiskCommand(msg.data as OffscreenCommandExecutionRequest);
+      if (request.tool == "imagemagick") {
+        await executeMagiskCommand(request);
+      } else if (request.tool == "ffmpeg") {
+        await executeFmmpegCommand(request);
+      }
       break;
 
     default:

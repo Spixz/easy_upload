@@ -1,24 +1,13 @@
 import {
   OffscreenCommandExecutionRequest,
-  OffscreenCommandExecutionResult,
 } from "@/commons/communications_interfaces";
-import offscreenPort from "./offscreen_port";
 import { getFileInOPFS, writeFileInOPFS } from "@/commons/helpers/helpers";
 import { MagickOutputFile } from "wasm-imagemagick";
+import { sendExecCommandResponse } from "./send_exec_command_response";
 
 const Magick = await import(
   /* @vite-ignore */ chrome.runtime.getURL("wasm/magickApi.js")
 );
-
-function sendExecCommandResponse(id: string, success: boolean) {
-  offscreenPort.postMessage({
-    name: "exec-command-in-offscreen-resp",
-    data: {
-      id: id,
-      success: success,
-    } as OffscreenCommandExecutionResult,
-  });
-}
 
 export async function executeMagiskCommand(
   request: OffscreenCommandExecutionRequest,

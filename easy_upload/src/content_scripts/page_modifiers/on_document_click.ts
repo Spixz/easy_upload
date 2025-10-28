@@ -67,14 +67,14 @@ addOnChunkedMessageListener(
       document.querySelectorAll(
         'input[type="file"][data-input-selected-by-user]',
       );
-    if (selectedInputs.length != 0) {
+    if (selectedInputs.length == 0) {
       displayErrorMessage("The upload field is no longer available");
       return;
     }
     const selectedInput = selectedInputs[0];
 
     const bytes = new Uint8Array(message.data);
-    if (bytes.length != 0) {
+    if (bytes.length == 0) {
       displayErrorMessage("The file to be re-injected is empty");
       return;
     }

@@ -23,6 +23,9 @@ export default defineConfig({
       origin: [/chrome-extension:\/\//],
     },
   },
+  optimizeDeps: {
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+  },
   build: {
     rollupOptions: {
       input: {

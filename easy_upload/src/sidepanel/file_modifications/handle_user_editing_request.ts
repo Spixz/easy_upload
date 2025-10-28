@@ -14,7 +14,7 @@ export async function handleUserEditingRequest(
   const { addMessage } = ConversationNotifier.getState();
 
   addMessage(
-    new AssistantMessage("Alright, I’m preparing a plan to modify your file"),
+    new AssistantMessage("I’m preparing a plan to modify your file"),
   );
 
   const userTasks: UserTask[] = await generateUserTasksFromGoals(userRequest);

@@ -7,9 +7,12 @@ import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
-import { ToolTaskManagerNotifier } from "../tools/tool_task_manager";
-import { UserFileNotifier } from "../notifiers/FileNotifier";
 import { userInputFilenameInOPFS } from "@/commons/const";
+import { sidepanelPort } from "../sidepanel_listener";
+import {
+  ChromeBridgeMessage,
+  OffscreenCommandExecutionRequest,
+} from "@/commons/communications_interfaces";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -50,21 +53,17 @@ export const UserInputText = (props: ComposerProps) => {
           <CustomButton
             borderColor={primaryColor}
             onClick={async () => {
-              // const userTasks = [
-              //   {
-              //     tool_name: "imagemagick",
-              //     i_want: "rotate the image 90 degrees to the left",
-              //   },
-              // ];
-              // await ToolTaskManagerNotifier.getState().createToolTasksFromUserTasks(
-              //   userTasks,
-              // );
-
-              // // ! si bouton exec cliquer
-              // ToolTaskManagerNotifier.getState().execTasks();
-              UserFileNotifier.getState().injectFileInContentScript(
-                userInputFilenameInOPFS,
-              );
+              const taskId = crypto.randomUUID();
+              sidepanelPort.postMessage({
+                name: "exec-command-in-offscreen",
+                data: {
+                  id: taskId,
+                  tool: "ffmpeg",
+                  inputOPFSFilename: userInputFilenameInOPFS,
+                  outputOPFSFilename: "yyo je suis louptu",
+                  command: "-i input -vf format=gray output",
+                } as OffscreenCommandExecutionRequest,
+              } as ChromeBridgeMessage);
             }}
             text="test Tool task"
           />
