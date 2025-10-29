@@ -13,6 +13,7 @@ import {
   ChromeBridgeMessage,
   OffscreenCommandExecutionRequest,
 } from "@/commons/communications_interfaces";
+import { generateRandomString } from "@/commons/helpers/helpers";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -53,7 +54,7 @@ export const UserInputText = (props: ComposerProps) => {
           <CustomButton
             borderColor={primaryColor}
             onClick={async () => {
-              const taskId = crypto.randomUUID();
+              const taskId = generateRandomString();
               sidepanelPort.postMessage({
                 name: "exec-command-in-offscreen",
                 data: {

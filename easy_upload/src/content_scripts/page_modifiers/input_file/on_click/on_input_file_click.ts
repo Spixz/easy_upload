@@ -1,26 +1,21 @@
 import { $enum } from "ts-enum-util";
-// import { lookup } from "mime-types";
 import extractPotentialRequirementsFromPage from "./extract_file_requirements";
 import { FileCategory } from "@/commons/enums";
 import mime from "mime";
 import { sendMessage } from "webext-bridge/content-script";
 import { InputRequirements } from "@/commons/interfaces";
-// import "webext-bridge/content-script";
 
-// export default function inputOnClickListener(input: HTMLInputElement) {
-//   if (input.dataset.onClickListenerAttached != null) return;
-
-//   input.addEventListener("click", () => handleClick(input), true);
-//   input.dataset.onClickListenerAttached = "";
-//   console.log(`On click custom attaché sur `, input);
-// }
-
-export async function onInputFileClick(input: HTMLInputElement): Promise<void> {
+export async function onInputFileClick(input: HTMLInputElement) {
   console.log("L'user à cliqué sur l'input");
+
+  await sendMessage("open_sidepanel", {}, "background");
+  // sendRawRequirements(input);
+}
+
+async function sendRawRequirements(input: HTMLInputElement) {
   const potentialRequirements: string[] = extractPotentialRequirementsFromPage({
     visibleOnly: false,
   });
-  console.log(potentialRequirements);
   const allowedCategories: FileCategory[] = input.dataset
     .originalAccept!.split(",")
     .map(inferCategoryFromMimeString)
@@ -28,8 +23,9 @@ export async function onInputFileClick(input: HTMLInputElement): Promise<void> {
   const mainAllowedCategory: FileCategory =
     findMajoritaryFileCategory(allowedCategories);
 
+  console.log(potentialRequirements);
   await sendMessage(
-    "open_sidepanel",
+    "input_unprocess_requirements",
     {
       raw_requirements: {
         text_for_requirements: potentialRequirements,

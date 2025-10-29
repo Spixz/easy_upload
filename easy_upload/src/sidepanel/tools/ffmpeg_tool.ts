@@ -8,7 +8,7 @@ import { ToolTask } from "./tool_task";
 import { ModelNotifier } from "../model/ModelNotifier";
 import selectCommandPrompt from "./prompts/select_command.txt?raw";
 import generateCommandPrompt from "./prompts/generate_command.txt?raw";
-import { detectFileExt, getFileInOPFS } from "@/commons/helpers/helpers";
+import { detectFileExt, generateRandomString, getFileInOPFS } from "@/commons/helpers/helpers";
 import { sidepanelPort } from "../sidepanel_listener";
 import {
   ChromeBridgeMessage,
@@ -106,7 +106,7 @@ export default class FfmpegTool extends ToolTask {
 
     console.log(`generated command: ${generatedCommand}`);
 
-    const taskId = crypto.randomUUID();
+    const taskId = generateRandomString();
     const request: OffscreenCommandExecutionRequest = {
       id: taskId,
       tool: "ffmpeg",
@@ -128,5 +128,3 @@ export default class FfmpegTool extends ToolTask {
     }
   }
 }
-
-

@@ -49,9 +49,9 @@ export const ModelNotifier = create<ModelState>()(
           expectedOutputs: [{ type: "text", languages: ["en"] }],
           initialPrompts: [{ role: "system", content: initialPrompt }],
         });
-        set((_) => {
-          return { session: session };
-        });
+        set((_) => ({
+          session: session,
+        }));
       },
       prompt: async (props: PromptProps): Promise<string | void> => {
         const { addMessage, handleStream } = ConversationNotifier.getState();

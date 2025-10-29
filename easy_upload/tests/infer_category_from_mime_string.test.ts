@@ -1,5 +1,5 @@
 import { FileCategory } from "@/commons/enums";
-import { inferCategoryFromMimeString } from "@/content_scripts/page_modifiers/input_file/onClick/onInputFileClick";
+import { inferCategoryFromMimeString } from "@/content_scripts/page_modifiers/input_file/on_click/on_input_file_click";
 import { expect, test } from "vitest";
 
 test("*", () => {

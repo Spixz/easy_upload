@@ -9,11 +9,9 @@ export default class TaskManagerMessage extends DefaultMessage {
   user: User = { name: "assistant" };
   type = "text";
   position = "left" as const;
-  sessionId: string;
 
-  constructor(sessionId: string) {
+  constructor(public sessionId: string) {
     super(null);
-    this.sessionId = sessionId;
   }
 
   renderMessageContent = (_: MessageProps) => {

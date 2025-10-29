@@ -4,7 +4,6 @@ interface CustomMatchers {
   units: RegExp,
 }
 
-/** Construit les regex utiles à partir des listes. */
 function buildMatchers({ extensions, units }: { extensions: string[], units: string[] }): CustomMatchers {
   return {
     numbers: new RegExp('\\d'),
@@ -13,7 +12,6 @@ function buildMatchers({ extensions, units }: { extensions: string[], units: str
   };
 }
 
-/** Renvoie true si la ligne satisfait au moins 1 critère activé */
 function matcheCriteres(line: string, matchers: CustomMatchers) {
   if (matchers.numbers.test(line)) return true;
   if (matchers.extensions.test(line)) return true;
@@ -55,13 +53,6 @@ function extractPageFullText(): string[] {
   return selectedTexts;
 }
 
-// -------------------- Pipeline principal --------------------
-
-/**
- * Extrait le texte de la page, tronque à maxLength, supprime les URL,
- * et renvoie UNIQUEMENT les lignes pertinentes :
- * (chiffre OR extension OR unité [OR symboles si activés]).
- */
 export default function extractPotentialRequirementsFromPage({
   maxLength = 100,  // valeur par défaut modifiée
   visibleOnly = true,
@@ -93,7 +84,6 @@ export default function extractPotentialRequirementsFromPage({
   });
   // console.log(candidates);
 
-  // // 5) Dé-duplication (optionnelle)
   // if (dedupe) {
   //   const seen = new Set();
   //   candidates = candidates.filter(s => {
@@ -104,7 +94,6 @@ export default function extractPotentialRequirementsFromPage({
   //   });
   // }
 
-  // 6) Debug
   if (debug) {
     console.log("===== Résultats filtrés =====");
     console.log(candidates.join("\n"));

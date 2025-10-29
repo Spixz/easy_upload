@@ -5,9 +5,11 @@ import {
   SystemMessage,
   ThinkingMessage,
 } from "./conversation/messages/messages";
-import { userInputFilenameInOPFS } from "@/commons/const";
 import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
 import { addOnChunkedMessageListener } from "@/vendors/ext-send-chuncked-message";
+import UserFileMessage from "./conversation/messages/user_file_message";
+import { generateRandomString } from "@/commons/helpers/helpers";
+import { TasksSessionManagerNotifier } from "./tools/tasks_session_manager";
 
 export const sidepanelPort = chrome.runtime.connect({
   name: "sidepanel-channel",
@@ -19,9 +21,7 @@ function handleWorkerMessage(message: ChromeBridgeMessage) {
   console.log("message recu par le sidepannel", message);
   switch (message.name) {
     case "input_unprocess_requirements":
-      // onInputUnprocessRequirements(message.data);
-      break;
-    case "exec-command-in-offscreen-resp":
+      onInputUnprocessRequirements(message.data);
       break;
     default:
       console.warn("[SidepanelListener] Message inconnu :", message);
@@ -53,10 +53,7 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
 
 addOnChunkedMessageListener(
   (message: any, sender: any, sendResponse: any) => {
-    console.log("sidpanel 📩 Message reçu de", sender);
-    console.log("📦 Données reçues:", message);
-
-    if (message?.type != "user input file changed") {
+    if (message?.type != "user_input_file_changed") {
       return;
     }
     handleFileReception(message);
@@ -67,15 +64,13 @@ addOnChunkedMessageListener(
 async function handleFileReception(message: any) {
   const bytes = new Uint8Array(message.data);
   if (bytes.length == 0) {
-    UserFileNotifier.getState().updateUserFileIsEmpty(false);
-    console.log(
-      "Le fichier (user file input) recu par le sidepannel est vide.",
-    );
+    console.log("File send by the user is empty");
     return;
   }
 
+  const filename = generateRandomString();
   const root = await navigator.storage.getDirectory();
-  const fileHandle = await root.getFileHandle(userInputFilenameInOPFS, {
+  const fileHandle = await root.getFileHandle(filename, {
     create: true,
   });
   const writable = await fileHandle.createWritable();
@@ -83,5 +78,11 @@ async function handleFileReception(message: any) {
   await writable.write(bytes);
   await writable.close();
 
-  console.log("✅ Fin de l'écriture du fichier");
+  TasksSessionManagerNotifier.getState().setFileToWorkOn(filename);
+  const userFileMessage = new UserFileMessage({
+    title: "File from website form",
+    opfsFilename: filename,
+    showInjectButton: false,
+  });
+  ConversationNotifier.getState().addMessage(userFileMessage);
 }

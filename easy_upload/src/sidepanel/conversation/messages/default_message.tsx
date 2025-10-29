@@ -1,9 +1,10 @@
+import { generateRandomString } from "@/commons/helpers/helpers";
 import { MessageProps, Bubble } from "@chatui/core";
 import { User } from "@chatui/core/lib/components/Message/Message";
 
 export default class DefaultMessage implements MessageProps {
-  _id = crypto.randomUUID();
-  type = "text"; // TODO: ajouter le type au constructeur si utile plus tard
+  _id = generateRandomString();
+  type = "text";
   content?: any;
   createdAt = Date.now();
   user: User = { name: "default" };
@@ -13,7 +14,7 @@ export default class DefaultMessage implements MessageProps {
   }
 
   renderMessageContent: (message: MessageProps) => React.ReactNode = (
-    message
+    message,
   ) => {
     return <Bubble content={message.content} />;
   };

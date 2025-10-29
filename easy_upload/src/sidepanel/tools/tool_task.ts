@@ -1,14 +1,15 @@
 import { UserTask } from "@/commons/interfaces";
 import { BasicCliCommand } from "../notifiers/MinisearchNotifier";
+import { generateRandomString } from "@/commons/helpers/helpers";
 
 export type TaskStatus = "pending" | "inProgress" | "done" | "error";
 
 export abstract class ToolTask {
-  id: string = crypto.randomUUID();
+  id: string = generateRandomString();
   goal: string;
   status: TaskStatus;
   initializationSuccess: boolean;
-  outputOPFSFilename: string = crypto.randomUUID();
+  outputOPFSFilename: string = generateRandomString();
   commandToExecute?: string;
   commandSchema?: BasicCliCommand;
   resultPath?: string;

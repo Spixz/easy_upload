@@ -4,6 +4,7 @@ import { InputRequirements } from "../commons/interfaces";
 
 declare module "webext-bridge" {
   export interface ProtocolMap {
-    open_sidepanel: { raw_requirements: InputRequirements };
+    open_sidepanel: {};
+    input_unprocess_requirements: { raw_requirements: InputRequirements };
   }
 }

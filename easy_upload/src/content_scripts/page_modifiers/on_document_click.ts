@@ -1,11 +1,12 @@
 import { detectFileExt } from "@/commons/helpers/helpers";
-import { onInputFileClick } from "./input_file/onClick/onInputFileClick";
+import { onInputFileClick } from "./input_file/on_click/on_input_file_click";
 import {
   addOnChunkedMessageListener,
   sendChunkedMessage,
 } from "@/vendors/ext-send-chuncked-message";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
+import MessagesLibrary from "@/commons/messages_library";
 
 export function attachFileInputInterceptor(doc: Document) {
   doc.addEventListener("click", (e) => {
@@ -23,12 +24,11 @@ export function attachFileInputInterceptor(doc: Document) {
         const buff: ArrayBuffer = await file.arrayBuffer();
         sendChunkedMessage(
           {
-            type: "user input file changed",
+            type: "user_input_file_changed",
             data: Array.from(new Uint8Array(buff)),
           },
           { channel: "cc-to-panel" },
         );
-        // input.value = ""; // permet la re-sélection du même fichier
         input.removeEventListener("change", onChange);
       };
 
@@ -68,14 +68,14 @@ addOnChunkedMessageListener(
         'input[type="file"][data-input-selected-by-user]',
       );
     if (selectedInputs.length == 0) {
-      displayErrorMessage("The upload field is no longer available");
+      displayErrorMessage(MessagesLibrary.uploadFieldNoLongerAvailaible);
       return;
     }
     const selectedInput = selectedInputs[0];
 
     const bytes = new Uint8Array(message.data);
     if (bytes.length == 0) {
-      displayErrorMessage("The file to be re-injected is empty");
+      displayErrorMessage(MessagesLibrary.filToReinjectIsEmpty);
       return;
     }
 

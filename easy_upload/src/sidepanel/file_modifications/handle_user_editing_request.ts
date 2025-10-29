@@ -7,24 +7,28 @@ import {
 import { ModelNotifier } from "../model/ModelNotifier";
 import generateTaskPrompt from "./prompts/generate_tasks_prompt.txt?raw";
 import { TasksSessionManagerNotifier } from "../tools/tasks_session_manager";
+import MessagesLibrary from "@/commons/messages_library";
 
 export async function handleUserEditingRequest(
   userRequest: string,
 ): Promise<void> {
   const { addMessage } = ConversationNotifier.getState();
+  let userTasks: UserTask[] = [];
 
-  addMessage(new AssistantMessage("I’m preparing a plan to modify your file"));
-
-  const userTasks: UserTask[] = await generateUserTasksFromGoals(userRequest);
-
-  if (userTasks.length == 0) {
-    ConversationNotifier.getState().enableUserInput(true);
-    return;
+  addMessage(new AssistantMessage(MessagesLibrary.preaparingAPlan));
+  try {
+    userTasks = await generateUserTasksFromGoals(userRequest);
+  } catch {
+    return toolsNotFound();
   }
 
+  if (userTasks.length == 0) {
+    return toolsNotFound();
+  }
+
+  addMessage(new AssistantMessage(tasksListToString(userTasks)));
   console.log("Les taches sur plan pour modifier le fichier:");
   console.log(userTasks);
-
   await TasksSessionManagerNotifier.getState().createSession(userTasks);
 
   const askExecutionMessage = new AskForTasksExecutionMessage();
@@ -34,7 +38,6 @@ export async function handleUserEditingRequest(
 async function generateUserTasksFromGoals(
   userRequest: string,
 ): Promise<UserTask[]> {
-  const { addMessage } = ConversationNotifier.getState();
   const tasksResp = await ModelNotifier.getState().promptForTask({
     prompt: generateTaskPrompt,
     content: userRequest,
@@ -45,18 +48,15 @@ async function generateUserTasksFromGoals(
     newSession: true,
   });
 
-  try {
-    const tasks = tasksResp as UserTask[];
-    addMessage(new AssistantMessage(tasksListToString(tasks)));
-    return tasks;
-  } catch (err) {
-    addMessage(
-      new AssistantMessage(
-        "I don’t have the necessary tools to perform the modification",
-      ),
-    );
-    return [];
-  }
+  return tasksResp as UserTask[];
+}
+
+function toolsNotFound() {
+  const { addMessage } = ConversationNotifier.getState();
+  const errorMessage = new AssistantMessage(MessagesLibrary.noToolsForThisTask);
+
+  addMessage(errorMessage);
+  ConversationNotifier.getState().enableUserInput(true);
 }
 
 function tasksListToString(tasks: UserTask[]): string {

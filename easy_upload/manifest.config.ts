@@ -8,17 +8,10 @@ export default defineManifest({
   icons: {
     48: "public/logo.png",
   },
-  action: {
-    default_icon: {
-      48: "public/logo.png",
-    },
-    default_popup: "src/popup/index.html",
-  },
-  permissions: ["sidePanel", "contentSettings", "offscreen"],
+  permissions: ["sidePanel", "contentSettings", "offscreen", "storage"],
   content_scripts: [
     {
       js: [
-        "src/content_scripts/react_app/main.tsx",
         "src/content_scripts/page_modifiers/on_document_click.ts",
       ],
       matches: ["<all_urls>"],
@@ -34,7 +27,7 @@ export default defineManifest({
   web_accessible_resources: [
     {
       resources: [
-        "wasm/*", // Autorisation pour le core JS
+        "wasm/*",
       ],
       matches: ["<all_urls>"],
     },

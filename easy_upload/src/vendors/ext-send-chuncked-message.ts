@@ -66,7 +66,7 @@ export function sendChunkedResponse(
     response: any,
     sendResponse: (response?: any) => void,
   ): void {
-    const requestId = self.crypto.randomUUID();
+    const requestId = crypto.randomUUID();
     sendResponse({ [CHUNKED_MESSAGE_FLAG]: true, requestId });
     sendChunkedMessage(response, {
       sendMessageFn: sendMessageFn || sendMessageDefaultFn,
@@ -100,7 +100,7 @@ export async function sendChunkedMessage(
     sendMessageFn || // 1. Priorité à la fonction custom
     (tabId ? createTabSendMessageFn(tabId) : sendMessageDefaultFn); // 2. Sinon, cibler le tabId, ou diffusion par défaut
 
-  const requestId = requestIdOverriden || self.crypto.randomUUID();
+  const requestId = requestIdOverriden || crypto.randomUUID();
   const messageSerialized = JSON.stringify(message);
   const len = messageSerialized.length;
   const step = MAX_CHUNK_SIZE;

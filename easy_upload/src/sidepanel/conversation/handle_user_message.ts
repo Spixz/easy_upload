@@ -1,15 +1,26 @@
+import MessagesLibrary from "@/commons/messages_library";
 import { handleUserEditingRequest } from "../file_modifications/handle_user_editing_request";
 import { ModelNotifier } from "../model/ModelNotifier";
+import { TasksSessionManagerNotifier } from "../tools/tasks_session_manager";
 import { ConversationNotifier } from "./ConversationNotifier";
-import { UserMessage } from "./messages/messages";
+import { AssistantMessage, UserMessage } from "./messages/messages";
 import isEtitingRequestInitialPrompt from "./prompts/is_editing_request.txt?raw";
 
 export default async function handleUserMessage(type: string, message: string) {
+  const fileToWorkOn = TasksSessionManagerNotifier.getState().getFileToWorkOn();
+
   if (type === "text" && message.trim()) {
     ConversationNotifier.getState().addMessage(new UserMessage(message));
     ConversationNotifier.getState().enableUserInput(false);
 
     if (await isEditingRequest(message)) {
+      if (fileToWorkOn == null) {
+        ConversationNotifier.getState().addMessage(
+          new AssistantMessage(MessagesLibrary.noFileToWorkOn),
+        );
+        ConversationNotifier.getState().enableUserInput(true);
+        return;
+      }
       handleUserEditingRequest(message);
       return;
     }
@@ -36,7 +47,7 @@ async function isEditingRequest(message: string): Promise<boolean> {
       },
       newSession: true,
     });
-  console.log("model output :", res);
+  console.log("is editing request :", res);
 
   if (
     res &&

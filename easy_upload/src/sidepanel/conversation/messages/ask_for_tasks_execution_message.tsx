@@ -6,22 +6,6 @@ import { ConversationNotifier } from "../ConversationNotifier";
 import AssistantMessage from "./assistant_message";
 import TaskManagerMessage from "./tasks_manager/task_manager_message";
 
-function onClickStartTasks() {
-  const currentSession =
-    TasksSessionManagerNotifier.getState().getCurrentSession();
-  if (currentSession == undefined) return;
-
-  const taskManagerMessage = new TaskManagerMessage(currentSession.id);
-  ConversationNotifier.getState().addMessage(taskManagerMessage);
-  TasksSessionManagerNotifier.getState().execCurrentSession();
-}
-
-async function onClickNotStartTasks() {
-  const message = new AssistantMessage("Task execution canceled.");
-  ConversationNotifier.getState().addMessage(message);
-  ConversationNotifier.getState().enableUserInput(true);
-}
-
 export default class AskForTasksExecutionMessage extends DefaultMessage {
   user: User = { name: "assistant" };
   type = "text";
@@ -51,4 +35,20 @@ export default class AskForTasksExecutionMessage extends DefaultMessage {
       </div>
     );
   };
+}
+
+function onClickStartTasks() {
+  const currentSession =
+    TasksSessionManagerNotifier.getState().getCurrentSession();
+  if (currentSession == undefined) return;
+
+  const taskManagerMessage = new TaskManagerMessage(currentSession.id);
+  ConversationNotifier.getState().addMessage(taskManagerMessage);
+  TasksSessionManagerNotifier.getState().execCurrentSession();
+}
+
+async function onClickNotStartTasks() {
+  const message = new AssistantMessage("Task execution canceled.");
+  ConversationNotifier.getState().addMessage(message);
+  ConversationNotifier.getState().enableUserInput(true);
 }

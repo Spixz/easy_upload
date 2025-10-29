@@ -1,10 +1,10 @@
-import { userInputFilenameInOPFS } from "@/commons/const";
 import { ToolTask } from "./tool_task";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { UserTask } from "@/commons/interfaces";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import AssistantMessage from "../conversation/messages/assistant_message";
+import { generateRandomString } from "@/commons/helpers/helpers";
 
 export interface TaskSession {
   id: string;
@@ -34,7 +34,6 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
   devtools(
     (set, get) => ({
       _sessions: [],
-      _fileToWorkOn: userInputFilenameInOPFS,
       async createSession(userTasks: UserTask[]) {
         let newTasks: ToolTask[] = [];
 
@@ -51,7 +50,7 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
         }
 
         const newSession: TaskSession = {
-          id: crypto.randomUUID(),
+          id: generateRandomString(),
           createdAt: new Date(),
           status: "pending",
           tasks: newTasks,
@@ -79,6 +78,11 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
 
         const currentSession = get().getCurrentSession();
         if (!currentSession) return;
+
+        if (this.getFileToWorkOn() == null) {
+          console.error("No file to work on");
+          return;
+        }
 
         set((state) => ({
           _sessions: state._sessions.map((session) =>
@@ -110,7 +114,7 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
             });
             console.warn(`Error in task ${index}:`, err);
             sessionFailed = true;
-            break; // On arrête la session si une tâche échoue
+            break;
           }
         }
 
