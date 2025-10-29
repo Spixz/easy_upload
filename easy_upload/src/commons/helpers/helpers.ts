@@ -14,8 +14,6 @@ export async function detectFileExt(
   const buffer = new Uint8Array(await file.slice(0, 4100).arrayBuffer());
 
   const detected = await fileTypeFromBuffer(buffer);
-  console.log("extension deterinie");
-  console.log(detected);
   if (detected?.ext) return detected;
 
   const fileName = (file as File).name;
@@ -31,24 +29,6 @@ export async function detectFileExt(
   return null;
 }
 
-export async function checkFileInOPFS(name: string): Promise<boolean> {
-  try {
-    const root = await navigator.storage.getDirectory();
-    const handle = await root.getFileHandle(name);
-
-    if (!handle) return false;
-
-    const file = await handle.getFile();
-    if (file.size == 0) return false;
-
-    return true;
-  } catch (err: any) {
-    console.error("Erreur lors de la vérification du fichier :", err);
-    return false;
-  }
-  return true;
-}
-
 export async function getFileInOPFS(filename: string): Promise<File | null> {
   try {
     const root = await navigator.storage.getDirectory();
@@ -61,7 +41,6 @@ export async function getFileInOPFS(filename: string): Promise<File | null> {
 
     return file;
   } catch (err: any) {
-    console.error("[getFileInOPFS] erreur");
     console.log(err);
     return null;
   }
@@ -79,4 +58,12 @@ export async function writeFileInOPFS(
 
   await writable.write(fileContent);
   await writable.close();
+}
+
+export async function clearOPFS() {
+  const root = await navigator.storage.getDirectory();
+  for await (const [name, _] of root.entries()) {
+    await root.removeEntry(name, { recursive: true });
+  }
+  console.log("✅ OPFS cleared");
 }

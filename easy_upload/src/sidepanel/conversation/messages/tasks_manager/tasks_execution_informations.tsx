@@ -52,6 +52,7 @@ export function SessionExecutionInformations({
     const file = await fileHandle.getFile();
     const url = URL.createObjectURL(file);
     const extension = await detectFileExt(file);
+    console.log(`Format of the previewed file ${extension?.ext}`);
     setOverlay({
       open: true,
       url,
@@ -68,6 +69,7 @@ export function SessionExecutionInformations({
     const a = document.createElement("a");
     a.href = url;
     const format = await detectFileExt(file);
+    console.log(`Format of the downloaded file ${format?.ext}`);
     a.download = format?.ext
       ? `${task.outputOPFSFilename}.${format.ext}`
       : task.outputOPFSFilename;

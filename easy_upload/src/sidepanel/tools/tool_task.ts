@@ -1,5 +1,8 @@
 import { UserTask } from "@/commons/interfaces";
-import { BasicCliCommand } from "../notifiers/MinisearchNotifier";
+import {
+  BasicCliCommand,
+  MinisearchNotifier,
+} from "../notifiers/MinisearchNotifier";
 import { generateRandomString } from "@/commons/helpers/helpers";
 
 export type TaskStatus = "pending" | "inProgress" | "done" | "error";
@@ -21,19 +24,21 @@ export abstract class ToolTask {
   }
 
   static async factory(userTask: UserTask): Promise<ToolTask | undefined> {
+    await MinisearchNotifier.getState().ensureInit();
+
     switch (userTask.tool_name) {
       case "imagemagick":
         const { default: ImagemagickTool } = await import("./imagemagick_tool");
         const tool = new ImagemagickTool(userTask);
 
-        await tool.selectCommand();
+        await tool.initialize();
         if (tool.initializationSuccess) return tool;
         break;
       case "ffmpeg": {
         const { default: FfmpegTool } = await import("./ffmpeg_tool");
         const tool = new FfmpegTool(userTask);
 
-        await tool.selectCommand();
+        await tool.initialize();
         if (tool.initializationSuccess) return tool;
         break;
       }
@@ -44,16 +49,8 @@ export abstract class ToolTask {
     this.status = status;
   }
 
-  abstract selectCommand(): Promise<void>; // peut etre null par exemple pour imageCutter
-  // quio que, est ce que je donnerai pas aussi une db et créerai pas des commmandes
-  // pour lui pour configurer l'interface
+  abstract initialize(): Promise<void>;
   abstract exec(props: { inputOPFSFilename: string }): Promise<void>;
-  // lance la tache.
-  // par ex pour imageCutter envoi un message qui ouvre une fenetre. Par contre
-  /// il faut qu'il puisse savoir quand la tache est terminée.
-  /// dans son cas, il lui faudrai un listener qui ecoute un message specifique du content script
-  // ou sinon juste expose une foncton qui pourra etre appeler justement par ce listener
-  // et changer le status de la tache.
 
   copyWith(props: Partial<Omit<ToolTask, "id">>): ToolTask {
     const newObject = { ...this, ...props };

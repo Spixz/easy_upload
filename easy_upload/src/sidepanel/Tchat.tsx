@@ -34,7 +34,7 @@ export default function Tchat() {
     <div style={{ height: "100vh", width: "100vw" }}>
       <Chat
         locale="en-US"
-        navbar={{ title: "Assistant" }}
+        navbar={{ title: "File Studio" }}
         messages={messages}
         renderMessageContent={renderMessageContent}
         onSend={handleUserMessage}

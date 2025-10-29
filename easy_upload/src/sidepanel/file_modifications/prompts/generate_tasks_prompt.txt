@@ -28,28 +28,56 @@ You have the following tools (**one tool = one action per step**):
 
 ## Examples
 
-User: "My image isn’t the right size and it’s too large"
+
+Input :
+{
+  "user": "My image isn’t the right size and it’s too large",
+  "file_category": "image"
+}
 Output:
 [
   { "tool_name": "imageCutter", "i_want": "open an interface to crop or resize the image" },
   { "tool_name": "imagemagick", "i_want": "compress the image to reduce its file size" }
 ]
 
-User: "Rotate the image to the left and compress it"
+
+User:
+{
+  "user": "Rotate it to the left and compress it",
+  "file_category": "image"
+}
 Output:
 [
   { "tool_name": "imagemagick", "i_want": "rotate the image 90 degrees to the left" },
   { "tool_name": "imagemagick", "i_want": "compress the image to reduce its file size" }
 ]
 
-User: "The video is too large"
+User:
+{
+  "user": "the file is too large",
+  "file_category": "video"
+}
 Output:
 [
   { "tool_name": "ffmpeg", "i_want": "compress the video to reduce its file size" }
 ]
 
-User: "The website requires an mp3 but I have an mp4"
+User:
+{
+  "user": "The website requires an mp3 but I have an mp4",
+  "file_category": "video"
+}
 Output:
 [
   { "tool_name": "ffmpeg", "i_want": "convert the video into an MP3" }
+]
+
+User:
+{
+  "user": "compress it",
+  "file_category": "audio"
+}
+Output:
+[
+  { "tool_name": "ffmpeg", "i_want": "compress the audio to reduce its file size" }
 ]

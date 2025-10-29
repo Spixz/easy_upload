@@ -11,4 +11,6 @@ export interface UserTask {
   i_want: string;
 }
 
-export type ToolName = "imageCutter" | "imagemagick" | "ffmpeg";
+
+export const TOOL_NAMES = ["imageCutter", "imagemagick", "ffmpeg"] as const;
+export type ToolName = typeof TOOL_NAMES[number];

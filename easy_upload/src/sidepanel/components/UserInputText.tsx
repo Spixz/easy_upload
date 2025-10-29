@@ -7,13 +7,6 @@ import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
-import { userInputFilenameInOPFS } from "@/commons/const";
-import { sidepanelPort } from "../sidepanel_listener";
-import {
-  ChromeBridgeMessage,
-  OffscreenCommandExecutionRequest,
-} from "@/commons/communications_interfaces";
-import { generateRandomString } from "@/commons/helpers/helpers";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -50,23 +43,6 @@ export const UserInputText = (props: ComposerProps) => {
             borderColor={primaryColor}
             onClick={() => console.log("Set status to idle")}
             text="What can you do?"
-          />
-          <CustomButton
-            borderColor={primaryColor}
-            onClick={async () => {
-              const taskId = generateRandomString();
-              sidepanelPort.postMessage({
-                name: "exec-command-in-offscreen",
-                data: {
-                  id: taskId,
-                  tool: "ffmpeg",
-                  inputOPFSFilename: userInputFilenameInOPFS,
-                  outputOPFSFilename: "yyo je suis louptu",
-                  command: "-i input -vf format=gray output",
-                } as OffscreenCommandExecutionRequest,
-              } as ChromeBridgeMessage);
-            }}
-            text="test Tool task"
           />
         </Flex>
       </div>

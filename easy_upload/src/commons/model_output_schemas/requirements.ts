@@ -104,9 +104,6 @@ export class RequirementsVideo extends Requirements {
     };
   }
 
-  toString(): string {
-    return "sous format texte lol";
-  }
 }
 
 export class RequirementsAudio extends Requirements {

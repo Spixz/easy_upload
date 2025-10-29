@@ -1,47 +1,22 @@
-Your objective is to modify the provided 'command example' within the Input object, if necessary, to accurately reflect the 'user goal'.
+Your task is to modify the command example from the Input based only on the user goal.
+Rule: You must use the provided command example as the starting point. Do not use any other commands.
+Rule: If output.xxx is in the command example, you must replace xxx with the output format from the user goal.
+Rule: Your output must be only the final JSON object.
 
-If 'output.xxx' is present in the 'command example', you **must** replace 'xxx' with the specific output format or file extension requested in the 'user goal'.
-
-The final output **must** be a single JSON object containing the modified command.
-
-## Examples
-
-**Example 1**
-Input:
-{
-  "user goal": "I want to convert my image to pure black and white.",
-  "command description": "Converts the image to pure black and white (binary).",
-  "command example": "convert input -monochrome output"
-}
-
-No modification to the command is necessary.
-Output:
-{"command": "convert input -monochrome output"}
-
----
-
-**Example 2**
 Input:
 {
   "user goal": "I want to convert my image to png",
   "command description": "Converts an image from one format to another. For example PNG to JPEG.",
   "command example": "convert input output.xxx"
 }
-
-'output.xxx' is present, so I must replace 'xxx' with the desired output format '.png'.
 Output:
 {"command": "convert input output.png"}
 
----
-
-**Example 3**
 Input:
 {
   "user goal": "I want to stop my video at 42 seconds.",
-  "command description": "Keeps only the segment between a start time (-ss) and an end time (-to). Times can be given as HH:MM:SS(.ms) or seconds. Example: start=00:00:10, end=00:00:20 keeps 10s of video.",
-  "command example": "i input -ss 00:00:10 -to 00:00:20 -c copy output"
+  "command description": "Keeps only the segment between a start time (-ss) and an end time (-to).",
+  "command example": "-i input -ss 00:00:10 -to 00:00:20 -c copy output"
 }
-
-I need to change the end time with '-to' and assume the start time is 00:00:00.
 Output:
-{"command": "i input -ss 00:00:00 -to 00:00:42 -c copy output"}
+{"command": "-i input -ss 00:00:00 -to 00:00:42 -c copy output"}
