@@ -7,10 +7,17 @@ import {
   OverlayProps,
 } from "./tasks_manager/file_overview_overlay";
 import { TasksSessionManagerNotifier } from "@/sidepanel/tools/tasks_session_manager";
-import { detectFileExt } from "@/commons/helpers/helpers";
+import { detectFileExt, getOPFSFileCategory } from "@/commons/helpers/helpers";
 import { UserFileNotifier } from "@/sidepanel/notifiers/FileNotifier";
-import { DownloadIcon, EyeIcon, TargetIcon } from "@/assets/task_icon";
+import {
+  DownloadIcon,
+  EditIcon,
+  EyeIcon,
+  TargetIcon,
+} from "@/assets/task_icon";
 import { TaskStatus } from "@/sidepanel/tools/tool_task";
+import openImageEditor from "@/image_ui_editor/open_ui_editor";
+import { FileCategory } from "@/commons/enums";
 
 export default class UserFileMessage extends DefaultMessage {
   user: User = { name: "assistant" };
@@ -56,6 +63,7 @@ export function SourceFileCard({
   showInjectButton: boolean;
 }) {
   const [overlay, setOverlay] = useState<OverlayProps>({ open: false });
+  const [fileCategory, setFileCategory] = useState<FileCategory | undefined>();
   const fileToWorkOn = TasksSessionManagerNotifier(
     (state) => state._fileToWorkOn,
   );
@@ -80,6 +88,10 @@ export function SourceFileCard({
     });
   }, [opfsFilename, title]);
 
+  const handleImageEdit = useCallback(async () => {
+    openImageEditor(opfsFilename);
+  }, [opfsFilename]);
+
   const handleDownload = useCallback(async () => {
     const root = await navigator.storage.getDirectory();
     const fileHandle = await root.getFileHandle(opfsFilename);
@@ -95,6 +107,10 @@ export function SourceFileCard({
 
   const handleInject = useCallback(() => {
     UserFileNotifier.getState().injectFileInContentScript(opfsFilename);
+  }, [opfsFilename]);
+
+  useEffect(() => {
+    getOPFSFileCategory(opfsFilename).then((type) => setFileCategory(type));
   }, [opfsFilename]);
 
   useEffect(() => {
@@ -123,6 +139,8 @@ export function SourceFileCard({
           onSetWorkFile={() => setFileToWorkOn(opfsFilename)}
           isCurrentWorkFile={isCurrentWorkFile}
           showInjectButton={showInjectButton}
+          fileCategory={fileCategory}
+          onImageEdit={handleImageEdit}
         />
       </ItemContainer>
       <FileOverviewOverlay
@@ -154,6 +172,8 @@ function ActionButtons({
   onSetWorkFile,
   isCurrentWorkFile,
   showInjectButton,
+  fileCategory,
+  onImageEdit,
 }: {
   status: TaskStatus;
   onPreview: () => void;
@@ -162,6 +182,8 @@ function ActionButtons({
   onSetWorkFile: () => void;
   isCurrentWorkFile: boolean;
   showInjectButton: boolean;
+  fileCategory?: FileCategory;
+  onImageEdit: () => void;
 }) {
   const disabled = status !== "done";
 
@@ -175,6 +197,19 @@ function ActionButtons({
       >
         <EyeIcon />
       </button>
+      {fileCategory === FileCategory.image && (
+        <button
+          style={{
+            ...styles.iconButton,
+            ...(disabled && styles.buttonDisabled),
+          }}
+          disabled={disabled}
+          onClick={onImageEdit}
+          title="Edit Image"
+        >
+          <EditIcon />
+        </button>
+      )}
       <button
         style={{ ...styles.iconButton, ...(disabled && styles.buttonDisabled) }}
         disabled={disabled}
@@ -210,8 +245,6 @@ function ActionButtons({
 function StatusDot({ status }: { status: TaskStatus }) {
   return <div style={styles.dot(STATUS_COLORS[status])} />;
 }
-
-// --- STYLES ---
 
 const STATUS_COLORS: Record<TaskStatus, string> = {
   pending: "#D1D5DB",

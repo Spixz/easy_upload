@@ -27,6 +27,7 @@ export default defineManifest({
   web_accessible_resources: [
     {
       resources: [
+        "src/image_ui_editor/index.html",
         "wasm/*",
       ],
       matches: ["<all_urls>"],

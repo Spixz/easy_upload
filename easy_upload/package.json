@@ -27,6 +27,7 @@
     "pdfjs-dist": "^5.4.296",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-filerobot-image-editor": "^4.9.1",
     "react-pdf": "^10.2.0",
     "react-spinners": "^0.17.0",
     "ts-enum-util": "^4.1.0",

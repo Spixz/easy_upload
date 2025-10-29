@@ -130,7 +130,6 @@ export const audioExtensions = [
   "mka",
 ];
 
-// Utilitaire
 export default function getFileCategory(
   extension: string,
 ): FileCategory {

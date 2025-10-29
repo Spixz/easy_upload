@@ -1,4 +1,4 @@
-import { detectFileExt } from "@/commons/helpers/helpers";
+import { detectFileExt, getOPFSFileCategory } from "@/commons/helpers/helpers";
 import { TaskStatus, ToolTask } from "@/sidepanel/tools/tool_task";
 import {
   TaskSession,
@@ -7,7 +7,14 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { FileOverviewOverlay, OverlayProps } from "./file_overview_overlay";
 import { UserFileNotifier } from "@/sidepanel/notifiers/FileNotifier";
-import { DownloadIcon, EyeIcon, TargetIcon } from "@/assets/task_icon";
+import {
+  DownloadIcon,
+  EditIcon,
+  EyeIcon,
+  TargetIcon,
+} from "@/assets/task_icon";
+import { FileCategory } from "@/commons/enums";
+import openImageEditor from "@/image_ui_editor/open_ui_editor";
 
 function statusLabel(s: TaskStatus): string {
   switch (s) {
@@ -59,6 +66,10 @@ export function SessionExecutionInformations({
       title: task.goal,
       extension: extension?.ext ?? undefined,
     });
+  }, []);
+
+  const onImageEdit = useCallback(async (filename: string) => {
+    openImageEditor(filename);
   }, []);
 
   const handleDownload = useCallback(async (task: ToolTask) => {
@@ -136,6 +147,7 @@ export function SessionExecutionInformations({
                 <ActionButtonsComponent
                   task={task}
                   onPreview={handlePreview}
+                  onImageEdit={onImageEdit}
                   onDownload={handleDownload}
                   onInject={handleInject}
                   onSetWorkFile={() => setFileToWorkOn(task.outputOPFSFilename)}
@@ -187,6 +199,7 @@ function TaskItemComponent({
 function ActionButtonsComponent({
   task,
   onPreview,
+  onImageEdit,
   onDownload,
   onInject,
   onSetWorkFile,
@@ -194,12 +207,20 @@ function ActionButtonsComponent({
 }: {
   task: ToolTask;
   onPreview: (t: ToolTask) => void;
+  onImageEdit: (filename: string) => void;
   onDownload: (t: ToolTask) => void;
   onInject: (t: ToolTask) => void;
   onSetWorkFile: () => void;
   isCurrentWorkFile: boolean;
 }) {
+  const [fileCategory, setFileCategory] = useState<FileCategory | undefined>();
   const disabled = task.status !== "done";
+
+  useEffect(() => {
+    getOPFSFileCategory(task.outputOPFSFilename).then((type) =>
+      setFileCategory(type),
+    );
+  }, [task.status]);
 
   return (
     <div style={styles.actions}>
@@ -211,6 +232,19 @@ function ActionButtonsComponent({
       >
         <EyeIcon />
       </button>
+      {fileCategory === FileCategory.image && (
+        <button
+          style={{
+            ...styles.iconButton,
+            ...(disabled && styles.buttonDisabled),
+          }}
+          disabled={disabled}
+          onClick={() => !disabled && onImageEdit(task.outputOPFSFilename)}
+          title="Edit Image"
+        >
+          <EditIcon />
+        </button>
+      )}
       <button
         style={{ ...styles.iconButton, ...(disabled && styles.buttonDisabled) }}
         disabled={disabled}

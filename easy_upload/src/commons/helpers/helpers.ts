@@ -1,4 +1,6 @@
 import { fileTypeFromBuffer, FileTypeResult } from "file-type";
+import { FileCategory } from "../enums";
+import getFileCategory from "./get_file_category";
 
 export function generateRandomString(): string {
   return crypto.randomUUID();
@@ -58,6 +60,18 @@ export async function writeFileInOPFS(
 
   await writable.write(fileContent);
   await writable.close();
+}
+
+export async function getOPFSFileCategory(
+  filename: string,
+): Promise<FileCategory> {
+  const file = await getFileInOPFS(filename);
+  if (file == null) return FileCategory.all;
+
+  const extension = await detectFileExt(file);
+  if (extension == null) return FileCategory.all;
+
+  return getFileCategory(extension.ext);
 }
 
 export async function clearOPFS() {
