@@ -1,12 +1,12 @@
-import { TOOL_NAMES, ToolName, UserTask } from "@/commons/interfaces";
+import { TOOL_NAMES, UserTask } from "@/commons/interfaces";
 import {
   BasicCliCommand,
   searchResultsToCliCommands,
 } from "../notifiers/MinisearchNotifier";
 import { ToolTask } from "./tool_task";
 import { ModelNotifier } from "../model/ModelNotifier";
-import selectCommandPrompt from "./prompts/select_command.txt?raw";
-import generateCommandPrompt from "./prompts/generate_command.txt?raw";
+import selectCommandPrompt from "./prompts/select_command_prompt.txt?raw";
+import generateCommandPrompt from "./prompts/generate_command_prompt.txt?raw";
 import {
   detectFileExt,
   generateRandomString,
@@ -20,21 +20,18 @@ import {
 import { getOffscreenCommandResult } from "./get_offscreen_result";
 import MiniSearch from "minisearch";
 
-export default class CommandLineTool extends ToolTask {
-  toolName: ToolName;
+export default abstract class CommandLineTool extends ToolTask {
   minisearch: MiniSearch<BasicCliCommand>;
+  abstract toolName: string;
 
   constructor({
     userTask,
-    toolName,
     minisearch,
   }: {
     userTask: UserTask;
-    toolName: ToolName;
     minisearch: MiniSearch<BasicCliCommand>;
   }) {
     super(userTask);
-    this.toolName = toolName;
     this.minisearch = minisearch;
   }
 

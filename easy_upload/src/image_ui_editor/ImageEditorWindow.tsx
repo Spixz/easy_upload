@@ -120,26 +120,4 @@ export function ImageEditorWindow() {
       // ...
     />
   );
-  // // L'éditeur lui-même
-  // return (
-  //   <FilerobotImageEditor
-  //     source={sourceImageUrl}
-  //     onSave={handleSave}
-  //     onClose={handleClose}
-  //     // Configuration dynamique basée sur les paramètres de l'URL
-  //     defaultTabId={
-  //       initialTab && Object.values(TABS).includes(initialTab as any)
-  //         ? (initialTab as any)
-  //         : undefined
-  //     }
-  //     defaultToolId={
-  //       initialTool && Object.values(TOOLS).includes(initialTool as any)
-  //         ? (initialTool as any)
-  //         : undefined
-  //     }
-
-  //     // Tu peux ajouter d'autres configurations ici
-  //     // ...
-  //   />
-  // );
 }

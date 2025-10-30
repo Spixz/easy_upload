@@ -35,8 +35,15 @@ export async function handleUserEditingRequest(
   console.log(userTasks);
   await TasksSessionManagerNotifier.getState().createSession(userTasks);
 
-  const askExecutionMessage = new AskForTasksExecutionMessage();
-  ConversationNotifier.getState().addMessage(askExecutionMessage);
+  const allTasks =
+    TasksSessionManagerNotifier.getState().getCurrentSession()!.tasks;
+  if (allTasks.length != 0) {
+    ConversationNotifier.getState().addMessage(
+      new AskForTasksExecutionMessage(),
+    );
+  } else {
+    ConversationNotifier.getState().enableUserInput(true);
+  }
 }
 
 async function generateUserTasksFromGoals(

@@ -43,7 +43,7 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
             newTasks.push(task);
           } else {
             const notFoundMessage = new AssistantMessage(
-              `The tool ${userTask.tool_name} was not found for the task "${userTask.i_want}"`,
+              `The tool ${userTask.tool_name} was not found, or an error occured during it's initialization for the task "${userTask.i_want}"`,
             );
             ConversationNotifier.getState().addMessage(notFoundMessage);
           }

@@ -1,0 +1,18 @@
+Your task is to determine which of the following three tools should be used based on the user's goal.
+
+- Annotate → to write or draw shapes on the image.  
+- Resize → to change the size of the image (make it larger or smaller).  
+- Adjust → to crop or cut the image.
+
+The output must always be in this format:
+{"tool": "tool_name"}
+
+If none of the tools match the user’s intent, use "Adjust" by default.
+
+Examples:
+
+input: enlarge my image  
+output: {"tool": "Resize"}
+
+input: change the image format to png  
+output: {"tool": "Adjust"}

@@ -3,10 +3,11 @@ import { MinisearchNotifier } from "../notifiers/MinisearchNotifier";
 import CommandLineTool from "./command_line_tool";
 
 export default class ImagemagickTool extends CommandLineTool {
+  toolName: string = "imagemagick";
+
   constructor(userTask: UserTask) {
     super({
       userTask: userTask,
-      toolName: "imagemagick",
       minisearch: MinisearchNotifier.getState().minisearchImagemagick!,
     });
   }

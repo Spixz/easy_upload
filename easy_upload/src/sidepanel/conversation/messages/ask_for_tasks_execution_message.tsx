@@ -5,6 +5,7 @@ import { TasksSessionManagerNotifier } from "@/sidepanel/tools/tasks_session_man
 import { ConversationNotifier } from "../ConversationNotifier";
 import AssistantMessage from "./assistant_message";
 import TaskManagerMessage from "./tasks_manager/task_manager_message";
+import MessagesLibrary from "@/commons/messages_library";
 
 export default class AskForTasksExecutionMessage extends DefaultMessage {
   user: User = { name: "assistant" };
@@ -18,7 +19,7 @@ export default class AskForTasksExecutionMessage extends DefaultMessage {
   renderMessageContent = (_: MessageProps) => {
     return (
       <div>
-        <Bubble content={"Do you want to execute the tasks?"} />
+        <Bubble content={MessagesLibrary.doYouWantToExecuteTheTask} />
         <Flex
           wrap="wrap"
           style={{

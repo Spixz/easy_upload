@@ -16,6 +16,7 @@ export abstract class ToolTask {
   commandToExecute?: string;
   commandSchema?: BasicCliCommand;
   resultPath?: string;
+  abstract toolName: string;
 
   constructor(userTask: UserTask) {
     this.goal = userTask.i_want;
@@ -27,16 +28,27 @@ export abstract class ToolTask {
     await MinisearchNotifier.getState().ensureInit();
 
     switch (userTask.tool_name) {
-      case "imagemagick":
+      case "imagemagick": {
         const { default: ImagemagickTool } = await import("./imagemagick_tool");
         const tool = new ImagemagickTool(userTask);
 
         await tool.initialize();
         if (tool.initializationSuccess) return tool;
         break;
+      }
       case "ffmpeg": {
         const { default: FfmpegTool } = await import("./ffmpeg_tool");
         const tool = new FfmpegTool(userTask);
+
+        await tool.initialize();
+        if (tool.initializationSuccess) return tool;
+        break;
+      }
+      case "ui_image_editor": {
+        const { default: UiImageEditorTool } = await import(
+          "./ui_image_editor_tool"
+        );
+        const tool = new UiImageEditorTool(userTask);
 
         await tool.initialize();
         if (tool.initializationSuccess) return tool;
