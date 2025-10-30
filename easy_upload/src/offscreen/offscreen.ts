@@ -7,7 +7,7 @@ import {
 import { executeFmmpegCommand } from "./ffmpeg";
 
 offscreenPort.onMessage.addListener(async (msg: ChromeBridgeMessage) => {
-  console.log("[Offscreen] ← Message du SW :", msg);
+  console.log("[Offscreen] ← Message du SW :");
   console.log("message recu");
   console.log(msg);
 

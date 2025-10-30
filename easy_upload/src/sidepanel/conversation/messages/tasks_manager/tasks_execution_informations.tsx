@@ -69,7 +69,10 @@ export function SessionExecutionInformations({
   }, []);
 
   const onImageEdit = useCallback(async (filename: string) => {
-    openImageEditor(filename);
+    openImageEditor({
+      opfsInputFilename: filename,
+      origin: "edit",
+    });
   }, []);
 
   const handleDownload = useCallback(async (task: ToolTask) => {

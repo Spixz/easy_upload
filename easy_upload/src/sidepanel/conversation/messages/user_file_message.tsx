@@ -89,7 +89,10 @@ export function SourceFileCard({
   }, [opfsFilename, title]);
 
   const handleImageEdit = useCallback(async () => {
-    openImageEditor(opfsFilename);
+    openImageEditor({
+      opfsInputFilename: opfsFilename,
+      origin: "edit",
+    });
   }, [opfsFilename]);
 
   const handleDownload = useCallback(async () => {

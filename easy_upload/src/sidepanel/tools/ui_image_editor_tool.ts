@@ -4,6 +4,11 @@ import selectTabPrompt from "./prompts/select_ui_image_tab_prompt.txt?raw";
 import { getFileInOPFS } from "@/commons/helpers/helpers";
 import openImageEditor from "@/image_ui_editor/open_ui_editor";
 import { ModelNotifier } from "../model/ModelNotifier";
+import { sidePanelSWPort } from "../sidepanel_listener";
+import {
+  ChromeBridgeMessage,
+  UiImageEditorClosingMessage,
+} from "@/commons/communications_interfaces";
 
 export default class UiImageEditorTool extends ToolTask {
   toolName: string = "ui_image_editor";
@@ -36,21 +41,36 @@ export default class UiImageEditorTool extends ToolTask {
       throw "input file doesn't exist or is empty";
     }
 
-    // const fileExtension = (await detectFileExt(inputFile))?.ext;
-    // var commandExample = this.commandSchema!.example;
-    // console.log(`[tool.exec] input file format ${fileExtension}`);
+    const windowId = await openImageEditor({
+      origin: "task",
+      opfsInputFilename: props.inputOPFSFilename,
+      opfsOutputFilename: this.outputOPFSFilename,
+      initialTab: this.initialTab,
+    });
 
-    // if (
-    //   fileExtension != null &&
-    //   this.commandSchema?.inputType != null &&
-    //   fileExtension in this.commandSchema!.inputType
-    // ) {
-    //   commandExample = this.commandSchema!.inputType[fileExtension]!;
-    //   console.log(`[tool.exec] special command found for this filetype`);
-    // }
-
-    openImageEditor(props.inputOPFSFilename, this.initialTab);
-    // ! listener fermeture
-    // ! juste throw une erreur pour dire pas foire
+    const success = await waitWindowClosing(windowId);
+    if (!success) {
+      throw "The image editing window was closed without modifications done.";
+    }
   }
+}
+
+function waitWindowClosing(windowId: number): Promise<boolean> {
+  return new Promise((resolve, _) => {
+    sidePanelSWPort.onMessage.addListener((message: ChromeBridgeMessage) => {
+      if (message.name == "ui_image_editor_closed") {
+        const data: UiImageEditorClosingMessage = message.data;
+        if (data.origin == "task") {
+          resolve(true);
+        }
+      }
+    });
+    sidePanelSWPort.onMessage.addListener((message: ChromeBridgeMessage) => {
+      if (message.name == "window_closed") {
+        if (message.data.id == windowId) {
+          resolve(false);
+        }
+      }
+    });
+  });
 }

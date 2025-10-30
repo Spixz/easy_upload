@@ -5,31 +5,39 @@ import {
   SystemMessage,
   ThinkingMessage,
 } from "./conversation/messages/messages";
-import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import {
+  ChromeBridgeMessage,
+  UiImageEditorClosingMessage,
+} from "@/commons/communications_interfaces";
 import { addOnChunkedMessageListener } from "@/vendors/ext-send-chuncked-message";
 import UserFileMessage from "./conversation/messages/user_file_message";
 import { generateRandomString } from "@/commons/helpers/helpers";
 import { TasksSessionManagerNotifier } from "./tools/tasks_session_manager";
 
-export const sidepanelPort = chrome.runtime.connect({
+export const sidePanelSWPort = chrome.runtime.connect({
   name: "sidepanel-channel",
 });
 
-sidepanelPort.onMessage.addListener(handleWorkerMessage);
+sidePanelSWPort.onMessage.addListener(handleSWMessages);
 
-function handleWorkerMessage(message: ChromeBridgeMessage) {
-  console.log("message recu par le sidepannel", message);
+function handleSWMessages(message: ChromeBridgeMessage) {
+  console.log("message du SW recu par le sidepannel", message);
   switch (message.name) {
-    case "input_unprocess_requirements":
+    case "input_unprocess_requirements": {
       onInputUnprocessRequirements(message.data);
       break;
+    }
+    case "ui_image_editor_closed": {
+      onUiImageEditorWindowClosed(message.data);
+      break;
+    }
     default:
       console.warn("[SidepanelListener] Message inconnu :", message);
   }
 }
 
 async function onInputUnprocessRequirements(requirements: InputRequirements) {
-  const { addMessage } = ConversationNotifier.getState();
+  const { addMessage, enableUserInput } = ConversationNotifier.getState();
 
   addMessage(new SystemMessage("Retrieving file requirements..."));
   try {
@@ -44,11 +52,35 @@ async function onInputUnprocessRequirements(requirements: InputRequirements) {
       ),
     );
   } catch {
-    ConversationNotifier.getState().enableUserInput(true);
+    enableUserInput(true);
     addMessage(
       new SystemMessage("An error occurred while fetching the requirements."),
     );
   }
+}
+
+function onUiImageEditorWindowClosed(message: UiImageEditorClosingMessage) {
+  const { addMessage, enableUserInput } = ConversationNotifier.getState();
+
+  if (message.origin == "task") return;
+  if (message.success) {
+    if (message.outputFilenameInOPFS != null) {
+      addMessage(
+        new UserFileMessage({
+          title: "Manually Edited Image",
+          opfsFilename: message.outputFilenameInOPFS,
+          showInjectButton: true,
+        }),
+      );
+      TasksSessionManagerNotifier.getState().setFileToWorkOn(
+        message.outputFilenameInOPFS,
+      );
+    }
+  } else {
+    addMessage(new SystemMessage("An error occurred during the image editing"));
+  }
+
+  enableUserInput(true);
 }
 
 addOnChunkedMessageListener(

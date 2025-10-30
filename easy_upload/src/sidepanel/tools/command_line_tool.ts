@@ -12,7 +12,7 @@ import {
   generateRandomString,
   getFileInOPFS,
 } from "@/commons/helpers/helpers";
-import { sidepanelPort } from "../sidepanel_listener";
+import { sidePanelSWPort } from "../sidepanel_listener";
 import {
   ChromeBridgeMessage,
   OffscreenCommandExecutionRequest,
@@ -124,7 +124,7 @@ export default abstract class CommandLineTool extends ToolTask {
     console.log(`[tool.exec] generated command: ${generatedCommand}`);
 
     const taskId = generateRandomString();
-    sidepanelPort.postMessage({
+    sidePanelSWPort.postMessage({
       name: "exec-command-in-offscreen",
       data: {
         id: taskId,

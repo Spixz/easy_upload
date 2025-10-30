@@ -1,6 +1,4 @@
-import {
-  OffscreenCommandExecutionRequest,
-} from "@/commons/communications_interfaces";
+import { OffscreenCommandExecutionRequest } from "@/commons/communications_interfaces";
 import { getFileInOPFS, writeFileInOPFS } from "@/commons/helpers/helpers";
 import { MagickOutputFile } from "wasm-imagemagick";
 import { sendExecCommandResponse } from "./send_exec_command_response";
@@ -20,9 +18,6 @@ export async function executeMagiskCommand(
 
     let arrayBuffer = await inputFile.arrayBuffer();
     let sourceBytes = new Uint8Array(arrayBuffer);
-
-    // calling ImageMagick with one source image, and command to rotate & resize image
-    // file-type pour
 
     const command = request.command;
     const inputName = command.match(/input(?:\.\w+)?/)?.[0] || "input";

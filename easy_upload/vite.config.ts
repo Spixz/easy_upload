@@ -29,7 +29,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        offscreen: "src/offscreen/offscreen.html", // ✅ ici !
+        offscreen: "src/offscreen/offscreen.html",
+        imageEditor: "src/image_ui_editor/index.html",
       },
     },
   },

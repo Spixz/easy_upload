@@ -11,9 +11,7 @@ export default defineManifest({
   permissions: ["sidePanel", "contentSettings", "offscreen", "storage"],
   content_scripts: [
     {
-      js: [
-        "src/content_scripts/page_modifiers/on_document_click.ts",
-      ],
+      js: ["src/content_scripts/page_modifiers/on_document_click.ts"],
       matches: ["<all_urls>"],
     },
   ],
@@ -26,10 +24,7 @@ export default defineManifest({
   },
   web_accessible_resources: [
     {
-      resources: [
-        "src/image_ui_editor/index.html",
-        "wasm/*",
-      ],
+      resources: ["src/image_ui_editor/index.html", "wasm/*"],
       matches: ["<all_urls>"],
     },
   ],

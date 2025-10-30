@@ -96,7 +96,7 @@ export const TasksSessionManagerNotifier = create<TasksSessionManagerState>()(
 
         for (const [index, task] of currentSession.tasks.entries()) {
           console.log(
-            `||| Executing Task: ${index} in Session: ${currentSessionId} |||`,
+            `[ Executing Task: ${index} in Session: ${currentSessionId} ]`,
           );
           get().updateTaskInSession(currentSessionId, index, {
             status: "inProgress",

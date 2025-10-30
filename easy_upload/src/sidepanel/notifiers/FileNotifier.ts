@@ -5,7 +5,7 @@ import { ExtractRequirements } from "@/core/extract_requirements/extract_require
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
-import { sidepanelPort } from "../sidepanel_listener";
+import { sidePanelSWPort } from "../sidepanel_listener";
 import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
 
 export interface UserFileState {
@@ -35,7 +35,7 @@ export const UserFileNotifier = create<UserFileState>()(
       }));
     },
     async injectFileInContentScript(filename: string) {
-      sidepanelPort.postMessage({
+      sidePanelSWPort.postMessage({
         name: "inject-file",
         data: filename,
       } as ChromeBridgeMessage);

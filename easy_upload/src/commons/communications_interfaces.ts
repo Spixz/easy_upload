@@ -17,3 +17,9 @@ export interface OffscreenCommandExecutionResult {
   id: string;
   success: boolean;
 }
+
+export interface UiImageEditorClosingMessage {
+  origin: "task" | "edit";
+  success: boolean;
+  outputFilenameInOPFS?: string;
+}
