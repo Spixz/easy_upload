@@ -2,13 +2,17 @@ import { $enum } from "ts-enum-util";
 import extractPotentialRequirementsFromPage from "./extract_file_requirements";
 import { FileCategory } from "@/commons/enums";
 import mime from "mime";
-import { sendMessage } from "webext-bridge/content-script";
 import { InputRequirements } from "@/commons/interfaces";
+import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import { serviceWorkerPort } from "@/content_scripts/bridge/contentscript_sidepanel_bridges";
 
 export async function onInputFileClick(input: HTMLInputElement) {
   console.log("L'user à cliqué sur l'input");
 
-  await sendMessage("open_sidepanel", {}, "background");
+  serviceWorkerPort.postMessage({
+    name: "open_sidepanel",
+  } as ChromeBridgeMessage);
+
   // sendRawRequirements(input);
 }
 
@@ -24,16 +28,15 @@ async function sendRawRequirements(input: HTMLInputElement) {
     findMajoritaryFileCategory(allowedCategories);
 
   console.log(potentialRequirements);
-  await sendMessage(
-    "input_unprocess_requirements",
-    {
+  serviceWorkerPort.postMessage({
+    name: "input_unprocess_requirements",
+    data: {
       raw_requirements: {
         text_for_requirements: potentialRequirements,
         file_category: mainAllowedCategory,
       } as InputRequirements,
     },
-    "background",
-  );
+  });
 }
 
 export function inferCategoryFromMimeString(

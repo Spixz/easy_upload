@@ -9,9 +9,7 @@ import {
   ChromeBridgeMessage,
   UiImageEditorClosingMessage,
 } from "@/commons/communications_interfaces";
-import { addOnChunkedMessageListener } from "@/vendors/ext-send-chuncked-message";
 import UserFileMessage from "./conversation/messages/user_file_message";
-import { generateRandomString } from "@/commons/helpers/helpers";
 import { TasksSessionManagerNotifier } from "./tools/tasks_session_manager";
 
 export const sidePanelSWPort = chrome.runtime.connect({
@@ -81,40 +79,4 @@ function onUiImageEditorWindowClosed(message: UiImageEditorClosingMessage) {
   }
 
   enableUserInput(true);
-}
-
-addOnChunkedMessageListener(
-  (message: any, sender: any, sendResponse: any) => {
-    if (message?.type != "user_input_file_changed") {
-      return;
-    }
-    handleFileReception(message);
-  },
-  { channel: "cc-to-panel" },
-);
-
-async function handleFileReception(message: any) {
-  const bytes = new Uint8Array(message.data);
-  if (bytes.length == 0) {
-    console.log("File send by the user is empty");
-    return;
-  }
-
-  const filename = generateRandomString();
-  const root = await navigator.storage.getDirectory();
-  const fileHandle = await root.getFileHandle(filename, {
-    create: true,
-  });
-  const writable = await fileHandle.createWritable();
-
-  await writable.write(bytes);
-  await writable.close();
-
-  TasksSessionManagerNotifier.getState().setFileToWorkOn(filename);
-  const userFileMessage = new UserFileMessage({
-    title: "File from website form",
-    opfsFilename: filename,
-    showInjectButton: false,
-  });
-  ConversationNotifier.getState().addMessage(userFileMessage);
 }

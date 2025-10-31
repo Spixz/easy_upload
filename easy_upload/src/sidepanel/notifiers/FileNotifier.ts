@@ -5,8 +5,9 @@ import { ExtractRequirements } from "@/core/extract_requirements/extract_require
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
-import { sidePanelSWPort } from "../sidepanel_listener";
-import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
+import { getFileInOPFS } from "@/commons/helpers/helpers";
+import { sendChunkedMessage } from "@/vendors/ext-send-chuncked-message";
+import { contentScriptPort } from "../bridges/sidepanel_content_script_bridge";
 
 export interface UserFileState {
   textForRequirements: string[];
@@ -35,10 +36,20 @@ export const UserFileNotifier = create<UserFileState>()(
       }));
     },
     async injectFileInContentScript(filename: string) {
-      sidePanelSWPort.postMessage({
-        name: "inject-file",
-        data: filename,
-      } as ChromeBridgeMessage);
+      const file = await getFileInOPFS(filename);
+      if (file == null) {
+        console.warn("sw: file not found for injection");
+        return;
+      }
+
+      const buff: ArrayBuffer = await file.arrayBuffer();
+      sendChunkedMessage(
+        {
+          type: "inject-file",
+          data: Array.from(new Uint8Array(buff)),
+        },
+        { port: contentScriptPort! },
+      );
     },
   })),
 );

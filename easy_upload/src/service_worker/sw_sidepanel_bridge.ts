@@ -7,22 +7,26 @@ let unsendMessages: ChromeBridgeMessage[] = [];
 export function initSidepanelBridge() {
   if (sidepanelPort != null) return;
 
-  console.log("[SidepannelBridge] Initialisation...");
+  console.log("[SW TO SidepannelBridge] Initialisation...");
 
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "sidepanel-channel") {
-      console.log("[Bridge] service worker conneted to Sidepanel");
+      console.log(
+        "[SW TO SidepannelBridge] service worker conneted to Sidepanel",
+      );
 
       getActiveTabId().then((sidePanelTabId) => {
         sidepanelPort = port;
 
         sidepanelPort.onMessage.addListener((msg: ChromeBridgeMessage) => {
-          console.log("[sw-Bridge] Received from sidepanel:", msg);
+          console.log("[SW TO SidepannelBridge] Received from sidepanel:", msg);
           handleSidepanelMessage(sidePanelTabId, msg);
         });
 
         sidepanelPort.onDisconnect.addListener(() => {
-          console.log("[sw-Bridge] Sidepanel disconnected of service worker");
+          console.log(
+            "[SW TO SidepannelBridge] Sidepanel disconnected of service worker",
+          );
           sidepanelPort = null;
         });
 
@@ -38,7 +42,9 @@ export function sendToSidepanel(message: ChromeBridgeMessage) {
     sidepanelPort.postMessage(message);
   } else {
     unsendMessages.push(message);
-    console.warn("[SW => sidepanel] error: No active sidepanel connection");
+    console.warn(
+      "[SW TO SidepannelBridge] error: No active sidepanel connection",
+    );
   }
 }
 

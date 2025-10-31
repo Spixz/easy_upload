@@ -1,12 +1,8 @@
-import { detectFileExt } from "@/commons/helpers/helpers";
 import { onInputFileClick } from "./input_file/on_click/on_input_file_click";
-import {
-  addOnChunkedMessageListener,
-  sendChunkedMessage,
-} from "@/vendors/ext-send-chuncked-message";
-import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
-import MessagesLibrary from "@/commons/messages_library";
+import {
+  sendFileToSidepanel,
+} from "../bridge/contentscript_sidepanel_bridges";
 
 export function attachFileInputInterceptor(doc: Document) {
   doc.addEventListener("click", (e) => {
@@ -22,13 +18,11 @@ export function attachFileInputInterceptor(doc: Document) {
         if (!file) return;
 
         const buff: ArrayBuffer = await file.arrayBuffer();
-        sendChunkedMessage(
-          {
-            type: "user_input_file_changed",
-            data: Array.from(new Uint8Array(buff)),
-          },
-          { channel: "cc-to-panel" },
-        );
+        console.log(`SEND file to sidepanel`);
+        sendFileToSidepanel({
+          type: "user_input_file_changed",
+          data: Array.from(new Uint8Array(buff)),
+        });
         input.removeEventListener("change", onChange);
       };
 
@@ -48,52 +42,6 @@ const observer = new MutationObserver(() => {
     }
   }
 });
-
-function displayErrorMessage(message: string) {
-  const notyf = new Notyf();
-  notyf.error({
-    message: message,
-    duration: 2500,
-    position: {
-      x: "right",
-      y: "bottom",
-    },
-  });
-}
-
-addOnChunkedMessageListener(
-  (message: any, _, __) => {
-    const selectedInputs: NodeListOf<HTMLInputElement> =
-      document.querySelectorAll(
-        'input[type="file"][data-input-selected-by-user]',
-      );
-    if (selectedInputs.length == 0) {
-      displayErrorMessage(MessagesLibrary.uploadFieldNoLongerAvailaible);
-      return;
-    }
-    const selectedInput = selectedInputs[0];
-
-    const bytes = new Uint8Array(message.data);
-    if (bytes.length == 0) {
-      displayErrorMessage(MessagesLibrary.filToReinjectIsEmpty);
-      return;
-    }
-
-    detectFileExt(new Blob([bytes])).then((fileFormat) => {
-      const fileToInject = new File([bytes], "injected_file", {
-        type: fileFormat?.ext ?? "",
-      });
-
-      const dataTransfer = new DataTransfer();
-      dataTransfer.items.add(fileToInject);
-      selectedInput.files = dataTransfer.files;
-
-      selectedInput.dispatchEvent(new Event("change", { bubbles: true }));
-      console.log("File successfully injected");
-    });
-  },
-  { channel: "sw-to-cc" },
-);
 
 observer.observe(document.body, { childList: true, subtree: true });
 attachFileInputInterceptor(document);
