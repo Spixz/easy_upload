@@ -14,4 +14,13 @@ export default class MessagesLibrary {
   static readonly clickOnTheFiledToReinjectYourFile =
     "Click on the field where you want to upload your file";
   static readonly fileSuccessfullyReinjected = "File successfully re-injected";
+  static readonly whatCanYouDo = `I can edit, compress, or convert your image, video, or audio files directly in the browser.
+
+Here are a few things you can ask me:
+•	“Rotate this video”
+•	“Cut this video”
+•	“Compress it”
+•	“I want to annotate the image”
+•	“Convert it to JPG”
+`;
 }

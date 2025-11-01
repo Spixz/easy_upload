@@ -1,86 +1,94 @@
-# 🧠 EasyUpload  
-> **"Fini de galérer pour uploader un fichier sur un site."**  
+# 🧠 EasyUpload
 
-![Demo GIF](./assets/demo.gif)  
+> **"Stop struggling with file uploads"**
+
+[![Watch the demo](https://img.youtube.com/vi/GR6a-QPXY5c/0.jpg)](https://www.youtube.com/watch?v=GR6a-QPXY5c)
 
 ---
 
-## 🚀 What it does  
+## 🚀 What it does
+
 **EasyUpload** is a conversational Chrome extension that automatically prepares your files before uploading them.  
 It can **convert, compress, and edit** your media directly in the browser — no external tools or websites required.  
 Everything runs **locally**, powered by **Chrome’s built-in AI model**.  
-No files are ever sent to external servers.  
+No files are ever sent to external servers.
 
----
+## ✨ Features
 
-## ✨ Features  
 - 🤖 **An assistant that edits your files for you** using:
-  - 🧩 [ImageMagick (+200 commands)](./src/tools/imagemagick_commands.ts)  
-  - 🎬 [FFmpeg (8 commands)](./src/tools/ffmpeg_commands.ts)  
-  - 🖼️ [Visual image editor (react-filerobot-image-editor)](https://github.com/scaleflex/filerobot-image-editor)  
-- 🔁 **Reinjection of the processed file** directly into the web page’s upload form  
-- 💾 **Edit your local file** — everything runs in your browser  
-- ⚡ **Powered by** [Google Chrome built-in AI model](https://developer.chrome.com/docs/ai/built-in)  
+  - 🧩 [ImageMagick (+200 commands)](./public/minisearch_db/ffmpeg_commands.json)
+  - 🎬 [FFmpeg (8 commands)](./public/minisearch_db/ffmpeg_commands.json)
+  - 🖼️ [Visual image editor (react-filerobot-image-editor)](https://github.com/scaleflex/filerobot-image-editor)
+- 🔁 **Reinjection of the processed file** directly into the web page’s upload form
+- 💾 **Edit your local file** — everything runs in your browser
+- ⚡ **Powered by** [Google Chrome built-in AI model](https://developer.chrome.com/docs/ai/built-in)
 
----
+## ⚙️ How it works
 
-## 🧩 How it works  
-The assistant receives your request in natural language (e.g., *“convert my image to PDF and reduce its size”*).  
-It then generates the corresponding **command lines** for tools like FFmpeg or ImageMagick.  
-Since the local model is small and doesn’t store all commands in memory, **MiniSearch** is used to query a **local database of valid examples**, ensuring accurate, non-hallucinated commands.  
+The assistant receives the user’s request in natural language (for example: _“convert my image to PDF and reduce its size”_).  
+It first determines whether the request is an **editing request**.  
+If that’s the case, the model **[`decomposes the goal into multiple subtasks`](./src/sidepanel/file_modifications/prompts/generate_tasks_prompt.txt)** and assigns each one to a specific tool.
 
----
+Example:
 
-## 💡 Inspiration  
-When I had to upload files to websites, I was often frustrated by the need to use an external tool, software, or website just to modify, compress, or convert my files to the right format.  
-To solve this problem, I decided to create a browser extension capable of editing and converting audio and video files directly before upload — injecting them straight into the page’s upload form.  
-Now, I no longer need any third-party software to prepare my files for upload.  
-
----
-
-## 🛠️ How I built it  
-Built with:  
-- **TypeScript**, **React**  
-- **Zustand** for state management  
-- **CRXJS** for Chrome extension bundling  
-- **MiniSearch** for local command search  
-- **ImageMagick**, **FFmpeg**, **ChatUI**, and **react-filerobot-image-editor**  
-
----
-
-## 🧗 Challenges I ran into  
-The tools used for processing images and videos — such as **ImageMagick** and **FFmpeg** — are command-line based.  
-To make them work, the assistant must generate valid command lines. However, since the local model is relatively small, it often **hallucinates** when asked to produce them directly.  
-
-After many tests, I chose **MiniSearch** as the most reliable solution. It allows the model to search a **local database of commands** and retrieve the right one based on the user’s goal, ensuring accuracy.  
-
-Another challenge was **extracting upload requirements** from websites (file format, max size, resolution, duration, etc.).  
-I tested several methods and implemented **automated tests with Puppeteer** to verify both the prompts and the extraction logic across multiple websites.  
-
----
-
-## 🏆 Accomplishments I’m proud of  
-- Built a **tool execution system** with **very low token usage**, making it efficient and lightweight for local inference.  
-- This was the biggest challenge of the project, and I’m really happy I got it working 🎉.  
-
----
-
-## 📚 What I learned  
-I learned how to **use Chrome’s built-in AI models** and how to **enable communication between the different parts of a Chrome extension** — including the service worker, content scripts, offscreen document, and side panel.  
-Now it’s time to clean up and **standardize the communication system**, since it’s the end of the challenge 😄.  
-
----
-
-## 🔮 What’s next for EasyUpload  
-The **upload requirement extraction** and **tool execution** systems are the two main building blocks for a **fully autonomous extension** — one capable of analyzing whether a user’s file meets a website’s requirements and automatically modifying it if needed.  
-
-With these foundations in place, **the goal of a fully autonomous system is now achievable.**
-
-```bash
-npm run dev
+```json
+user request: "My image isn’t the right size and it’s too large",
+model output: [
+  { "tool_name": "ui_image_editor", "i_want": "open an interface to crop or resize the image" },
+  { "tool_name": "imagemagick", "i_want": "compress the image to reduce its file size" }
+]
 ```
 
-## Tests
+For each subtask, the system searches for the most relevant command in a local database dedicated to that tool.  
+The search is performed by [MiniSearch](https://github.com/lucaong/minisearch) and is based on the similarity between the `i_want` intent and the predefined `intent` description of each command.
+
+Example extract from the **[`ImageMagick command database`](./public/minisearch_db/imagemagick_commands.json)**:
+
+```json
+[
+  {
+    "command": "-adaptive-sharpen geometry",
+    "intent": "I want to make the image sharper by emphasizing edges without boosting smooth regions."
+  },
+  {
+    "command": "input -quality 80 -strip -background white -flatten output",
+    "intent": "I want to compress the image to make its file size smaller without changing its format."
+  }
+]
+```
+
+The four most probable commands are selected, and the model is asked to choose the one that best matches the user’s goal (`i_want`).
+
+The **offscreen document** receives the `i_want` instruction along with information about the selected command and a real-world usage example.
+It uses that example to **generate the final command**, which is then **executed in the offscreen context**.
+
+The resulting file is stored locally so that it can be reused by another tool, or reinjected directly into the page’s upload form.
+
+## 🧩 Installation
+
+### 🟢 Install the release version
+
+1. **Unzip** the ZIP file inside the `release` folder of the repository.
+2. Open **chrome://extensions/** in your browser.
+3. Enable **Developer mode** (top right corner).
+4. Click **Load Unpacked**, and select the **extracted folder** inside the `release` directory.
+5. Make sure you have **Chrome’s local AI model** installed — you can find instructions here:  
+   👉 [Install Chrome's built-in AI model](https://developer.chrome.com/docs/ai/get-started)
+
+---
+
+### 🧑‍💻 Install the development version
+
+1. Install dependencies:
+
+```bash
+   pnpm install
+   pnpm run dev
+```
+
+2. Same as step 2, 3 and 4 but select the `dist` folder.
+
+## Tests for the requirements extraction
 
 ```bash
 pnpm vitest run youtube

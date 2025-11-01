@@ -7,6 +7,8 @@ import { fileUploadFailed } from "../conversation/handle_user_actions";
 import DisabledWrapper from "./DisabledWrapper";
 import { ConversationNotifier } from "../conversation/ConversationNotifier";
 import { primaryColor } from "@/commons/colors";
+import AssistantMessage from "../conversation/messages/assistant_message";
+import MessagesLibrary from "@/commons/messages_library";
 
 export const UserInputText = (props: ComposerProps) => {
   const { ...composerProps } = props;
@@ -41,7 +43,11 @@ export const UserInputText = (props: ComposerProps) => {
           />
           <CustomButton
             borderColor={primaryColor}
-            onClick={() => console.log("Set status to idle")}
+            onClick={() =>
+              ConversationNotifier.getState().addMessage(
+                new AssistantMessage(MessagesLibrary.whatCanYouDo),
+              )
+            }
             text="What can you do?"
           />
         </Flex>

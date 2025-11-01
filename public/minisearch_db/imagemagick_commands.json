@@ -816,14 +816,6 @@
     "intent": "I want to position or align text or an element (e.g., bottom-right) on the image."
   },
   {
-    "title": "Grayscale conversion",
-    "command": "-grayscale method",
-    "input_type": {},
-    "description": "Converts the image to grayscale using a method (Brightness, Lightness, Average...).",
-    "example": "convert input -grayscale Average output",
-    "intent": "I want to convert the image to grayscale (black and white) to remove colors."
-  },
-  {
     "title": "Green primary",
     "command": "-green-primary point",
     "input_type": {},
@@ -1712,14 +1704,6 @@
     "description": "Apply a repeating texture as the image background.",
     "example": "convert input -texture texture.png output",
     "intent": "I want to fill the image background with a repeating texture.",
-    "input_type": {}
-  },
-  {
-    "title": "binary threshold",
-    "command": "-threshold value",
-    "description": "Transform pixels according to a threshold: above = white, below = black.",
-    "example": "convert input -threshold 50% output",
-    "intent": "I want to convert the image to black and white using a threshold (above = white, below = black).",
     "input_type": {}
   },
   {
