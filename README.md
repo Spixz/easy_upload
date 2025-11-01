@@ -75,3 +75,14 @@ Now it’s time to clean up and **standardize the communication system**, since 
 The **upload requirement extraction** and **tool execution** systems are the two main building blocks for a **fully autonomous extension** — one capable of analyzing whether a user’s file meets a website’s requirements and automatically modifying it if needed.  
 
 With these foundations in place, **the goal of a fully autonomous system is now achievable.**
+
+```bash
+npm run dev
+```
+
+## Tests
+
+```bash
+pnpm vitest run youtube
+pnpm vitest run -t "test big_prompt_shorter youtube thumbnail"
+```
