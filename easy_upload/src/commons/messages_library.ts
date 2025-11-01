@@ -11,4 +11,7 @@ export default class MessagesLibrary {
   static readonly uploadFieldNoLongerAvailaible =
     "The upload field is no longer available";
   static readonly filToReinjectIsEmpty = "The file to be re-injected is empty";
+  static readonly clickOnTheFiledToReinjectYourFile =
+    "Click on the field where you want to upload your file";
+  static readonly fileSuccessfullyReinjected = "File successfully re-injected";
 }

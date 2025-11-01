@@ -1,3 +1,8 @@
-web-ai-demos/*
-.history/
+web-ai-demos/
+wasm_playground/
+tansformer/
+image-selector-playground/
 chrome_profile_tests/
+ByeByeEXIF/
+browser-extension-ffmpeg/
+.history/

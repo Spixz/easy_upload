@@ -1,5 +1,7 @@
 import { ChromeBridgeMessage } from "@/commons/communications_interfaces";
-import { generateRandomString } from "@/commons/helpers/helpers";
+import {
+  generateRandomString,
+} from "@/commons/helpers/helpers";
 import { addChunkedListenerOnPort } from "@/vendors/ext-send-chuncked-message";
 import { TasksSessionManagerNotifier } from "../tools/tasks_session_manager";
 import UserFileMessage from "../conversation/messages/user_file_message";
@@ -48,8 +50,12 @@ export function sendToContentScript(message: ChromeBridgeMessage) {
 async function handleFileReception(message: any) {
   console.log("big chunk received fron CS to SIDEPANEL");
 
-  const bytes = new Uint8Array(message.data);
-  if (bytes.length == 0) {
+  const response = await fetch(
+    `data:application/octet-stream;base64,${message.data}`,
+  );
+  const bytes = await response.blob();
+
+  if (bytes.size == 0) {
     console.log("File send by the user is empty");
     return;
   }

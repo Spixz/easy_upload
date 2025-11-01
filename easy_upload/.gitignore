@@ -9,7 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-release
 dist-ssr
 *.local
 
@@ -24,3 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .vite/
+
+demo/
+/release/*
+!/release/
+!/release/*.zip

@@ -964,7 +964,7 @@
     "command": "-label string",
     "description": "Assigns a label to the image for identification or metadata.",
     "example": "convert input -label 'Carte n°42' output",
-    "intent": "I want to add a label/name to an image to identify it or store information.",
+    "intent": "I want to add a label/name to an image to identify it or store information, inside metadata.",
     "input_type": {}
   },
   {

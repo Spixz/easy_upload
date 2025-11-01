@@ -4,7 +4,8 @@ import {
   sendChunkedMessage,
   addChunkedListenerOnPort,
 } from "@/vendors/ext-send-chuncked-message";
-import { Notyf } from "notyf";
+import { startInjectionMode } from "../injection_state";
+import { displayErrorMessage, displayMessage } from "../display_message";
 
 export const serviceWorkerPort = chrome.runtime.connect({
   name: "sw-content-script-channel",
@@ -45,7 +46,7 @@ function getConnection(): chrome.runtime.Port | null {
       "[CS->Sidepanel] Connection failed. The sidepanel is likely closed.",
       error,
     );
-    portToSidepanel = null; // S'assurer que le port est bien null en cas d'erreur
+    portToSidepanel = null;
     isConnecting = false;
     return null;
   }
@@ -72,15 +73,6 @@ function onFileChunckReception(
 ) {
   console.log("cs: donnes recued du du sidepannel");
   console.log(message);
-  const selectedInputs: NodeListOf<HTMLInputElement> =
-    document.querySelectorAll(
-      'input[type="file"][data-input-selected-by-user]',
-    );
-  if (selectedInputs.length == 0) {
-    displayErrorMessage(MessagesLibrary.uploadFieldNoLongerAvailaible);
-    return;
-  }
-  const selectedInput = selectedInputs[0];
 
   const bytes = new Uint8Array(message.data);
   if (bytes.length == 0) {
@@ -89,27 +81,14 @@ function onFileChunckReception(
   }
 
   detectFileExt(new Blob([bytes])).then((fileFormat) => {
-    const fileToInject = new File([bytes], "injected_file", {
-      type: fileFormat?.ext ?? "",
+    const extension = fileFormat?.ext;
+    const filename =
+      fileFormat?.ext != null ? `injected_file.${extension}` : "injected_file";
+    const fileToInject = new File([bytes], filename, {
+      type: fileFormat?.mime ?? "",
     });
+    startInjectionMode(fileToInject);
 
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(fileToInject);
-    selectedInput.files = dataTransfer.files;
-
-    selectedInput.dispatchEvent(new Event("change", { bubbles: true }));
-    console.log("File successfully injected");
-  });
-}
-
-function displayErrorMessage(message: string) {
-  const notyf = new Notyf();
-  notyf.error({
-    message: message,
-    duration: 2500,
-    position: {
-      x: "right",
-      y: "bottom",
-    },
+    displayMessage(MessagesLibrary.clickOnTheFiledToReinjectYourFile);
   });
 }

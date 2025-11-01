@@ -74,6 +74,31 @@ export async function getOPFSFileCategory(
   return getFileCategory(extension.ext);
 }
 
+export function arrayBufferToBase64(buffer: ArrayBuffer): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const base64 = dataUrl.split(",", 2)[1];
+      resolve(base64);
+    };
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(new Blob([buffer]));
+  });
+}
+
+export function base64ToUintArray(base64Str: string): Uint8Array {
+  const binaryString = atob(base64Str);
+  const len = binaryString.length;
+
+  // 3. Convertir la chaîne binaire en un Uint8Array (données binaires réelles)
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
 export async function clearOPFS() {
   const root = await navigator.storage.getDirectory();
   for await (const [name, _] of root.entries()) {
